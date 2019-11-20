@@ -1,0 +1,717 @@
+{
+  "uuid": "c5481c6c-c5b5-4735-a4c0-f03d95723102",
+  "display": "201911201230004 - mobin alama",
+  "identifiers": [
+    {
+      "display": "Patient_Identifier = 201911201230004",
+      "uuid": "9fea4823-2f9f-4da4-b8a9-7af5d8ebd1ae",
+      "identifier": "201911201230005",
+      "identifierType": {
+        "uuid": "81433852-3f10-11e4-adec-0800271c1b75",
+        "display": "Patient_Identifier",
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/patientidentifiertype/81433852-3f10-11e4-adec-0800271c1b75"
+          }
+        ]
+      },
+      "location": null,
+      "preferred": true,
+      "voided": false,
+      "links": [
+        {
+          "rel": "self",
+          "uri": "http://192.168.33.10/openmrs/ws/rest/v1/patient/c5481c6c-c5b5-4735-a4c0-f03d95723102/identifier/9fea4823-2f9f-4da4-b8a9-7af5d8ebd1ae"
+        },
+        {
+          "rel": "full",
+          "uri": "http://192.168.33.10/openmrs/ws/rest/v1/patient/c5481c6c-c5b5-4735-a4c0-f03d95723102/identifier/9fea4823-2f9f-4da4-b8a9-7af5d8ebd1ae?v=full"
+        }
+      ],
+      "resourceVersion": "1.8"
+    }
+  ],
+  "person": {
+    "uuid": "c5481c6c-c5b5-4735-a4c0-f03d95723102",
+    "display": "mobin alama",
+    "gender": "M",
+    "age": 34,
+    "birthdate": "1985-11-20T00:00:00.000+0000",
+    "birthdateEstimated": false,
+    "dead": false,
+    "deathDate": null,
+    "causeOfDeath": null,
+    "preferredName": {
+      "display": "mobin alama",
+      "uuid": "d3d58f5d-98b8-4250-a105-ae1721238a8c",
+      "givenName": "mobin",
+      "middleName": null,
+      "familyName": "alama",
+      "familyName2": null,
+      "voided": false,
+      "links": [
+        {
+          "rel": "self",
+          "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/name/d3d58f5d-98b8-4250-a105-ae1721238a8c"
+        },
+        {
+          "rel": "full",
+          "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/name/d3d58f5d-98b8-4250-a105-ae1721238a8c?v=full"
+        }
+      ],
+      "resourceVersion": "1.8"
+    },
+    "preferredAddress": {
+      "display": "ghg",
+      "uuid": "e822589a-72ca-4385-b0e3-303399ca02f9",
+      "preferred": true,
+      "address1": "ghg",
+      "address2": "fgfgb",
+      "cityVillage": "AYLA PATAKATA",
+      "stateProvince": "Barisal",
+      "country": null,
+      "postalCode": null,
+      "countyDistrict": "BARGUNA",
+      "address3": "BARGUNA SADAR",
+      "address4": null,
+      "address5": null,
+      "address6": null,
+      "startDate": null,
+      "endDate": null,
+      "latitude": null,
+      "longitude": null,
+      "voided": false,
+      "address7": null,
+      "address8": null,
+      "address9": null,
+      "address10": null,
+      "address11": null,
+      "address12": null,
+      "address13": null,
+      "address14": null,
+      "address15": null,
+      "links": [
+        {
+          "rel": "self",
+          "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/address/e822589a-72ca-4385-b0e3-303399ca02f9"
+        },
+        {
+          "rel": "full",
+          "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/address/e822589a-72ca-4385-b0e3-303399ca02f9?v=full"
+        }
+      ],
+      "resourceVersion": "2.0"
+    },
+    "names": [
+      {
+        "display": "mobin alama",
+        "uuid": "d3d58f5d-98b8-4250-a105-ae1721238a8c",
+        "givenName": "mobin",
+        "middleName": null,
+        "familyName": "alama",
+        "familyName2": null,
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/name/d3d58f5d-98b8-4250-a105-ae1721238a8c"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/name/d3d58f5d-98b8-4250-a105-ae1721238a8c?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      }
+    ],
+    "addresses": [
+      {
+        "display": "ghg",
+        "uuid": "e822589a-72ca-4385-b0e3-303399ca02f9",
+        "preferred": true,
+        "address1": "ghg",
+        "address2": "fgfgb",
+        "cityVillage": "AYLA PATAKATA",
+        "stateProvince": "Barisal",
+        "country": null,
+        "postalCode": null,
+        "countyDistrict": "BARGUNA",
+        "address3": "BARGUNA SADAR",
+        "address4": null,
+        "address5": null,
+        "address6": null,
+        "startDate": null,
+        "endDate": null,
+        "latitude": null,
+        "longitude": null,
+        "voided": false,
+        "address7": null,
+        "address8": null,
+        "address9": null,
+        "address10": null,
+        "address11": null,
+        "address12": null,
+        "address13": null,
+        "address14": null,
+        "address15": null,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/address/e822589a-72ca-4385-b0e3-303399ca02f9"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/address/e822589a-72ca-4385-b0e3-303399ca02f9?v=full"
+          }
+        ],
+        "resourceVersion": "2.0"
+      }
+    ],
+    "attributes": [
+      {
+        "display": "OBC",
+        "uuid": "030992e6-051f-4d0f-bbac-92dae12afbdc",
+        "value": {
+          "uuid": "c1fb51cc-3f10-11e4-adec-0800271c1b75",
+          "display": "OBC",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/concept/c1fb51cc-3f10-11e4-adec-0800271c1b75"
+            }
+          ]
+        },
+        "attributeType": {
+          "uuid": "c1f455e7-3f10-11e4-adec-0800271c1b75",
+          "display": "FinancialStatus",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/personattributetype/c1f455e7-3f10-11e4-adec-0800271c1b75"
+            }
+          ]
+        },
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/030992e6-051f-4d0f-bbac-92dae12afbdc"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/030992e6-051f-4d0f-bbac-92dae12afbdc?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      },
+      {
+        "display": "NID",
+        "uuid": "746263f7-07d4-4bab-a435-071e6c76b0e9",
+        "value": {
+          "uuid": "73ca054e-dd62-44f4-b3cc-508cb5377b2a",
+          "display": "NID",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/concept/73ca054e-dd62-44f4-b3cc-508cb5377b2a"
+            }
+          ]
+        },
+        "attributeType": {
+          "uuid": "c1f4a004-3f10-11e4-adec-0800271c1b75",
+          "display": "SelectanIDcard",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/personattributetype/c1f4a004-3f10-11e4-adec-0800271c1b75"
+            }
+          ]
+        },
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/746263f7-07d4-4bab-a435-071e6c76b0e9"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/746263f7-07d4-4bab-a435-071e6c76b0e9?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      },
+      {
+        "display": "Unemployed",
+        "uuid": "2b1ea288-4afb-4df3-9fbc-6981f63ad287",
+        "value": {
+          "uuid": "c2222941-3f10-11e4-adec-0800271c1b75",
+          "display": "Unemployed",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/concept/c2222941-3f10-11e4-adec-0800271c1b75"
+            }
+          ]
+        },
+        "attributeType": {
+          "uuid": "c1f7d1f1-3f10-11e4-adec-0800271c1b75",
+          "display": "RegistrationPoint",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/personattributetype/c1f7d1f1-3f10-11e4-adec-0800271c1b75"
+            }
+          ]
+        },
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/2b1ea288-4afb-4df3-9fbc-6981f63ad287"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/2b1ea288-4afb-4df3-9fbc-6981f63ad287?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      },
+      {
+        "display": "landHolding = 2",
+        "uuid": "40248d02-d9c6-494d-9474-a3b7f94e6621",
+        "value": 2,
+        "attributeType": {
+          "uuid": "3dfdc176-17fd-42b1-b5be-c7e25b78b602",
+          "display": "landHolding",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/personattributetype/3dfdc176-17fd-42b1-b5be-c7e25b78b602"
+            }
+          ]
+        },
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/40248d02-d9c6-494d-9474-a3b7f94e6621"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/40248d02-d9c6-494d-9474-a3b7f94e6621?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      },
+      {
+        "display": "birthRank = 03",
+        "uuid": "ad1a542e-2356-47f7-a970-5fc6f938e821",
+        "value": "03",
+        "attributeType": {
+          "uuid": "59405235-99b1-4558-9d70-e96ece9d0c58",
+          "display": "birthRank",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/personattributetype/59405235-99b1-4558-9d70-e96ece9d0c58"
+            }
+          ]
+        },
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/ad1a542e-2356-47f7-a970-5fc6f938e821"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/ad1a542e-2356-47f7-a970-5fc6f938e821?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      },
+      {
+        "display": "birthDistrict = FARIDPUR",
+        "uuid": "e8d6861f-2536-4970-95b6-f2097deafa51",
+        "value": "FARIDPUR",
+        "attributeType": {
+          "uuid": "9aad581d-03a0-414d-8f9e-099edd3f699b",
+          "display": "birthDistrict",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/personattributetype/9aad581d-03a0-414d-8f9e-099edd3f699b"
+            }
+          ]
+        },
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/e8d6861f-2536-4970-95b6-f2097deafa51"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/e8d6861f-2536-4970-95b6-f2097deafa51?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      },
+      {
+        "display": "birthUpazilla = FARIDPUR SADAR",
+        "uuid": "4384f52c-df1c-4848-ba41-5157cc64dfa5",
+        "value": "FARIDPUR SADAR",
+        "attributeType": {
+          "uuid": "229cb56b-a1e1-486e-9421-c164c4ed2f02",
+          "display": "birthUpazilla",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/personattributetype/229cb56b-a1e1-486e-9421-c164c4ed2f02"
+            }
+          ]
+        },
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/4384f52c-df1c-4848-ba41-5157cc64dfa5"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/4384f52c-df1c-4848-ba41-5157cc64dfa5?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      },
+      {
+        "display": "MobileNo = 01923445667",
+        "uuid": "ae805fdc-9a29-48db-8240-81159655af9f",
+        "value": "01923445667",
+        "attributeType": {
+          "uuid": "bf29f488-4865-465f-a8ac-df423b9a9f83",
+          "display": "MobileNo",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/personattributetype/bf29f488-4865-465f-a8ac-df423b9a9f83"
+            }
+          ]
+        },
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/ae805fdc-9a29-48db-8240-81159655af9f"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/ae805fdc-9a29-48db-8240-81159655af9f?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      },
+      {
+        "display": "Student",
+        "uuid": "49cd790c-481f-4f9d-9e4e-0b5bc80ec570",
+        "value": {
+          "uuid": "c2232daf-3f10-11e4-adec-0800271c1b75",
+          "display": "Student",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/concept/c2232daf-3f10-11e4-adec-0800271c1b75"
+            }
+          ]
+        },
+        "attributeType": {
+          "uuid": "81c09d5a-7069-43db-b10a-145553238bb1",
+          "display": "MobileNoOwner",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/personattributetype/81c09d5a-7069-43db-b10a-145553238bb1"
+            }
+          ]
+        },
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/49cd790c-481f-4f9d-9e4e-0b5bc80ec570"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/49cd790c-481f-4f9d-9e4e-0b5bc80ec570?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      },
+      {
+        "display": "Spouse/FathersName = fdgfg",
+        "uuid": "433e5dfe-7a10-44f7-b059-461c8a910a51",
+        "value": "fdgfg",
+        "attributeType": {
+          "uuid": "c5320974-f422-46b2-8f6b-93190e721ce4",
+          "display": "Spouse/FathersName",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/personattributetype/c5320974-f422-46b2-8f6b-93190e721ce4"
+            }
+          ]
+        },
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/433e5dfe-7a10-44f7-b059-461c8a910a51"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/433e5dfe-7a10-44f7-b059-461c8a910a51?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      },
+      {
+        "display": "RegistrationDate = 2019-11-20",
+        "uuid": "ae20dcbf-855c-4f5b-bc82-c62eb4df3221",
+        "value": "2019-11-20T00:00:00.000+0000",
+        "attributeType": {
+          "uuid": "2c99c6df-9b87-41e2-91cd-2b66638212ef",
+          "display": "RegistrationDate",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/personattributetype/2c99c6df-9b87-41e2-91cd-2b66638212ef"
+            }
+          ]
+        },
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/ae20dcbf-855c-4f5b-bc82-c62eb4df3221"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/ae20dcbf-855c-4f5b-bc82-c62eb4df3221?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      },
+      {
+        "display": "IDno = 4444444444444",
+        "uuid": "18c4cb98-9083-4209-8f50-c2329fe49547",
+        "value": "4444444444444",
+        "attributeType": {
+          "uuid": "bfef6814-f866-48f1-85b5-17a9c0603cb0",
+          "display": "IDno",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/personattributetype/bfef6814-f866-48f1-85b5-17a9c0603cb0"
+            }
+          ]
+        },
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/18c4cb98-9083-4209-8f50-c2329fe49547"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/18c4cb98-9083-4209-8f50-c2329fe49547?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      },
+      {
+        "display": "UIC = M2947MO03RI",
+        "uuid": "73eb0a18-180d-400e-9894-9e2f02297f10",
+        "value": "M2947MO03RI",
+        "attributeType": {
+          "uuid": "2a888544-948e-4fae-b1f4-4d6ada072d2f",
+          "display": "UIC",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/personattributetype/2a888544-948e-4fae-b1f4-4d6ada072d2f"
+            }
+          ]
+        },
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/73eb0a18-180d-400e-9894-9e2f02297f10"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/73eb0a18-180d-400e-9894-9e2f02297f10?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      },
+      {
+        "display": "birthMothersFirstName = rina",
+        "uuid": "545621af-d403-48d1-a6c4-9f3adef24307",
+        "value": "rina",
+        "attributeType": {
+          "uuid": "969a526b-b719-4b6f-acf2-78ba3c1e8a5e",
+          "display": "birthMothersFirstName",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/personattributetype/969a526b-b719-4b6f-acf2-78ba3c1e8a5e"
+            }
+          ]
+        },
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/545621af-d403-48d1-a6c4-9f3adef24307"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/545621af-d403-48d1-a6c4-9f3adef24307?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      },
+      {
+        "display": "ClinicName = etst",
+        "uuid": "53cf1236-6795-48f8-8ec0-03701d07471c",
+        "value": "etst",
+        "attributeType": {
+          "uuid": "72ecd784-632b-4083-8957-afca90dd9748",
+          "display": "ClinicName",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/personattributetype/72ecd784-632b-4083-8957-afca90dd9748"
+            }
+          ]
+        },
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/53cf1236-6795-48f8-8ec0-03701d07471c"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/53cf1236-6795-48f8-8ec0-03701d07471c?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      },
+      {
+        "display": "ClinicCode = 12345",
+        "uuid": "73050324-ed0b-4c3b-b648-a94477f5d7cd",
+        "value": "12345",
+        "attributeType": {
+          "uuid": "6e3bd2c7-9d3d-481e-aa2e-4ace6a058a57",
+          "display": "ClinicCode",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/personattributetype/6e3bd2c7-9d3d-481e-aa2e-4ace6a058a57"
+            }
+          ]
+        },
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/73050324-ed0b-4c3b-b648-a94477f5d7cd"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/73050324-ed0b-4c3b-b648-a94477f5d7cd?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      },
+      {
+        "display": "orgUnit = sdsfsdf",
+        "uuid": "f33d0dcf-0786-451e-8b47-117d9cefcf15",
+        "value": "sdsfsdf",
+        "attributeType": {
+          "uuid": "9eea0a2e-394d-479a-bf90-e3eb140b9e8c",
+          "display": "orgUnit",
+          "links": [
+            {
+              "rel": "self",
+              "uri": "http://192.168.33.10/openmrs/ws/rest/v1/personattributetype/9eea0a2e-394d-479a-bf90-e3eb140b9e8c"
+            }
+          ]
+        },
+        "voided": false,
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/f33d0dcf-0786-451e-8b47-117d9cefcf15"
+          },
+          {
+            "rel": "full",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102/attribute/f33d0dcf-0786-451e-8b47-117d9cefcf15?v=full"
+          }
+        ],
+        "resourceVersion": "1.8"
+      }
+    ],
+    "voided": false,
+    "auditInfo": {
+      "creator": {
+        "uuid": "8d52e824-5c80-4133-aa5d-ebdbc38ae94d",
+        "display": "pro",
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://192.168.33.10/openmrs/ws/rest/v1/user/8d52e824-5c80-4133-aa5d-ebdbc38ae94d"
+          }
+        ]
+      },
+      "dateCreated": "2019-11-20T09:05:11.000+0000",
+      "changedBy": null,
+      "dateChanged": null
+    },
+    "deathdateEstimated": false,
+    "birthtime": null,
+    "links": [
+      {
+        "rel": "self",
+        "uri": "http://192.168.33.10/openmrs/ws/rest/v1/person/c5481c6c-c5b5-4735-a4c0-f03d95723102"
+      }
+    ],
+    "resourceVersion": "1.11"
+  },
+  "voided": false,
+  "auditInfo": {
+    "creator": {
+      "uuid": "8d52e824-5c80-4133-aa5d-ebdbc38ae94d",
+      "display": "pro",
+      "links": [
+        {
+          "rel": "self",
+          "uri": "http://192.168.33.10/openmrs/ws/rest/v1/user/8d52e824-5c80-4133-aa5d-ebdbc38ae94d"
+        }
+      ]
+    },
+    "dateCreated": "2019-11-20T09:05:11.000+0000",
+    "changedBy": null,
+    "dateChanged": null
+  },
+  "links": [
+    {
+      "rel": "self",
+      "uri": "http://192.168.33.10/openmrs/ws/rest/v1/patient/c5481c6c-c5b5-4735-a4c0-f03d95723102"
+    }
+  ],
+  "resourceVersion": "1.8"
+}
