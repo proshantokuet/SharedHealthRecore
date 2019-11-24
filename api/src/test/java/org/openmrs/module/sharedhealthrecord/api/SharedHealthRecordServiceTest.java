@@ -44,6 +44,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.google.gson.Gson;
+
 /**
  * Tests {@link $ SharedHealthRecordService} .
  */
@@ -184,29 +186,24 @@ public class SharedHealthRecordServiceTest extends BaseModuleContextSensitiveTes
 			personObject.put("deathDate", extractedPerson.get("deathDate"));
 			personObject.put("causeOfDeath", extractedPerson.get("causeOfDeath"));
 			personObject.put("birthtime", extractedPerson.get("birthtime"));
-			
+			/********** name section *************/
 			JSONArray names = new JSONArray();
 			JSONObject preferredName = new JSONObject();
 			preferredName = (JSONObject) extractedPerson.get("preferredName");
-			preferredName.remove("links");
-			preferredName.remove("resourceVersion");
-			preferredName.remove("voided");
-			preferredName.remove("familyName2");
-			preferredName.remove("uuid");
-			preferredName.put("preferred", true);
-			names.add(preferredName);
+			PreferredName preName = new Gson().fromJson(preferredName.toString(), PreferredName.class);
+			JSONObject name = (JSONObject) jsonParser.parse(new Gson().toJson(preName));
+			names.add(name);
 			personObject.put("names", names);
 			
 			JSONArray addresses = new JSONArray();
 			
 			JSONObject preferredAddress = new JSONObject();
 			preferredAddress = (JSONObject) extractedPerson.get("preferredAddress");
-			preferredAddress.remove("display");
-			preferredAddress.remove("uuid");
-			preferredAddress.remove("links");
-			preferredAddress.remove("resourceVersion");
-			addresses.add(preferredAddress);
 			
+			JSONObject _preferredAdress = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(
+			    preferredAddress.toString(), PersonAddress.class)));
+			
+			addresses.add(_preferredAdress);
 			personObject.put("addresses", addresses);
 			
 			JSONObject personInfor = new JSONObject();
@@ -226,7 +223,7 @@ public class SharedHealthRecordServiceTest extends BaseModuleContextSensitiveTes
 			JSONArray _relationshipArray = (JSONArray) _relationshipAsObject.get("results");
 			
 			patient.put("relationships", getRelationships(_relationshipArray));
-			patient.put("image", getImage(""));
+			//patient.put("image", getImage(""));
 			String data = patient.toJSONString();
 			return data;
 		}
@@ -309,7 +306,7 @@ public class SharedHealthRecordServiceTest extends BaseModuleContextSensitiveTes
 			HttpPost request = (HttpPost) makeConnection(url, "", RequestMethod.POST, AuthType.BASIC, "superman:Admin123456");
 			request.setHeader(HTTP.CONTENT_TYPE, "application/json");
 			StringEntity entity = new StringEntity(data == null ? "" : data, "UTF-8");
-			System.err.println(data);
+			//System.err.println(data);
 			entity.setContentEncoding("application/json");
 			request.setEntity(entity);
 			org.apache.http.HttpResponse response = httpClient.execute(request);
