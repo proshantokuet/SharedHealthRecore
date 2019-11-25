@@ -17,11 +17,16 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileReader;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.sharedhealthrecord.domain.Encounter;
+import org.openmrs.module.sharedhealthrecord.domain.Observation;
+import org.openmrs.module.sharedhealthrecord.domain.ObservationWithGroupMemebrs;
+import org.openmrs.module.sharedhealthrecord.domain.ObservationWithValues;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import com.google.gson.Gson;
@@ -36,46 +41,30 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(Context.getService(SharedHealthRecordService.class));
 	}
 	
+	JSONParser jsonParser = new JSONParser();
+	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void encounter() {
 		
 		JSONParser jsonParser = new JSONParser();
 		
-		try (FileReader reader = new FileReader("../obs.json")) {
-			//try {
-			//String getEncounterUrl = "https://192.168.19.145//openmrs/ws/rest/v1/bahmnicore/bahmniencounter/2c1921f4-f54c-4ad4-b852-94d7563fb67d?includeAll=true";
-			
-			//String patientResponse = HttpUtil.get(getEncounterUrl, "", "sohel:Sohel@123");
+		try (FileReader reader = new FileReader("../drug_order.json")) {
+			/*try {
+				String getEncounterUrl = "https://192.168.19.145/openmrs/ws/rest/v1/bahmnicore/bahmniencounter/2c1921f4-f54c-4ad4-b852-94d7563fb67d?includeAll=true";
+				
+				String patientResponse = HttpUtil.get(getEncounterUrl, "", "sohel:Sohel@123");*/
 			//Read JSON file
+			System.out.println("json parse starting...........");
 			JSONObject obj = (JSONObject) jsonParser.parse(reader);
 			JSONArray obs = (JSONArray) obj.get("observations");
-			JSONArray pro = (JSONArray) obj.get("providers");
-			JSONObject encounter = new JSONObject();
+			
 			JSONArray obervations = getObservations(obs);
-			//System.out.println(obj);
-			encounter.put("locationUuid", obj.get("locationUuid"));
-			encounter.put("patientUuid", obj.get("patientUuid"));
-			encounter.put("visitUuid", obj.get("visitUuid"));
-			encounter.put("encounterDateTime", obj.get("encounterDateTime"));
-			encounter.put("visitType", obj.get("visitType"));
-			encounter.put("patientUuid", obj.get("patientUuid"));
+			
+			JSONObject encounter = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(obj.toString(),
+			    Encounter.class)));
 			encounter.put("observations", obervations);
-			encounter.put("extensions", new JSONObject());
-			encounter.put("context", new JSONObject());
-			encounter.put("bahmniDiagnoses", new JSONArray());
-			encounter.put("orders", new JSONArray());
-			encounter.put("drugOrders", new JSONArray());
-			encounter.put("drugOrders", new JSONArray());
-			encounter.put("encounterUuid", obj.get("encounterUuid"));
-			System.err.println();
-			JSONArray providers = new JSONArray();
-			JSONObject provider = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(pro.get(0).toString(),
-			    Provider.class)));
-			providers.add(provider);
-			System.err.println(provider);
-			encounter.put("providers", providers);
-			System.err.println(encounter);
+			System.out.println(encounter);
 			
 		}
 		catch (Exception e) {
@@ -90,23 +79,23 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 		
 		_obs.forEach(_ob -> {
 			JSONObject ob = (JSONObject) _ob;
-			JSONObject observation = new JSONObject();
-			JSONObject concept = new JSONObject();
-			JSONObject _concept = (JSONObject) ob.get("concept");
-			concept.put("uuid", _concept.get("conceptUuid"));
-			concept.put("name", _concept.get("conceptNameToDisplay"));
-			observation.put("concept", concept);
-			observation.put("value", _concept.get("valueAsString"));
-			observation.put("formNamespace", ob.get("formNamespace"));
-			observation.put("formFieldPath", ob.get("formFieldPath"));
-			observation.put("formFieldPath", ob.get("formFieldPath"));
+			
 			String type = (String) ob.get("type");
+			JSONArray groupMembers = (JSONArray) ob.get("groupMembers");
+			System.out.println("Coded..........:" + groupMembers.size() + " type:" + type);
 			try {
-				if (type.equalsIgnoreCase("Coded")) {
+				if (!StringUtils.isBlank(type) && type.equalsIgnoreCase("Coded")) {
+					
 					JSONObject obs = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(ob.toString(),
 					    ObservationWithValues.class)));
 					observations.add(obs);
+				} else if (groupMembers.size() != 0) {
+					
+					JSONObject obs = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(ob.toString(),
+					    ObservationWithGroupMemebrs.class)));
+					observations.add(obs);
 				} else {
+					
 					JSONObject obs = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(ob.toString(),
 					    Observation.class)));
 					observations.add(obs);
@@ -116,7 +105,7 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 			catch (Exception e) {
 				// TODO Auto-generated catch block
 				//System.out.println(ob);
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 		});
 		return observations;

@@ -1,0 +1,256 @@
+{
+  "locationUuid": "fcdb0f18-f57a-40b3-a3f5-f696b27939bb",
+  "patientUuid": "9a9c9716-b447-4328-91e8-536830190889",
+  "encounterUuid": "b3c9ed30-ab81-4102-99f8-5ee03a125dac",
+  "visitUuid": "4901a360-3849-4cdb-8bfb-9cb60e7f4d0f",
+  "providers": [
+    {
+      "uuid": "344f8dd3-e1a4-4ca3-b8ff-71c02f598e45",
+      "name": "riyad hasan",
+      "encounterRoleUuid": "a0b03050-c99b-11e0-9572-0800200c9a66"
+    }
+  ],
+  "encounterDateTime": "2019-11-25T17:30:45.000+0600",
+  "extensions": {
+    "mdrtbSpecimen": []
+  },
+  "context": {},
+  "visitType": "OPD",
+  "bahmniDiagnoses": [],
+  "orders": [],
+  "drugOrders": [],
+  "disposition": null,
+  "observations": [
+    {
+      "encounterDateTime": 1574681445000,
+      "visitStartDateTime": null,
+      "targetObsRelation": null,
+      "groupMembers": [],
+      "providers": [
+        {
+          "uuid": "344f8dd3-e1a4-4ca3-b8ff-71c02f598e45",
+          "name": "riyad hasan",
+          "encounterRoleUuid": "a0b03050-c99b-11e0-9572-0800200c9a66"
+        }
+      ],
+      "isAbnormal": null,
+      "duration": null,
+      "type": "Text",
+      "encounterUuid": "b3c9ed30-ab81-4102-99f8-5ee03a125dac",
+      "obsGroupUuid": null,
+      "creatorName": "riyad hasan",
+      "conceptSortWeight": 1,
+      "parentConceptUuid": null,
+      "hiNormal": null,
+      "lowNormal": null,
+      "formNamespace": "Bahmni",
+      "formFieldPath": "LCC.1/1-0",
+      "interpretation": null,
+      "status": "FINAL",
+      "complexData": null,
+      "voided": false,
+      "voidReason": null,
+      "conceptUuid": "866db5de-3509-4128-81f0-ff3f4eb114b1",
+      "orderUuid": null,
+      "observationDateTime": "2019-11-25T17:30:45.000+0600",
+      "concept": {
+        "uuid": "866db5de-3509-4128-81f0-ff3f4eb114b1",
+        "name": "Health Issue",
+        "dataType": "Text"
+      },
+      "valueAsString": "Health Issue",
+      "unknown": false,
+      "uuid": "46e16a6c-d945-49fa-947f-f8c8b333d5e0",
+      "abnormal": null,
+      "conceptNameToDisplay": "Health Issue",
+      "comment": null,
+      "value": "Health Issue",
+      "inactive": false
+    },
+    {
+      "encounterDateTime": 1574681445000,
+      "visitStartDateTime": null,
+      "targetObsRelation": null,
+      "groupMembers": [],
+      "providers": [
+        {
+          "uuid": "344f8dd3-e1a4-4ca3-b8ff-71c02f598e45",
+          "name": "riyad hasan",
+          "encounterRoleUuid": "a0b03050-c99b-11e0-9572-0800200c9a66"
+        }
+      ],
+      "isAbnormal": null,
+      "duration": null,
+      "type": "Text",
+      "encounterUuid": "b3c9ed30-ab81-4102-99f8-5ee03a125dac",
+      "obsGroupUuid": null,
+      "creatorName": "riyad hasan",
+      "conceptSortWeight": 1,
+      "parentConceptUuid": null,
+      "hiNormal": null,
+      "lowNormal": null,
+      "formNamespace": "Bahmni",
+      "formFieldPath": "LCC.1/2-0",
+      "interpretation": null,
+      "status": "FINAL",
+      "complexData": null,
+      "voided": false,
+      "voidReason": null,
+      "conceptUuid": "2713c490-74ef-4e56-a566-41f2e54b19ee",
+      "orderUuid": null,
+      "observationDateTime": "2019-11-25T17:30:45.000+0600",
+      "concept": {
+        "uuid": "2713c490-74ef-4e56-a566-41f2e54b19ee",
+        "name": "Health Examination",
+        "dataType": "Text"
+      },
+      "valueAsString": "Health Examination",
+      "unknown": false,
+      "uuid": "fbf0de29-a8a4-4813-be6f-44208294d473",
+      "abnormal": null,
+      "conceptNameToDisplay": "Health Examination",
+      "comment": null,
+      "value": "Health Examination",
+      "inactive": false
+    },
+    {
+      "encounterDateTime": 1574681445000,
+      "visitStartDateTime": null,
+      "targetObsRelation": null,
+      "groupMembers": [],
+      "providers": [
+        {
+          "uuid": "344f8dd3-e1a4-4ca3-b8ff-71c02f598e45",
+          "name": "riyad hasan",
+          "encounterRoleUuid": "a0b03050-c99b-11e0-9572-0800200c9a66"
+        }
+      ],
+      "isAbnormal": null,
+      "duration": null,
+      "type": "Text",
+      "encounterUuid": "b3c9ed30-ab81-4102-99f8-5ee03a125dac",
+      "obsGroupUuid": null,
+      "creatorName": "riyad hasan",
+      "conceptSortWeight": 1,
+      "parentConceptUuid": null,
+      "hiNormal": null,
+      "lowNormal": null,
+      "formNamespace": "Bahmni",
+      "formFieldPath": "LCC.1/3-0",
+      "interpretation": null,
+      "status": "FINAL",
+      "complexData": null,
+      "voided": false,
+      "voidReason": null,
+      "conceptUuid": "745e1ade-5f7c-4862-a08d-3fbc6ba53aa1",
+      "orderUuid": null,
+      "observationDateTime": "2019-11-25T17:30:45.000+0600",
+      "concept": {
+        "uuid": "745e1ade-5f7c-4862-a08d-3fbc6ba53aa1",
+        "name": "Diagnosis",
+        "dataType": "Text"
+      },
+      "valueAsString": "Diagnosis",
+      "unknown": false,
+      "uuid": "b1c3422c-8613-4ce9-87a9-3f726b405a63",
+      "abnormal": null,
+      "conceptNameToDisplay": "Diagnosis",
+      "comment": null,
+      "value": "Diagnosis",
+      "inactive": false
+    },
+    {
+      "encounterDateTime": 1574681445000,
+      "visitStartDateTime": null,
+      "targetObsRelation": null,
+      "groupMembers": [],
+      "providers": [
+        {
+          "uuid": "344f8dd3-e1a4-4ca3-b8ff-71c02f598e45",
+          "name": "riyad hasan",
+          "encounterRoleUuid": "a0b03050-c99b-11e0-9572-0800200c9a66"
+        }
+      ],
+      "isAbnormal": null,
+      "duration": null,
+      "type": "Text",
+      "encounterUuid": "b3c9ed30-ab81-4102-99f8-5ee03a125dac",
+      "obsGroupUuid": null,
+      "creatorName": "riyad hasan",
+      "conceptSortWeight": 1,
+      "parentConceptUuid": null,
+      "hiNormal": null,
+      "lowNormal": null,
+      "formNamespace": "Bahmni",
+      "formFieldPath": "LCC.1/4-0",
+      "interpretation": null,
+      "status": "FINAL",
+      "complexData": null,
+      "voided": false,
+      "voidReason": null,
+      "conceptUuid": "a5a1084a-0043-46cc-8a80-32bb4074eb69",
+      "orderUuid": null,
+      "observationDateTime": "2019-11-25T17:30:45.000+0600",
+      "concept": {
+        "uuid": "a5a1084a-0043-46cc-8a80-32bb4074eb69",
+        "name": "Treatment Provided",
+        "dataType": "Text"
+      },
+      "valueAsString": "Treatment Provided",
+      "unknown": false,
+      "uuid": "8d34350c-6662-43ed-b98b-9a590254566d",
+      "abnormal": null,
+      "conceptNameToDisplay": "Treatment Provided",
+      "comment": null,
+      "value": "Treatment Provided",
+      "inactive": false
+    },
+    {
+      "encounterDateTime": 1574681445000,
+      "visitStartDateTime": null,
+      "targetObsRelation": null,
+      "groupMembers": [],
+      "providers": [
+        {
+          "uuid": "344f8dd3-e1a4-4ca3-b8ff-71c02f598e45",
+          "name": "riyad hasan",
+          "encounterRoleUuid": "a0b03050-c99b-11e0-9572-0800200c9a66"
+        }
+      ],
+      "isAbnormal": null,
+      "duration": null,
+      "type": "Text",
+      "encounterUuid": "b3c9ed30-ab81-4102-99f8-5ee03a125dac",
+      "obsGroupUuid": null,
+      "creatorName": "riyad hasan",
+      "conceptSortWeight": 1,
+      "parentConceptUuid": null,
+      "hiNormal": null,
+      "lowNormal": null,
+      "formNamespace": "Bahmni",
+      "formFieldPath": "LCC.1/6-0",
+      "interpretation": null,
+      "status": "FINAL",
+      "complexData": null,
+      "voided": false,
+      "voidReason": null,
+      "conceptUuid": "07150919-a243-40f1-9555-df99acb05d2f",
+      "orderUuid": null,
+      "observationDateTime": "2019-11-25T17:30:45.000+0600",
+      "concept": {
+        "uuid": "07150919-a243-40f1-9555-df99acb05d2f",
+        "name": "Suggestions/Advice",
+        "dataType": "Text"
+      },
+      "valueAsString": "Suggestions/Advice",
+      "unknown": false,
+      "uuid": "81d1d07b-6873-41e0-b3d8-2cdd04102db6",
+      "abnormal": null,
+      "conceptNameToDisplay": "Suggestions/Advice",
+      "comment": null,
+      "value": "Suggestions/Advice",
+      "inactive": false
+    }
+  ],
+  "encounterTypeUuid": "81852aee-3f10-11e4-adec-0800271c1b75"
+}

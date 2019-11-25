@@ -41,6 +41,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.sharedhealthrecord.domain.PersonAddress;
+import org.openmrs.module.sharedhealthrecord.domain.PreferredName;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.web.bind.annotation.RequestMethod;
 

@@ -1,0 +1,115 @@
+{
+  "bahmniDiagnoses": [],
+  "observations": [],
+  "accessionNotes": [],
+  "encounterType": "Consultation",
+  "visitType": null,
+  "patientId": "201908203090026",
+  "reason": null,
+  "patientProgramUuid": null,
+  "orders": [
+    {
+      "concept": {
+        "uuid": "7b8851e3-e97e-4345-aea9-9112ea625c84",
+        "name": "Haematology",
+        "dataType": "N/A",
+        "shortName": "Haematology",
+        "conceptClass": "LabSet",
+        "hiNormal": null,
+        "lowNormal": null,
+        "set": true,
+        "mappings": []
+      },
+      "instructions": null,
+      "uuid": "725469ac-7f8c-4f3f-9a09-f3184c236c67",
+      "orderType": "Lab Order",
+      "orderGroup": null,
+      "dateCreated": "2019-11-25T12:45:30.000+0600",
+      "dateChanged": null,
+      "dateStopped": null,
+      "orderNumber": "ORD-392",
+      "careSetting": null,
+      "action": "NEW",
+      "commentToFulfiller": null,
+      "autoExpireDate": null,
+      "urgency": "ROUTINE",
+      "previousOrderUuid": null
+    },
+    {
+      "concept": {
+        "uuid": "03b850ed-9474-41e2-affa-3f42c5c997fc",
+        "name": "Haemogram",
+        "dataType": "N/A",
+        "shortName": "Haemogram",
+        "conceptClass": "LabSet",
+        "hiNormal": null,
+        "lowNormal": null,
+        "set": true,
+        "mappings": []
+      },
+      "instructions": null,
+      "uuid": "a39017c1-a99e-4d9f-b72f-c9f9e9006d4e",
+      "orderType": "Lab Order",
+      "orderGroup": null,
+      "dateCreated": "2019-11-25T12:45:30.000+0600",
+      "dateChanged": null,
+      "dateStopped": null,
+      "orderNumber": "ORD-390",
+      "careSetting": null,
+      "action": "NEW",
+      "commentToFulfiller": null,
+      "autoExpireDate": null,
+      "urgency": "ROUTINE",
+      "previousOrderUuid": null
+    },
+    {
+      "concept": {
+        "uuid": "c4e36904-b52c-4df2-8c84-75748ec0bc74",
+        "name": "CBC",
+        "dataType": "N/A",
+        "shortName": "CBC",
+        "conceptClass": "LabSet",
+        "hiNormal": null,
+        "lowNormal": null,
+        "set": true,
+        "mappings": []
+      },
+      "instructions": null,
+      "uuid": "dc2f0d23-90af-4238-bb59-d50c87a35cda",
+      "orderType": "Lab Order",
+      "orderGroup": null,
+      "dateCreated": "2019-11-25T12:45:30.000+0600",
+      "dateChanged": null,
+      "dateStopped": null,
+      "orderNumber": "ORD-391",
+      "careSetting": null,
+      "action": "NEW",
+      "commentToFulfiller": null,
+      "autoExpireDate": null,
+      "urgency": "ROUTINE",
+      "previousOrderUuid": null
+    }
+  ],
+  "providers": [
+    {
+      "uuid": "344f8dd3-e1a4-4ca3-b8ff-71c02f598e45",
+      "name": "riyad hasan",
+      "encounterRoleUuid": "a0b03050-c99b-11e0-9572-0800200c9a66"
+    }
+  ],
+  "disposition": null,
+  "patientUuid": "9a9c9716-b447-4328-91e8-536830190889",
+  "drugOrders": [],
+  "encounterTypeUuid": "81852aee-3f10-11e4-adec-0800271c1b75",
+  "locationUuid": "fcdb0f18-f57a-40b3-a3f5-f696b27939bb",
+  "encounterDateTime": "2019-11-25T12:45:30.000+0600",
+  "encounterUuid": "c1aa76d7-498a-4424-9306-0d901bcdbd1c",
+  "visitUuid": "4901a360-3849-4cdb-8bfb-9cb60e7f4d0f",
+  "visitTypeUuid": "c22a5000-3f10-11e4-adec-0800271c1b75",
+  "associatedToPatientProgram": false,
+  "locationName": "DHAKA NORTH CITY CORPORATION",
+  "context": {},
+  "extensions": {
+    "mdrtbSpecimen": []
+  }
+}
