@@ -91,9 +91,9 @@ public class HttpUtil {
 		return requestBase;
 	}
 	
-	public static String post(String url, String payload, AuthType authType, String authString, String data) {
+	public static String post(String url, String payload, String data) {
 		try {
-			HttpPost request = (HttpPost) makeConnection(url, "", RequestMethod.POST, AuthType.BASIC, "superman:Admin123456");
+			HttpPost request = (HttpPost) makeConnection(url, "", RequestMethod.POST, AuthType.BASIC, "admin:Sohel@1234");
 			request.setHeader(HTTP.CONTENT_TYPE, "application/json");
 			StringEntity entity = new StringEntity(data == null ? "" : data, "UTF-8");
 			//System.err.println(data);
