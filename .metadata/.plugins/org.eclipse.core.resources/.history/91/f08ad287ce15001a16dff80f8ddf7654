@@ -1,0 +1,7 @@
+package org.openmrs.module.sharedhealthrecord.api.db.hibernate;
+
+import org.openmrs.module.sharedhealthrecord.api.db.SHRExternalPatientDAO;
+
+public class HibernateSHRExternalPatientDAO  implements SHRExternalPatientDAO {
+
+}

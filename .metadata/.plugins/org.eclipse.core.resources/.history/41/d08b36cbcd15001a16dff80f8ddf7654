@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    <!--
+        See http://www.liquibase.org/manual/home#available_database_refactorings
+        for a list of supported elements and attributes
+    -->
+    <changeSet id="shr_action_audit_info-1.0.0" author="jysan">
+    	<createTable tableName="shr_action_audit_info">
+    		<column name="aid" type="int(11)" autoIncrement="true">
+    			<constraints primaryKey="true" nullable="false" />
+    		</column>
+    		<column name="record_name" type="varchar(255)"/>
+    		<column name="last_id" type="varchar(255)"/>
+    		<column name="last_timestamp" type="varchar(255)"/>
+    		<column name="action_time" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
+    	</createTable>
+    </changeSet>
+    <changeSet id="shr_action_error_log-1.0.0" author="jysan">
+    	<createTable tableName="shr_action_error_log">
+    		<column name="eid" type="int(11)" autoIncrement="true">
+    			<constraints primaryKey="true" nullable="false" />
+    		</column>
+    		<column name="type" type="varchar(255)"/>
+    		<column name="error_message" type="varchar(255)"/>
+    		<column name="uuid" type="varchar(255)" />
+    	</createTable>
+    </changeSet>
+    <changeSet id="shr_external_patient-1.0.0" author="jysan">
+    	<createTable tableName="shr_external_patient">
+    		<column name="epid" type="int(11)" autoIncrement="true">
+    			<constraints primaryKey="true" nullable="false" />
+    		</column>
+    	</createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -5,7 +5,23 @@
   <link rel="self" href="https://spring.io/blog.atom" />
   <id>http://spring.io/blog.atom</id>
   <icon>https://spring.io/favicon.ico</icon>
-  <updated>2019-12-03T09:38:26Z</updated>
+  <updated>2019-12-03T10:43:20Z</updated>
+  <entry>
+    <title>Spring Framework 5.2.2 and 5.1.12 available now</title>
+    <link rel="alternate" href="https://spring.io/blog/2019/12/03/spring-framework-5-2-2-and-5-1-12-available-now" />
+    <category term="releases" label="Releases" />
+    <author>
+      <name>Brian Clozel</name>
+    </author>
+    <id>tag:spring.io,2019-12-01:3890</id>
+    <updated>2019-12-03T10:43:20Z</updated>
+    <content type="html">&lt;p&gt;On behalf of the team and everyone who has contributed, I am pleased to announce that Spring Framework 5.2.2 and 5.1.12 are available now.&lt;/p&gt;
+&lt;p&gt;The second maintenance release of the 5.2 line includes &lt;a href="https://github.com/spring-projects/spring-framework/releases/tag/v5.2.2.RELEASE"&gt;over 100 fixes and improvements&lt;/a&gt;. Spring Framework 5.1.12 &lt;a href="https://github.com/spring-projects/spring-framework/releases/tag/v5.1.12.RELEASE"&gt;includes 25 selected fixes and improvements&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;As usual, we&amp;rsquo;ll follow up shortly with corresponding Spring Boot releases (2.2.2 and 2.1.11).&lt;/p&gt;
+&lt;p&gt;See you early 2020 for a full round of Spring Framework releases, from 4.3.x up to the 5.2.x generation. More on that in a future blog post, stay tuned!&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://projects.spring.io/spring-framework/"&gt;Project Page&lt;/a&gt; | &lt;a href="https://github.com/spring-projects/spring-framework"&gt;GitHub&lt;/a&gt; | &lt;a href="https://github.com/spring-projects/spring-framework/issues"&gt;Issues&lt;/a&gt; | &lt;a href="https://docs.spring.io/spring-framework/docs/5.2.2.RELEASE/spring-framework-reference"&gt;Documentation&lt;/a&gt;&lt;/p&gt;
+&lt;!-- rendered by Sagan Renderer Service --&gt;</content>
+  </entry>
   <entry>
     <title>This Week in Spring - December 3, 2019</title>
     <link rel="alternate" href="https://spring.io/blog/2019/12/03/this-week-in-spring-december-3-2019" />
@@ -1189,79 +1205,6 @@ See the &lt;a href="https://spring.io/blog/2019/11/14/spring-security-oauth-2-0-
 &lt;p&gt;&lt;a href="https://spring.io/projects/spring-security-oauth/"&gt;Project Page&lt;/a&gt; |
 &lt;a href="https://github.com/spring-projects/spring-security-oauth/"&gt;GitHub&lt;/a&gt; |
 &lt;a href="https://projects.spring.io/spring-security-oauth/docs/Home.html"&gt;Documentation&lt;/a&gt; | &lt;a href="http://stackoverflow.com/questions/tagged/spring-security-oauth2"&gt;Help&lt;/a&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;!-- rendered by Sagan Renderer Service --&gt;</content>
-  </entry>
-  <entry>
-    <title>Spring Security OAuth 2.0 Roadmap Update</title>
-    <link rel="alternate" href="https://spring.io/blog/2019/11/14/spring-security-oauth-2-0-roadmap-update" />
-    <category term="news" label="News and Events" />
-    <author>
-      <name>Josh Cummings</name>
-    </author>
-    <id>tag:spring.io,2019-10-14:3834</id>
-    <updated>2019-11-14T10:41:31Z</updated>
-    <content type="html">&lt;div class="admonitionblock note"&gt;
-&lt;table&gt;
-&lt;tr&gt;
-&lt;td class="icon"&gt;
-&lt;div class="title"&gt;Note&lt;/div&gt;
-&lt;/td&gt;
-&lt;td class="content"&gt;
-This post is a follow-up to &lt;a href="https://spring.io/blog/2018/01/30/next-generation-oauth-2-0-support-with-spring-security"&gt;Next Generation OAuth 2.0 Support with Spring Security&lt;/a&gt;
-&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/table&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="current-state"&gt;&lt;a class="anchor" href="#current-state"&gt;&lt;/a&gt;Current State&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;In the Spring Security 5.x release train, we’ve endeavored to replace and simplify the feature set found in the &lt;a href="https://spring.io/projects/spring-security-oauth"&gt;Spring Security OAuth&lt;/a&gt; 2.x legacy project. In the process, we’ve also added numerous new features, including support for OpenID Connect 1.0.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;We are pleased to announce that as of the 5.2 release, we are very close to &lt;a href="https://github.com/spring-projects/spring-security/wiki/OAuth-2.0-Features-Matrix"&gt;feature parity&lt;/a&gt; with the client and resource server legacy support. What remains is quite minimal, and we fully anticipate announcing feature parity as part of the 5.3 release.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;We would like to issue a special thank you to all those in the community who have brought Spring Security this far! We hope to see many more contributions from everyone down the road.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="no-authorization-server-support"&gt;&lt;a class="anchor" href="#no-authorization-server-support"&gt;&lt;/a&gt;No Authorization Server Support&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;In October 2012, &lt;a href="https://tools.ietf.org/html/rfc6749"&gt;RFC 6749&lt;/a&gt;, the OAuth 2.0 Authorization Framework, was published. Subsequently in May 2014, Spring Security OAuth released its 2.0.0 version with support for Authorization Server, Resource Server, and Client. This made a great deal of sense in the absence of OAuth 2.0 libraries and products.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;Spring Security’s Authorization Server support was never a good fit. An Authorization Server requires a library to build a product. Spring Security, being a framework, is not in the business of building libraries or products. For example, we don’t have a JWT library, but instead we make &lt;a href="https://connect2id.com/products/nimbus-oauth-openid-connect-sdk"&gt;Nimbus&lt;/a&gt; easy to use. And we don’t maintain our own SAML IdP, CAS or LDAP products.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;In 2019, there are plenty of both commercial and &lt;a href="https://www.keycloak.org/"&gt;open-source&lt;/a&gt; authorization servers available. Thus, the Spring Security team has decided to no longer provide support for authorization servers.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="support-lifetime-for-spring-security-oauth-2-x"&gt;&lt;a class="anchor" href="#support-lifetime-for-spring-security-oauth-2-x"&gt;&lt;/a&gt;Support Lifetime for Spring Security OAuth 2.x&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;At the start of 2018, we &lt;a href="https://spring.io/blog/2018/01/30/next-generation-oauth-2-0-support-with-spring-security"&gt;announced&lt;/a&gt; the Spring Security OAuth project is officially in maintenance mode. We’ve already discontinued support for 2.0.x, in line with Boot’s 1.x End-of-Life (EOL), as well as 2.1.x and 2.2.x. And our plan is to discontinue the remaining support in the near future.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;The currently supported branches are 2.3.x and 2.4.x. The 2.3.x line will reach EOL in March 2020. We will support the 2.4.x line at least one year after reaching feature parity.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;To that end, with the release of Spring Security 5.2, we are strongly encouraging users to &lt;a href="https://github.com/spring-projects/spring-security/wiki/OAuth-2.0-Migration-Guide"&gt;start migrating their legacy OAuth 2.0 client and resource server&lt;/a&gt; applications to the new support in Spring Security 5.2.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="up-next"&gt;&lt;a class="anchor" href="#up-next"&gt;&lt;/a&gt;Up Next&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;We hope that you will continue with us on this exciting journey of making OAuth 2.0 easier to use in your Java applications. Please take a moment to check out what we currently have planned for the 5.3 release. We hope you will continue to provide feedback and hopefully a contribution or two!&lt;/p&gt;
-&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;!-- rendered by Sagan Renderer Service --&gt;</content>

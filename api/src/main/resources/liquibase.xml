@@ -30,4 +30,14 @@
     		<column name="uuid" type="varchar(255)" />
     	</createTable>
     </changeSet>
+    <changeSet id="shr_external_patient-1.0.0" author="jysan">
+    	<createTable tableName="shr_external_patient">
+    		<column name="epid" type="int(11)" autoIncrement="true">
+    			<constraints primaryKey="true" nullable="false" />
+    		</column>
+    		<column name="patient_uuid" type="varchar(255)"/>
+    		<column name="is_send_to_central" type="varchar(255)"/>
+    		<column name="uuid" type="varchar(255)"/>
+    	</createTable>
+    </changeSet>
 </databaseChangeLog>
