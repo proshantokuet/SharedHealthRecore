@@ -1,0 +1,8 @@
+package org.openmrs.module.sharedhealthrecord.api.impl;
+
+import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.sharedhealthrecord.api.SHRActionErrorLogService;
+
+public class SHRActionErrorLogServiceImpl extends BaseOpenmrsService implements SHRActionErrorLogService {
+
+}

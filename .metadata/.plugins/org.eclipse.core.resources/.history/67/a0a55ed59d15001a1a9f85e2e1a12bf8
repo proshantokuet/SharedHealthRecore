@@ -1,0 +1,8 @@
+package org.openmrs.module.sharedhealthrecord.api;
+
+import javax.transaction.Transactional;
+
+@Transactional
+public interface SHRActionAuditInfoService {
+
+}

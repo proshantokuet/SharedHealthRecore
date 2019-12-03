@@ -1,0 +1,6 @@
+1575353795215	Rename type 'SRHActionAuditInfo'
+1575356008000	Delete element
+1575357128724	Rename type 'SRHActionErrorLog'
+1575357364916	Rename type 'SHRActionAuditInfoDao'
+1575357428889	Rename type 'HibernateSHRActionAuditInfoDao'
+1575361222612	Delete elements

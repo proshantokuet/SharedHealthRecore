@@ -32,6 +32,8 @@
 	<mappingFiles>
 				
 		SharedHealthRecord.hbm.xml
+		SRHActionAuditInfo.hbm.xml
+		SRHActionErrorLog.hbm.xml
 				
 	</mappingFiles>
 
