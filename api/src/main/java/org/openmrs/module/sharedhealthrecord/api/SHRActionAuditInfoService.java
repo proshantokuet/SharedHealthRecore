@@ -4,10 +4,21 @@ import java.util.List;
 
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.sharedhealthrecord.domain.EventRecordsDTO;
+import org.openmrs.module.sharedhealthrecord.domain.MoneyReceiptDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface SHRActionAuditInfoService extends OpenmrsService{
 
 	public List<EventRecordsDTO> getEventRecords(String type);
+	public List<MoneyReceiptDTO> getMoneyReceipt();
+	public List<MoneyReceiptDTO> getMoneyReceipt(String timestamp);
+	
+	public String getLastEntryForPatient();
+	public String getLastEntryForEncounter();
+	public String getLastEntryForMoneyReceipt();
+	
+	public void updateAuditPatient(String last_id);
+	public void updateAuditEncounter(String last_id);
+	public void updateAuditMoneyReceipt(String last_timestamp);
 }

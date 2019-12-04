@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.module.sharedhealthrecord.api.db.SHRActionAuditInfoDAO;
 import org.openmrs.module.sharedhealthrecord.domain.EventRecordsDTO;
+import org.openmrs.module.sharedhealthrecord.domain.MoneyReceiptDTO;
 
 public class HibernateSHRActionAuditInfoDAO implements SHRActionAuditInfoDAO{
 protected final Log log = LogFactory.getLog(this.getClass());
@@ -57,4 +58,85 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		}
 		
 	}
+
+	@Override
+	public List<MoneyReceiptDTO> getMoneyReceipt() {
+		// TODO Auto-generated method stub
+		String sql = ""
+				+ "SELECT mid as mid, patient_uuid as patient_uuid, "
+				+ " `timestamp` as `timestamp` "
+				+ " FROM openmrs.psi_money_receipt";
+		try{
+			List<MoneyReceiptDTO> receipts = sessionFactory.getCurrentSession()
+					.createSQLQuery(sql)
+					.addScalar("mid",StandardBasicTypes.INTEGER)
+					.addScalar("patient_uuid",StandardBasicTypes.STRING)
+					.addScalar("timestamp",StandardBasicTypes.STRING)
+					.list();
+			return receipts;
+		}catch(Exception e){
+			return null;
+		}
+		
+	}
+
+	@Override
+	public List<MoneyReceiptDTO> getMoneyReceipt(String timestamp) {
+		// TODO Auto-generated method stub
+		String sql = ""
+				+ "SELECT mid as mid, patient_uuid as patient_uuid, "
+				+ " `timestamp` as `timestamp` "
+				+ " FROM openmrs.psi_money_receipt"
+				+ " WHERE timestamp >= '"+timestamp+"' "
+				+ " LIMIT 500 ";
+		try{
+			List<MoneyReceiptDTO> receipts = sessionFactory.getCurrentSession()
+					.createSQLQuery(sql)
+					.addScalar("mid",StandardBasicTypes.INTEGER)
+					.addScalar("patient_uuid",StandardBasicTypes.STRING)
+					.addScalar("timestamp",StandardBasicTypes.STRING)
+					.list();
+			return receipts;
+		}catch(Exception e){
+			return null;
+		}
+	}
+
+	@Override
+	public String getLastEntryForPatient() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getLastEntryForEncounter() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getLastEntryForMoneyReceipt() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void updateAuditPatient(String last_id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateAuditEncounter(String last_id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateAuditMoneyReceipt(String last_timestamp) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 }

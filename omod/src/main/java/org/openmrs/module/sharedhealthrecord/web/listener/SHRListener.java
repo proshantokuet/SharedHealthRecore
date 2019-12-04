@@ -9,6 +9,7 @@ import org.openmrs.module.sharedhealthrecord.api.SHRActionAuditInfoService;
 import org.openmrs.module.sharedhealthrecord.api.SHRActionErrorLogService;
 import org.openmrs.module.sharedhealthrecord.api.SHRExternalPatientService;
 import org.openmrs.module.sharedhealthrecord.domain.EventRecordsDTO;
+import org.openmrs.module.sharedhealthrecord.domain.MoneyReceiptDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -23,7 +24,8 @@ import org.springframework.stereotype.Service;
 @EnableAsync
 @Controller
 public class SHRListener {
-
+	String localServer = "";
+	String globalServer="";
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
@@ -141,8 +143,25 @@ public class SHRListener {
 	}
 	public void sendMoneyReceipt(){
 		// Check shr_action_audit_info for last sent timestamp
+		String timestamp = Context.getService(SHRActionAuditInfoService.class)
+				.getLastEntryForMoneyReceipt();
+		
 		// iterate Money receipt
-		// try - catch
+		try{
+			List<MoneyReceiptDTO> receipts = Context.
+				getService(SHRActionAuditInfoService.class)
+				.getMoneyReceipt(timestamp);
+			for(MoneyReceiptDTO receipt: receipts){
+				//Local Money Receipt update
+				//JSON Money Receipt Update to Central Server
+				//IF success update timestamp
+				Context.getService(SHRActionAuditInfoService.class)
+				.updateAuditMoneyReceipt(timestamp);
+				
+			}
+		}catch(Exception e){
+			
+		}
 		// catch will enter the data into shr_action_error_log table
 		
 		
