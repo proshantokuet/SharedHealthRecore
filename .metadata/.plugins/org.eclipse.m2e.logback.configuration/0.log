@@ -994,3 +994,125 @@
 2019-12-03 19:31:58,136 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
 2019-12-03 19:31:58,137 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
 2019-12-03 19:31:58,137 [Worker-34] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
+2019-12-03 19:40:01,638 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-03 19:40:01,639 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 10 resources
+2019-12-03 19:40:01,700 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-03 19:40:01,700 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/api/src/test/resources
+2019-12-03 19:40:01,717 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-03 19:40:01,717 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2019-12-03 19:40:01,720 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources to web/module
+2019-12-03 19:40:01,721 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
+2019-12-03 19:40:01,744 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-03 19:40:01,744 [Worker-40] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
+2019-12-03 19:41:16,944 [Worker-46] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-03 19:41:16,944 [Worker-46] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2019-12-03 19:41:16,947 [Worker-46] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources to web/module
+2019-12-03 19:41:16,948 [Worker-46] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
+2019-12-03 19:41:16,950 [Worker-46] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-03 19:41:16,950 [Worker-46] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
+2019-12-03 19:48:34,538 [Worker-51] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-03 19:48:34,539 [Worker-51] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 10 resources
+2019-12-03 19:48:34,545 [Worker-51] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-03 19:48:34,545 [Worker-51] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/api/src/test/resources
+2019-12-03 19:49:21,607 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-03 19:49:21,607 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2019-12-03 19:49:21,609 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources to web/module
+2019-12-03 19:49:21,610 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
+2019-12-03 19:49:21,611 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-03 19:49:21,611 [Worker-50] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
+2019-12-03 19:50:44,485 [Worker-42] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-03 19:50:44,485 [Worker-42] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2019-12-03 19:50:44,487 [Worker-42] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-03 19:50:44,488 [Worker-42] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/api/src/test/resources
+2019-12-03 19:51:08,194 [Worker-51] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-03 19:51:08,194 [Worker-51] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2019-12-03 19:51:08,197 [Worker-51] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-03 19:51:08,197 [Worker-51] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/api/src/test/resources
+2019-12-03 20:01:31,065 [Worker-55] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-03 20:01:31,069 [Worker-55] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2019-12-03 20:01:31,072 [Worker-55] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources to web/module
+2019-12-03 20:01:31,072 [Worker-55] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
+2019-12-03 20:01:31,073 [Worker-55] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-03 20:01:31,074 [Worker-55] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
+2019-12-04 12:03:08,695 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:03:08,696 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2019-12-04 12:03:08,725 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources to web/module
+2019-12-04 12:03:08,726 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
+2019-12-04 12:03:08,727 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:03:08,727 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
+2019-12-04 12:03:49,657 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:03:49,657 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2019-12-04 12:03:49,665 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources to web/module
+2019-12-04 12:03:49,665 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
+2019-12-04 12:03:49,666 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:03:49,667 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
+2019-12-04 12:10:30,417 [Worker-61] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:10:30,417 [Worker-61] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2019-12-04 12:10:30,419 [Worker-61] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources to web/module
+2019-12-04 12:10:30,420 [Worker-61] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
+2019-12-04 12:10:30,422 [Worker-61] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:10:30,422 [Worker-61] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
+2019-12-04 12:11:15,047 [Worker-65] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:11:15,049 [Worker-65] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2019-12-04 12:11:15,051 [Worker-65] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources to web/module
+2019-12-04 12:11:15,065 [Worker-65] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
+2019-12-04 12:11:15,084 [Worker-65] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:11:15,085 [Worker-65] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
+2019-12-04 12:12:01,785 [Worker-62] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:12:01,786 [Worker-62] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2019-12-04 12:12:01,788 [Worker-62] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources to web/module
+2019-12-04 12:12:01,789 [Worker-62] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
+2019-12-04 12:12:01,790 [Worker-62] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:12:01,791 [Worker-62] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
+2019-12-04 12:14:24,166 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:14:24,166 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2019-12-04 12:14:24,168 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources to web/module
+2019-12-04 12:14:24,169 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
+2019-12-04 12:14:24,170 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:14:24,171 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
+2019-12-04 12:14:37,827 [Worker-65] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:14:37,827 [Worker-65] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2019-12-04 12:14:37,829 [Worker-65] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources to web/module
+2019-12-04 12:14:37,829 [Worker-65] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
+2019-12-04 12:14:37,830 [Worker-65] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:14:37,830 [Worker-65] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
+2019-12-04 12:14:58,765 [Worker-66] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:14:58,765 [Worker-66] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2019-12-04 12:14:58,768 [Worker-66] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources to web/module
+2019-12-04 12:14:58,771 [Worker-66] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
+2019-12-04 12:14:58,781 [Worker-66] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:14:58,781 [Worker-66] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
+2019-12-04 12:15:11,181 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:15:11,183 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2019-12-04 12:15:11,187 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources to web/module
+2019-12-04 12:15:11,190 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
+2019-12-04 12:15:11,191 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:15:11,191 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
+2019-12-04 12:15:12,394 [Worker-61] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:15:12,395 [Worker-61] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2019-12-04 12:15:12,397 [Worker-61] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources to web/module
+2019-12-04 12:15:12,397 [Worker-61] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
+2019-12-04 12:15:12,399 [Worker-61] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:15:12,399 [Worker-61] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
+2019-12-04 12:15:25,887 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:15:25,888 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2019-12-04 12:15:25,889 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources to web/module
+2019-12-04 12:15:25,890 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
+2019-12-04 12:15:25,891 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:15:25,891 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
+2019-12-04 12:15:26,944 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:15:26,944 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2019-12-04 12:15:26,947 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources to web/module
+2019-12-04 12:15:26,948 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
+2019-12-04 12:15:26,951 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:15:26,951 [Worker-59] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
+2019-12-04 12:25:15,448 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:25:15,448 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 10 resources
+2019-12-04 12:25:15,532 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:25:15,532 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/api/src/test/resources
+2019-12-04 12:25:15,542 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:25:15,543 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
+2019-12-04 12:25:15,545 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources to web/module
+2019-12-04 12:25:15,545 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource to web/module
+2019-12-04 12:25:15,547 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2019-12-04 12:25:15,547 [Worker-56] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /home/asha/workspace/AUHC/SHR/SRH_Update/SharedHealthRecore/omod/src/test/resources
