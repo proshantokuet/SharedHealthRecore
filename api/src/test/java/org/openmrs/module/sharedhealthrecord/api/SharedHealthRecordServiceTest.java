@@ -134,29 +134,32 @@ public class SharedHealthRecordServiceTest extends BaseModuleContextSensitiveTes
 		try {
 			String patientUrlCentralServer = "https://192.168.33.10/openmrs/ws/rest/v1/patient";
 			
-			String patientUrl = "https://192.168.33.10/openmrs/ws/rest/v1/patient/48e7bfc3-d1d6-45bd-ac68-b024189ad5c6?v=full";
-			String patientResponse = get(patientUrl, "", AuthType.BASIC, "superman:Admin123456");
+			String patientUrl = "https://192.168.19.145/openmrs/ws/rest/v1/patient/4d699f0f-65e9-46eb-a563-1e897d02a3d2?v=full";
+			String patientResponse = get(patientUrl, "", AuthType.BASIC, "admin:test");
 			//Read JSON file
 			JSONObject obj = (JSONObject) jsonParser.parse(patientResponse);
 			
 			String personUuid = (String) obj.get("uuid");
-			String existingPatient = get(patientUrlCentralServer + "/" + personUuid, "v=full", AuthType.BASIC,
-			    "superman:Admin123456");
-			JSONObject getPatient = (JSONObject) jsonParser.parse(existingPatient);
-			System.out.println("getPatient>>>>" + getPatient);
-			String uuid = "";
-			if (getPatient.containsKey("error")) {
-				System.out.println("Not found");
-			} else {
-				
-				uuid = "/" + personUuid;
-			}
-			System.out.println("uu..............." + uuid);
+//			String existingPatient = get(patientUrlCentralServer + "/" + personUuid, "v=full", AuthType.BASIC,
+//			    "superman:Admin123456");
+//			JSONObject getPatient = (JSONObject) jsonParser.parse(existingPatient);
+			System.out.println("patientResponse>>>>" + patientResponse);
+			String uuid = "4d699f0f-65e9-46eb-a563-1e897d02a3d2";
+//			if (patientResponse.containsKey("error")) {
+//				System.out.println("Not found");
+//			} else {
+//				
+//				uuid = "/" + personUuid;
+//			}
+			System.out.println("uuid..............." + uuid);
+			System.out.println("personUuid..............." + personUuid);
+			System.out.println("obj..............." + obj);
 			String data = getPatientObject(obj, personUuid);
 			System.out.println(data);
-			String patientPostUrl = "https://192.168.33.10/openmrs/ws/rest/v1/bahmnicore/patientprofile";
+			String patientPostUrl = "https://192.168.19.147/openmrs/ws/rest/v1/bahmnicore/patientprofile";
 			
-			post(patientPostUrl + uuid, "", AuthType.BASIC, "superman:Admin123456", data);
+			// String result = post(patientPostUrl, "", AuthType.BASIC, "admin:Sohel@1234", data);
+			// System.out.println(result);
 			
 		}
 		catch (Exception e) {
@@ -180,10 +183,12 @@ public class SharedHealthRecordServiceTest extends BaseModuleContextSensitiveTes
 			JSONArray _attributes = new JSONArray();
 			_attributes = (JSONArray) extractedPerson.get("attributes");
 			attributes = generateAttrubutes(_attributes);
+			System.out.println("Attributes Data :" + attributes.toString());
 			JSONObject patient = new JSONObject();
 			JSONObject personObject = new JSONObject();
 			personObject.put("attributes", attributes);
 			personObject.put("gender", extractedPerson.get("gender"));
+			personObject.put("uuid", personUuid);
 			personObject.put("birthdate", extractedPerson.get("birthdate"));
 			personObject.put("deathDate", extractedPerson.get("deathDate"));
 			personObject.put("causeOfDeath", extractedPerson.get("causeOfDeath"));
@@ -201,13 +206,12 @@ public class SharedHealthRecordServiceTest extends BaseModuleContextSensitiveTes
 			
 			JSONObject preferredAddress = new JSONObject();
 			preferredAddress = (JSONObject) extractedPerson.get("preferredAddress");
-			
+			if(preferredAddress != null) {
 			JSONObject _preferredAdress = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(
 			    preferredAddress.toString(), PersonAddress.class)));
-			
 			addresses.add(_preferredAdress);
 			personObject.put("addresses", addresses);
-			
+			}
 			JSONObject personInfor = new JSONObject();
 			personInfor.put("person", personObject);
 			
@@ -217,9 +221,9 @@ public class SharedHealthRecordServiceTest extends BaseModuleContextSensitiveTes
 			personInfor.put("identifiers", getIdentifiers(_identifiers));
 			patient.put("patient", personInfor);
 			
-			String url = "https://192.168.33.10/openmrs/ws/rest/v1/relationship";
+			String url = "https://192.168.19.145/openmrs/ws/rest/v1/relationship";
 			String relationshipResponse = get(url, "person=" + personUuid + "&v=full", AuthType.BASIC,
-			    "superman:Admin123456");
+			    "admin:test");
 			
 			JSONObject _relationshipAsObject = (JSONObject) jsonParser.parse(relationshipResponse);
 			JSONArray _relationshipArray = (JSONArray) _relationshipAsObject.get("results");
