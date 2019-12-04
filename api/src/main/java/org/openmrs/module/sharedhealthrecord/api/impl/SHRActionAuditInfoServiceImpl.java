@@ -32,7 +32,7 @@ protected final Log log = LogFactory.getLog(this.getClass());
 	@Override
 	public List<EventRecordsDTO> getEventRecords(String type) {
 		// TODO Auto-generated method stub
-		String sql;
-		return null;
+		
+		return dao.getEventRecords(type);
 	}
 }

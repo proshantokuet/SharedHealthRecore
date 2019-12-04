@@ -1,5 +1,10 @@
 package org.openmrs.module.sharedhealthrecord.api.db;
 
-public interface SHRExternalPatientDAO {
+import java.util.List;
 
+import org.openmrs.module.sharedhealthrecord.SHRExternalPatient;
+
+public interface SHRExternalPatientDAO {
+	//Find By patientUuid
+	public List<SHRExternalPatient> findByPatientUuid(String patientUuid,String type);
 }

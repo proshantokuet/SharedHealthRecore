@@ -9,6 +9,6 @@
        	  <property name="last_id" column="last_id" type="java.lang.String"/>
        	  <property name="last_timestamp" column="last_timestamp" type="java.lang.String"/>
        	  <property name="action_time" column="action_time" type="java.lang.String"/>
-       	  <property name="uuid" column="uuid" type="java.lang.String" not-null="true" /> 
+       	  <property name="uuid" column="uuid" type="java.lang.String" /> 
 	</class>
 </hibernate-mapping>
