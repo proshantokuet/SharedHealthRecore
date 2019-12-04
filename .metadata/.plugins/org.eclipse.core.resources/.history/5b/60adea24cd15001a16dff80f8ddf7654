@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="org.openmrs.module.sharedhealthrecord.SHRExternalPatient" table="shr_external_patient" lazy="false">
+		  <id column="eid" name="aid" type="int">
+            <generator class="native"/>
+       	  </id>
+       	  <property name="type" column="type" type="java.lang.String"/>
+       	  <property name="error_message" column="error_message" type="java.lang.String"/>
+       	  <property name="uuid" column="uuid" type="java.lang.String" not-null="true" /> 
+	</class>
+</hibernate-mapping>

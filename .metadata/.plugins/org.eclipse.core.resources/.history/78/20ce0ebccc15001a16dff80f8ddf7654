@@ -1,0 +1,24 @@
+package org.openmrs.module.sharedhealthrecord;
+
+import java.io.Serializable;
+
+import org.openmrs.BaseOpenmrsObject;
+
+public class SHRExternalPatient extends BaseOpenmrsObject implements Serializable  {
+	 private static final long serialVersionUID = 1L;
+	 private int epid;
+	 private String patient_uuid;
+	 private String is_send_to_central;
+	@Override
+	public Integer getId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setId(Integer id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="org.openmrs.module.sharedhealthrecord.SHRActionAuditInfo" table="shr_action_audit_info" lazy="false">
+		  <id column="aid" name="aid" type="int">
+            <generator class="native"/>
+        </id>
+	</class>
+</hibernate-mapping>
