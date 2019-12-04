@@ -7,6 +7,7 @@ import org.openmrs.BaseOpenmrsObject;
 public class SHRExternalPatient extends BaseOpenmrsObject implements Serializable  {
 	 private static final long serialVersionUID = 1L;
 	 private int epid;
+	 private String type;
 	 private String patient_uuid;
 	 private String is_send_to_central;
 	 
