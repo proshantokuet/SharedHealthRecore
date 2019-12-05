@@ -1,11 +1,13 @@
 package org.openmrs.module.sharedhealthrecord.web.controller.rest;
 
-import java.io.FileReader;
-
+import java.util.UUID;
+import org.openmrs.api.context.Context;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
+import org.openmrs.module.sharedhealthrecord.SHRExternalPatient;
+import org.openmrs.module.sharedhealthrecord.api.SHRExternalPatientService;
 import org.openmrs.module.sharedhealthrecord.domain.Encounter;
 import org.openmrs.module.sharedhealthrecord.domain.Observation;
 import org.openmrs.module.sharedhealthrecord.domain.ObservationWithGroupMemebrs;
@@ -47,6 +49,14 @@ public class SharedHealthRecordManageRestController {
 			String patientPostUrl = "https://192.168.19.147/openmrs/ws/rest/v1/bahmnicore/patientprofile";
 			
 			String returnedResult = HttpUtil.post(patientPostUrl, "", data);
+			
+			SHRExternalPatient externalPatient = new SHRExternalPatient();
+			externalPatient.setAction_type("patient");
+			externalPatient.setPatient_uuid(personUuid);
+			externalPatient.setIs_send_to_central("0");
+			externalPatient.setUuid(UUID.randomUUID().toString());
+			
+			Context.getService(SHRExternalPatientService.class).saveExternalPatient(externalPatient);
 			
 			return new ResponseEntity<>(returnedResult, HttpStatus.OK);
 			

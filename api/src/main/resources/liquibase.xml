@@ -35,7 +35,7 @@
     		<column name="epid" type="int(11)" autoIncrement="true">
     			<constraints primaryKey="true" nullable="false" />
     		</column>
-    		<column name="type" type="varchar(255)"/>
+    		<column name="action_type" type="varchar(255)"/>
     		<column name="patient_uuid" type="varchar(255)"/>
     		<column name="is_send_to_central" type="varchar(255)"/>
     		<column name="uuid" type="varchar(255)"/>

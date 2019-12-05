@@ -14,6 +14,11 @@ public class Encounter {
 	
 	private String visitType;
 	
+	private String visitTypeUuid;
+	
+	private String encounterTypeUuid;
+	
+	
 	private String encounterUuid;
 	
 	private List<Orders> orders;
@@ -62,6 +67,22 @@ public class Encounter {
 		this.visitType = visitType;
 	}
 	
+	public String getVisitTypeUuid() {
+		return visitTypeUuid;
+	}
+
+	public void setVisitTypeUuid(String visitTypeUuid) {
+		this.visitTypeUuid = visitTypeUuid;
+	}
+
+	public String getEncounterTypeUuid() {
+		return encounterTypeUuid;
+	}
+
+	public void setEncounterTypeUuid(String encounterTypeUuid) {
+		this.encounterTypeUuid = encounterTypeUuid;
+	}
+
 	public String getEncounterUuid() {
 		return encounterUuid;
 	}

@@ -3,6 +3,7 @@ package org.openmrs.module.sharedhealthrecord.api.db.hibernate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
+import org.openmrs.module.sharedhealthrecord.SHRExternalPatient;
 import org.openmrs.module.sharedhealthrecord.api.db.SHRExternalPatientDAO;
 
 public class HibernateSHRExternalPatientDAO  implements SHRExternalPatientDAO {
@@ -23,4 +24,11 @@ protected final Log log = LogFactory.getLog(this.getClass());
     public SessionFactory getSessionFactory() {
 	    return sessionFactory;
     }
+
+	@Override
+	public SHRExternalPatient saveExternalPatient(SHRExternalPatient externalPatient) {
+		// TODO Auto-generated method stub
+		sessionFactory.getCurrentSession().saveOrUpdate(externalPatient);
+		return externalPatient;
+	}
 }

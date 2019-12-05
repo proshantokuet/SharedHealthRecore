@@ -1,5 +1,7 @@
 package org.openmrs.module.sharedhealthrecord.api.db;
 
-public interface SHRExternalPatientDAO {
+import org.openmrs.module.sharedhealthrecord.SHRExternalPatient;
 
+public interface SHRExternalPatientDAO {
+	public SHRExternalPatient saveExternalPatient(SHRExternalPatient externalPatient);
 }
