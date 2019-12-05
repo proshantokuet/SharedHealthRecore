@@ -1,5 +1,7 @@
 package org.openmrs.module.sharedhealthrecord.api.impl;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.impl.BaseOpenmrsService;
@@ -30,6 +32,13 @@ protected final Log log = LogFactory.getLog(this.getClass());
 	@Override
 	public void insertErrorLog(SHRActionErrorLog log) {
 		// TODO Auto-generated method stub
+		dao.insertErrorLog(log);
 		
+	}
+
+	@Override
+	public List<SHRActionErrorLog> get_list_by_Action_type(String action_type) {
+		// TODO Auto-generated method stub
+		return dao.get_list_by_Action_type(action_type);
 	}
 }

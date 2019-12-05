@@ -86,5 +86,11 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		dao.updateAuditMoneyReceipt(last_timestamp);
 	}
 
+	@Override
+	public String getTimeStampForMoneyReceipt(String mid) {
+		// TODO Auto-generated method stub
+		return dao.getTimeStampForMoneyReceipt(mid);
+	}
+
 	
 }

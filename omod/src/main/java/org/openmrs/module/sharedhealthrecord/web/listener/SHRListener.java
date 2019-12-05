@@ -160,127 +160,9 @@ public class SHRListener {
 				.getMoneyReceipt(timestamp);
 			for(MoneyReceiptDTO receipt: receipts){
 					//Local Money Receipt update
-				try{
-					JSONObject jsonMoneyReceipt = new JSONObject();
-					String localGetUrl = localServer+"openmrs/ws/rest/v1/money-receipt"
-							+ "/get/"+receipt.getMid();
-					String moneyReceipt = HttpUtil.get(localGetUrl,"","sohel:Admin@123");
-					jsonMoneyReceipt = (JSONObject) jsonParser.parse(moneyReceipt);
-					JSONObject jsonPostMoneyReceipt = new JSONObject();
-					JSONObject jsonNestedPostMoneyReceipt = new JSONObject();
-					JSONArray jsonNestedPostServices = new JSONArray();
-					JSONArray jsonNestedGetServices = jsonMoneyReceipt.getJSONArray("services");
-					//Money Receipt Part
-					JSONObject jsonNestedGetMoneyReceipt = jsonMoneyReceipt.getJSONObject("moneyReceipt");
-					jsonNestedPostMoneyReceipt.put("clinicName", jsonNestedGetMoneyReceipt.
-							get("clinicName"));
-					jsonNestedPostMoneyReceipt.put("clinicCode",jsonNestedGetMoneyReceipt.get("clinicCode"));
-					jsonNestedPostMoneyReceipt.put("orgUnit",jsonNestedGetMoneyReceipt.get("orgUnit"));
-					jsonNestedPostMoneyReceipt.put("slipNo", jsonNestedGetMoneyReceipt.get("slipNo"));
-					jsonNestedPostMoneyReceipt.put("reference", jsonNestedGetMoneyReceipt.get("reference"));
-					jsonNestedPostMoneyReceipt.put("servicePoint",
-							jsonNestedGetMoneyReceipt.get("servicePoint"));
-					
-					jsonNestedPostMoneyReceipt.put("session",
-							jsonNestedGetMoneyReceipt.get("session"));
-					
-					jsonNestedPostMoneyReceipt.put("other",
-							jsonNestedGetMoneyReceipt.get("other"));
-					
-					jsonNestedPostMoneyReceipt.put("sateliteClinicId",
-							jsonNestedGetMoneyReceipt.get("sateliteClinicId"));
-					
-					jsonNestedPostMoneyReceipt.put("teamNo",
-							jsonNestedGetMoneyReceipt.get("teamNo"));
-					
-					 
-					//Data Collector Part
-					JSONObject jsonNestedDataCollector = new JSONObject();
-					jsonNestedDataCollector.put("id", "");
-					jsonNestedDataCollector.put("designation", 
-							jsonNestedGetMoneyReceipt.get("designation"));
-					jsonNestedDataCollector.put("userRole", "");
-					jsonNestedDataCollector.put("username",
-							jsonNestedGetMoneyReceipt.get("dataCollector"));
-					
-					jsonNestedPostMoneyReceipt.put("dataCollector", jsonNestedDataCollector);
-					
-					//Mid will be remain null
-					jsonNestedPostMoneyReceipt.put("mid",
-							"");
-					
-					jsonNestedPostMoneyReceipt.put("patientName", jsonNestedGetMoneyReceipt.get("patientName"));
-					jsonNestedPostMoneyReceipt.put("patientUuid", jsonNestedGetMoneyReceipt.get("patientUuid"));
-					jsonNestedPostMoneyReceipt.put("uic", jsonNestedGetMoneyReceipt.get("uic"));
-					jsonNestedPostMoneyReceipt.put("contact", jsonNestedGetMoneyReceipt.get("contact"));
-					jsonNestedPostMoneyReceipt.put("gender", jsonNestedGetMoneyReceipt.get("gender"));
-					jsonNestedPostMoneyReceipt.put("dob", jsonNestedGetMoneyReceipt.get("dob"));
-					jsonNestedPostMoneyReceipt.put("wealth", jsonNestedGetMoneyReceipt.get("wealth"));
-					jsonNestedPostMoneyReceipt.put("isComplete", 1);
-					jsonNestedPostMoneyReceipt.put("totalAmount",
-							jsonNestedGetMoneyReceipt.get("totalAmount").toString());
-					jsonNestedPostMoneyReceipt.put("totalDiscount", 
-							jsonNestedGetMoneyReceipt.get("totalDiscount").toString()
-							);
-					jsonNestedPostMoneyReceipt.put("patientRegisteredDate", 
-							jsonNestedGetMoneyReceipt.get("patientRegisteredDate"));
-					
-					
-					jsonPostMoneyReceipt.put("moneyReceipt", jsonNestedPostMoneyReceipt);
-					
-					//JSON services semi part
-					for(int i = 0; i < jsonNestedGetServices.length();i++){
-						JSONObject service = jsonNestedGetServices.getJSONObject(i);
-						JSONObject servicePost = new JSONObject();
-						servicePost.put("discount",service.get("discount"));
-						servicePost.put("quantity", service.get("quantity"));
-						
-						JSONObject code = new JSONObject();
-						code.put("code", service.get("code"));
-						servicePost.put("code", code);
-						
-						servicePost.put("unitCost",service.get("unitCost"));
-						JSONObject item = new JSONObject();
-						item.put("name",service.get("item"));
-						item.put("category", service.get("category"));
-						
-						servicePost.put("item", item);
-						
-						servicePost.put("category", service.get("category"));
-						servicePost.put("totalAmount", service.get("totalAmount").toString());
-						servicePost.put("netPayable", service.get("netPayable"));
-						
-						jsonNestedPostServices.put(servicePost.toString());
-					}
-					jsonPostMoneyReceipt.put("services", jsonNestedPostServices);
-					//JSON Money Receipt Update to Central Server
-					String centralPostUrl = centralServer+"openmrs/ws/rest/v1/add-or-update";
-					//IF success update timestamp
-					String postAction = HttpUtil.post(centralPostUrl, "", jsonPostMoneyReceipt.toString());
-					
-					if(postAction == HttpStatus.OK.toString()){
-						Context.getService(SHRActionAuditInfoService.class)
-						.updateAuditMoneyReceipt(timestamp);
-					}
-					else {
-						//ELSE failed action
-						SHRActionErrorLog log = new SHRActionErrorLog();
-						log.setAction_type("Money Receipt");
-						log.setId(receipt.getMid());
-						log.setError_message(postAction);
-						log.setUuid(UUID.randomUUID().toString());
-						Context.getService(SHRActionErrorLogService.class)
-							.insertErrorLog(log);
-					}
-				}catch(Exception e){
-					SHRActionErrorLog log = new SHRActionErrorLog();
-					log.setAction_type("Money Receipt");
-					log.setId(receipt.getMid());
-					log.setError_message(e.toString());
-					log.setUuid(UUID.randomUUID().toString());
-					Context.getService(SHRActionErrorLogService.class)
-						.insertErrorLog(log);
-				}
+				String mid = Integer.toString(receipt.getMid());
+				
+				MoneyReceiptFetchAndPost(mid,false);
 			}
 		}catch(Exception e){
 			
@@ -291,6 +173,144 @@ public class SHRListener {
 		
 	}
 	public void sendFailedMoneyReceipt(){
+		List<SHRActionErrorLog> failedReceipts = Context.getService(SHRActionErrorLogService.class)
+				.get_list_by_Action_type("Money Receipt");
 		
+		for(SHRActionErrorLog receipt: failedReceipts){
+			String mid = Integer.toString(receipt.getId());
+			MoneyReceiptFetchAndPost(mid,true);		
+		}
 	}
+	
+	private void MoneyReceiptFetchAndPost(String mid,Boolean failedReceipt){
+		JSONParser jsonParser = new JSONParser();
+		try{
+			JSONObject jsonMoneyReceipt = new JSONObject();
+			String localGetUrl = localServer+"openmrs/ws/rest/v1/money-receipt"
+					+ "/get/"+mid;
+			String moneyReceipt = HttpUtil.get(localGetUrl,"","admin:test");
+			jsonMoneyReceipt = (JSONObject) jsonParser.parse(moneyReceipt);
+			JSONObject jsonPostMoneyReceipt = new JSONObject();
+			JSONObject jsonNestedPostMoneyReceipt = new JSONObject();
+			JSONArray jsonNestedPostServices = new JSONArray();
+			JSONArray jsonNestedGetServices = jsonMoneyReceipt.getJSONArray("services");
+			//Money Receipt Part
+			JSONObject jsonNestedGetMoneyReceipt = jsonMoneyReceipt.getJSONObject("moneyReceipt");
+			jsonNestedPostMoneyReceipt.put("clinicName", jsonNestedGetMoneyReceipt.
+					get("clinicName"));
+			jsonNestedPostMoneyReceipt.put("clinicCode",jsonNestedGetMoneyReceipt.get("clinicCode"));
+			jsonNestedPostMoneyReceipt.put("orgUnit",jsonNestedGetMoneyReceipt.get("orgUnit"));
+			jsonNestedPostMoneyReceipt.put("slipNo", jsonNestedGetMoneyReceipt.get("slipNo"));
+			jsonNestedPostMoneyReceipt.put("reference", jsonNestedGetMoneyReceipt.get("reference"));
+			jsonNestedPostMoneyReceipt.put("servicePoint",
+					jsonNestedGetMoneyReceipt.get("servicePoint"));
+			
+			jsonNestedPostMoneyReceipt.put("session",
+					jsonNestedGetMoneyReceipt.get("session"));
+			
+			jsonNestedPostMoneyReceipt.put("other",
+					jsonNestedGetMoneyReceipt.get("other"));
+			
+			jsonNestedPostMoneyReceipt.put("sateliteClinicId",
+					jsonNestedGetMoneyReceipt.get("sateliteClinicId"));
+			
+			jsonNestedPostMoneyReceipt.put("teamNo",
+					jsonNestedGetMoneyReceipt.get("teamNo"));
+			
+			 
+			//Data Collector Part
+			JSONObject jsonNestedDataCollector = new JSONObject();
+			jsonNestedDataCollector.put("id", "");
+			jsonNestedDataCollector.put("designation", 
+					jsonNestedGetMoneyReceipt.get("designation"));
+			jsonNestedDataCollector.put("userRole", "");
+			jsonNestedDataCollector.put("username",
+					jsonNestedGetMoneyReceipt.get("dataCollector"));
+			
+			jsonNestedPostMoneyReceipt.put("dataCollector", jsonNestedDataCollector);
+			
+			//Mid will be remain null
+			jsonNestedPostMoneyReceipt.put("mid",
+					"");
+			
+			jsonNestedPostMoneyReceipt.put("patientName", jsonNestedGetMoneyReceipt.get("patientName"));
+			jsonNestedPostMoneyReceipt.put("patientUuid", jsonNestedGetMoneyReceipt.get("patientUuid"));
+			jsonNestedPostMoneyReceipt.put("uic", jsonNestedGetMoneyReceipt.get("uic"));
+			jsonNestedPostMoneyReceipt.put("contact", jsonNestedGetMoneyReceipt.get("contact"));
+			jsonNestedPostMoneyReceipt.put("gender", jsonNestedGetMoneyReceipt.get("gender"));
+			jsonNestedPostMoneyReceipt.put("dob", jsonNestedGetMoneyReceipt.get("dob"));
+			jsonNestedPostMoneyReceipt.put("wealth", jsonNestedGetMoneyReceipt.get("wealth"));
+			jsonNestedPostMoneyReceipt.put("isComplete", 1);
+			jsonNestedPostMoneyReceipt.put("totalAmount",
+					jsonNestedGetMoneyReceipt.get("totalAmount").toString());
+			jsonNestedPostMoneyReceipt.put("totalDiscount", 
+					jsonNestedGetMoneyReceipt.get("totalDiscount").toString()
+					);
+			jsonNestedPostMoneyReceipt.put("patientRegisteredDate", 
+					jsonNestedGetMoneyReceipt.get("patientRegisteredDate"));
+			
+			
+			jsonPostMoneyReceipt.put("moneyReceipt", jsonNestedPostMoneyReceipt);
+			
+			//JSON services semi part
+			for(int i = 0; i < jsonNestedGetServices.length();i++){
+				JSONObject service = jsonNestedGetServices.getJSONObject(i);
+				JSONObject servicePost = new JSONObject();
+				servicePost.put("discount",service.get("discount"));
+				servicePost.put("quantity", service.get("quantity"));
+				
+				JSONObject code = new JSONObject();
+				code.put("code", service.get("code"));
+				servicePost.put("code", code);
+				
+				servicePost.put("unitCost",service.get("unitCost"));
+				JSONObject item = new JSONObject();
+				item.put("name",service.get("item"));
+				item.put("category", service.get("category"));
+				
+				servicePost.put("item", item);
+				
+				servicePost.put("category", service.get("category"));
+				servicePost.put("totalAmount", service.get("totalAmount").toString());
+				servicePost.put("netPayable", service.get("netPayable"));
+				
+				jsonNestedPostServices.put(servicePost.toString());
+			}
+			jsonPostMoneyReceipt.put("services", jsonNestedPostServices);
+			//JSON Money Receipt Update to Central Server
+			String centralPostUrl = centralServer+"openmrs/ws/rest/v1/add-or-update";
+			//IF success update timestamp
+			String postAction = HttpUtil.post(centralPostUrl, "", jsonPostMoneyReceipt.toString());
+			
+			if(postAction != null && !"".equalsIgnoreCase(postAction)){
+				if(failedReceipt == false){
+				String timestamp=Context.getService(SHRActionAuditInfoService.class)
+						.getTimeStampForMoneyReceipt(mid);
+//				if(!"".equalsIgnoreCase(timestamp))
+					Context.getService(SHRActionAuditInfoService.class)
+				.updateAuditMoneyReceipt(timestamp);
+				}
+			}
+			else {
+				//ELSE failed action
+				SHRActionErrorLog log = new SHRActionErrorLog();
+				log.setAction_type("Money Receipt");
+				log.setId(Integer.parseInt(mid));
+				log.setError_message(postAction);
+				log.setUuid(UUID.randomUUID().toString());
+				Context.getService(SHRActionErrorLogService.class)
+					.insertErrorLog(log);
+			}
+		}catch(Exception e){
+			SHRActionErrorLog log = new SHRActionErrorLog();
+			log.setAction_type("Money Receipt");
+			log.setId(Integer.parseInt(mid));
+			log.setError_message(e.toString());
+			log.setUuid(UUID.randomUUID().toString());
+			Context.getService(SHRActionErrorLogService.class)
+				.insertErrorLog(log);
+		}
+	}
+	
+	
 }

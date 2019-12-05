@@ -18,4 +18,6 @@ public interface SHRActionAuditInfoDAO {
 	public void updateAuditEncounter(String last_id);
 	public void updateAuditMoneyReceipt(String last_timestamp);
 	
+	public String getTimeStampForMoneyReceipt(String mid);
+	
 }

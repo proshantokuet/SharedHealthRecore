@@ -10,7 +10,7 @@ import org.openmrs.module.sharedhealthrecord.api.db.SHRActionAuditInfoDAO;
 import org.openmrs.module.sharedhealthrecord.domain.EventRecordsDTO;
 import org.openmrs.module.sharedhealthrecord.domain.MoneyReceiptDTO;
 
-public class HibernateSHRActionAuditInfoDAO implements SHRActionAuditInfoDAO{
+public  class HibernateSHRActionAuditInfoDAO implements SHRActionAuditInfoDAO{
 protected final Log log = LogFactory.getLog(this.getClass());
 	
 	private SessionFactory sessionFactory;
@@ -136,6 +136,16 @@ protected final Log log = LogFactory.getLog(this.getClass());
 	public void updateAuditMoneyReceipt(String last_timestamp) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public String getTimeStampForMoneyReceipt(String mid) {
+		// TODO Auto-generated method stub
+		String sql = ""
+				+ "SELECT `timestamp` as `timestamp` "
+				+ "FROM openmrs.psi_money_receipt "
+				+ "WHERE mid = '"+mid+"' ";
+		return sessionFactory.getCurrentSession().createSQLQuery(sql).list().get(0).toString();
 	}
 
 	

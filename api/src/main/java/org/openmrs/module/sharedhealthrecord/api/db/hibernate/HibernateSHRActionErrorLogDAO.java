@@ -1,5 +1,7 @@
 package org.openmrs.module.sharedhealthrecord.api.db.hibernate;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
@@ -30,5 +32,11 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		// TODO Auto-generated method stub
 
 		sessionFactory.getCurrentSession().saveOrUpdate(log);
+	}
+
+	@Override
+	public List<SHRActionErrorLog> get_list_by_Action_type(String action_type) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
