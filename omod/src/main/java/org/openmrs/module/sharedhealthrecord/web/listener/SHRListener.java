@@ -123,22 +123,39 @@ public class SHRListener {
 		
 		
 	}
-	public void sendEncounter(){
+	public void sendEncounter() throws ParseException{
 		String last_entry = Context.getService(SHRActionAuditInfoService.class)
 				.getLastEntryForEncounter();
 		List<EventRecordsDTO> records = Context.getService(SHRActionAuditInfoService.class)
 				.getEventRecords("Encounter",last_entry);
+		
+		JSONParser jsonParser = new JSONParser();
 		///openmrs/ws/rest/v1/patient/d8b039a9-1dd3-46df-8571-cddeca6c092b?v=full
 		for(EventRecordsDTO rec: records){
-			String patientUUid = rec.getObject().split("/|\\?")[7];
+			String encounterUUid = rec.getObject().split("/|\\?")[7];
 			List<SHRExternalPatient> patientsToSend = Context.
 					getService(SHRExternalPatientService.class).
-						findByPatientUuid(patientUUid,"Encounter");
+						findByPatientUuid(encounterUUid,"Encounter");
 			if(patientsToSend.size() == 0){
+				
 				// send the patient to central server
-				// update shr_action_audit_info
-				// try - catch
-				// catch will enter the data into shr_action_error_log table
+
+				
+				// Get Patient Info from Local Server
+				try{
+					String encounterUrl = localServer+"/openmrs/ws/rest/v1/bahmnicore/bahmniencounter/"+
+						encounterUUid+"?includeAll=true";
+					String encounterResponse = HttpUtil.get(encounterUrl, "", "admin:test");
+					JSONObject getPatient = (JSONObject) jsonParser.parse(encounterResponse);
+					JSONObject postEncounter = new JSONObject();
+					
+					//Model Conversion Part
+					String postUrl = centralServer+"/openmrs/ws/rest/v1/bahmnicore/bahmniencounter";
+					String status = HttpUtil.post(postUrl, "", postEncounter.toString());
+				}catch(Exception e){
+					
+				}
+				
 			}
 			else {
 				if(patientsToSend.get(0).getIs_send_to_central().contains("1")){
