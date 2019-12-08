@@ -28,6 +28,8 @@ public class SHRExternalPatient extends BaseOpenmrsObject implements Serializabl
 		this.epid = epid;
 	}
 
+	
+
 	public String getPatient_uuid() {
 		return patient_uuid;
 	}

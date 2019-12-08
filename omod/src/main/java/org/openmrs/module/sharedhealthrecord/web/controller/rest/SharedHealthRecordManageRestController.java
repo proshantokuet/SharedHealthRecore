@@ -1,8 +1,17 @@
 package org.openmrs.module.sharedhealthrecord.web.controller.rest;
 
+import java.util.UUID;
+import org.openmrs.api.context.Context;
+import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
+import org.openmrs.module.sharedhealthrecord.SHRExternalPatient;
+import org.openmrs.module.sharedhealthrecord.api.SHRExternalPatientService;
+import org.openmrs.module.sharedhealthrecord.domain.Encounter;
+import org.openmrs.module.sharedhealthrecord.domain.Observation;
+import org.openmrs.module.sharedhealthrecord.domain.ObservationWithGroupMemebrs;
+import org.openmrs.module.sharedhealthrecord.domain.ObservationWithValues;
 import org.openmrs.module.sharedhealthrecord.domain.PersonAddress;
 import org.openmrs.module.sharedhealthrecord.domain.PreferredName;
 import org.openmrs.module.sharedhealthrecord.utils.HttpUtil;
@@ -39,9 +48,17 @@ public class SharedHealthRecordManageRestController {
 			String data = getPatientObject(getPatient, personUuid);
 			String patientPostUrl = "https://192.168.19.147/openmrs/ws/rest/v1/bahmnicore/patientprofile";
 			
-			String returnSet = HttpUtil.post(patientPostUrl + uuid, "", data);
+			String returnedResult = HttpUtil.post(patientPostUrl, "", data);
 			
-			return new ResponseEntity<>(returnSet.toString(), HttpStatus.OK);
+			SHRExternalPatient externalPatient = new SHRExternalPatient();
+			externalPatient.setAction_type("patient");
+			externalPatient.setPatient_uuid(personUuid);
+			externalPatient.setIs_send_to_central("0");
+			externalPatient.setUuid(UUID.randomUUID().toString());
+			
+			Context.getService(SHRExternalPatientService.class).saveExternalPatient(externalPatient);
+			
+			return new ResponseEntity<>(returnedResult, HttpStatus.OK);
 			
 		}
 		catch (Exception e) {
@@ -64,6 +81,7 @@ public class SharedHealthRecordManageRestController {
 			JSONObject personObject = new JSONObject();
 			personObject.put("attributes", attributes);
 			personObject.put("gender", extractedPerson.get("gender"));
+			personObject.put("uuid", personUuid);
 			personObject.put("birthdate", extractedPerson.get("birthdate"));
 			personObject.put("deathDate", extractedPerson.get("deathDate"));
 			personObject.put("causeOfDeath", extractedPerson.get("causeOfDeath"));
@@ -81,12 +99,13 @@ public class SharedHealthRecordManageRestController {
 			
 			JSONObject preferredAddress = new JSONObject();
 			preferredAddress = (JSONObject) extractedPerson.get("preferredAddress");
-			
+			if(preferredAddress != null) {
 			JSONObject _preferredAdress = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(
 			    preferredAddress.toString(), PersonAddress.class)));
 			
 			addresses.add(_preferredAdress);
 			personObject.put("addresses", addresses);
+			}
 			
 			JSONObject personInfor = new JSONObject();
 			personInfor.put("person", personObject);
@@ -111,6 +130,15 @@ public class SharedHealthRecordManageRestController {
 		catch (Exception e) {
 			return null;
 		}
+	}
+	
+	@RequestMapping(value = "/search/fromGlobalServer", method = RequestMethod.GET)
+	public ResponseEntity<String> searchPatientFromGlobalServer(@RequestParam(required = true) String patientInformation) throws Exception {
+		JSONParser jsonParser = new JSONParser();
+		String patientUrl = "https://192.168.19.145"+ patientInformation;
+		String patientSearchResponse = HttpUtil.get(patientUrl, "", "admin:test");
+		JSONObject getPatient = (JSONObject) jsonParser.parse(patientSearchResponse);
+		return new ResponseEntity<>(getPatient.toString(), HttpStatus.OK);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -194,5 +222,70 @@ public class SharedHealthRecordManageRestController {
 			attributes.add(attribute);
 		});
 		return attributes;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void encounter() {
+
+		JSONParser jsonParser = new JSONParser();
+
+		try {
+			String getEncounterUrl = "https://192.168.19.145/openmrs/ws/rest/v1/bahmnicore/bahmniencounter/2c1921f4-f54c-4ad4-b852-94d7563fb67d?includeAll=true";
+			String patientResponse = HttpUtil.get(getEncounterUrl, "","admin:test");
+			// Read JSON file
+			System.out.println("json parse starting...........");
+			JSONObject obj = (JSONObject) jsonParser.parse(patientResponse);
+			JSONArray obs = (JSONArray) obj.get("observations");
+
+			JSONArray obervations = getObservations(obs);
+
+			JSONObject encounter = (JSONObject) jsonParser
+					.parse(new Gson().toJson(new Gson().fromJson(
+							obj.toString(), Encounter.class)));
+			encounter.put("observations", obervations);
+			System.out.println(encounter);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static JSONArray getObservations(JSONArray _obs) {
+		JSONParser jsonParser = new JSONParser();
+		JSONArray observations = new JSONArray();
+		
+		_obs.forEach(_ob -> {
+			JSONObject ob = (JSONObject) _ob;
+			
+			String type = (String) ob.get("type");
+			JSONArray groupMembers = (JSONArray) ob.get("groupMembers");
+			System.out.println("Coded..........:" + groupMembers.size() + " type:" + type);
+			try {
+				if (!StringUtils.isBlank(type) && type.equalsIgnoreCase("Coded")) {
+					
+					JSONObject obs = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(ob.toString(),
+					    ObservationWithValues.class)));
+					observations.add(obs);
+				} else if (groupMembers.size() != 0) {
+					
+					JSONObject obs = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(ob.toString(),
+					    ObservationWithGroupMemebrs.class)));
+					observations.add(obs);
+				} else {
+					
+					JSONObject obs = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(ob.toString(),
+					    Observation.class)));
+					observations.add(obs);
+				}
+				
+			}
+			catch (Exception e) {
+				// TODO Auto-generated catch block
+				//System.out.println(ob);
+				e.printStackTrace();
+			}
+		});
+		return observations;
 	}
 }

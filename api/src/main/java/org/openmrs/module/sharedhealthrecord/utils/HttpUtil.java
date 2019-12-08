@@ -93,7 +93,7 @@ public class HttpUtil {
 	
 	public static String post(String url, String payload, String data) {
 		try {
-			HttpPost request = (HttpPost) makeConnection(url, "", RequestMethod.POST, AuthType.BASIC, "admin:Sohel@1234");
+			HttpPost request = (HttpPost) makeConnection(url, "", RequestMethod.POST, AuthType.BASIC, "admin:test");
 			request.setHeader(HTTP.CONTENT_TYPE, "application/json");
 			StringEntity entity = new StringEntity(data == null ? "" : data, "UTF-8");
 			//System.err.println(data);
