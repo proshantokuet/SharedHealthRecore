@@ -67,29 +67,36 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		return dao.getLastEntryForMoneyReceipt();
 	}
 
-	@Override
-	public void updateAuditPatient(String last_id) {
-		// TODO Auto-generated method stub
-		dao.updateAuditPatient(last_id);
-		
-	}
-
-	@Override
-	public void updateAuditEncounter(String last_id) {
-		// TODO Auto-generated method stub
-		dao.updateAuditEncounter(last_id);
-	}
-
-	@Override
-	public void updateAuditMoneyReceipt(String last_timestamp) {
-		// TODO Auto-generated method stub
-		dao.updateAuditMoneyReceipt(last_timestamp);
-	}
+	
 
 	@Override
 	public String getTimeStampForMoneyReceipt(String mid) {
 		// TODO Auto-generated method stub
 		return dao.getTimeStampForMoneyReceipt(mid);
+	}
+
+	@Override
+	public String updateAuditPatient(String last_id) {
+		// TODO Auto-generated method stub
+		return dao.updateAuditPatient(last_id);
+	}
+
+	@Override
+	public String updateAuditEncounter(String last_id) {
+		// TODO Auto-generated method stub
+		return dao.updateAuditEncounter(last_id);
+	}
+
+	@Override
+	public String updateAuditMoneyReceipt(String last_timestamp) {
+		// TODO Auto-generated method stub
+		return dao.updateAuditMoneyReceipt(last_timestamp);
+	}
+
+	@Override
+	public List<EventRecordsDTO> getEventRecords(String type, String last_entry) {
+		// TODO Auto-generated method stub
+		return dao.getEventRecords(type, last_entry);
 	}
 
 	

@@ -1,11 +1,13 @@
 package org.openmrs.module.sharedhealthrecord.web.listener;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sharedhealthrecord.SHRActionErrorLog;
 import org.openmrs.module.sharedhealthrecord.SHRExternalPatient;
@@ -15,6 +17,7 @@ import org.openmrs.module.sharedhealthrecord.api.SHRExternalPatientService;
 import org.openmrs.module.sharedhealthrecord.domain.EventRecordsDTO;
 import org.openmrs.module.sharedhealthrecord.domain.MoneyReceiptDTO;
 import org.openmrs.module.sharedhealthrecord.utils.HttpUtil;
+import org.openmrs.module.sharedhealthrecord.web.controller.rest.SharedHealthRecordManageRestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -30,8 +33,8 @@ import org.springframework.stereotype.Service;
 @EnableAsync
 @Controller
 public class SHRListener {
-	String localServer = "http://192.168.19.147/";
-	String centralServer="/";
+	String localServer = "http://192.168.19.145/";
+	String centralServer="http://192.168.19.147/";
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
@@ -79,29 +82,28 @@ public class SHRListener {
 		
 	}
 	
-	public void sendPatient(){
+	public void sendPatient() throws ParseException{
+		JSONParser jsonParser = new JSONParser();
+		String last_entry = Context.getService(SHRActionAuditInfoService.class)
+				.getLastEntryForPatient();
 		List<EventRecordsDTO> records = Context.getService(SHRActionAuditInfoService.class)
-				.getEventRecords("Patient");
+				.getEventRecords("Patient",last_entry);
 		///openmrs/ws/rest/v1/patient/d8b039a9-1dd3-46df-8571-cddeca6c092b?v=full
+		
 		for(EventRecordsDTO rec: records){
 			String patientUUid = rec.getObject().split("/|\\?")[6];
 			List<SHRExternalPatient> patientsToSend = Context.
 					getService(SHRExternalPatientService.class).
-						findByPatientUuid(patientUUid,"Patient");
-			if(patientsToSend.size() == 0){
-				// check shr_action_audit_info for last sent id
-				// send the patient to central server
-				// update shr_action_audit_info
-				// try - catch
-				// catch will enter the data into shr_action_error_log table
+						findByPatientUuid(patientUUid,"patient");
+			// If patient is not found in table it must be sent
+			if(patientsToSend.size() == 0){				
+				patientFetchAndPost(patientUUid,Integer.toString(rec.getId()));
+				
 			}
 			else {
+				//If patient is found in table with Is_Send_to_Central = 1, it must be sent
 				if(patientsToSend.get(0).getIs_send_to_central().contains("1")){
-					// check shr_action_audit_info for last sent id
-					// send the patient to central server
-					// update shr_action_audit_info
-					// try - catch
-					// catch will enter the data into shr_action_error_log table
+					patientFetchAndPost(patientUUid,Integer.toString(rec.getId()));
 				}
 				else {
 					// do nothing
@@ -110,20 +112,29 @@ public class SHRListener {
 			
 		}
 	}
-	public void sendFailedPatient(){
+	public void sendFailedPatient() throws ParseException{
+		List<SHRActionErrorLog> failedPatients = new ArrayList<SHRActionErrorLog>();
+		
+		for(SHRActionErrorLog failPat : failedPatients){
+			Context.getService(SHRActionErrorLogService.class).
+			delete_by_type_and_id("Patient", Integer.toString(failPat.getId()));
+			patientFetchAndPost(failPat.getUuid(),Integer.toString(failPat.getId()));						
+		}
+		
 		
 	}
 	public void sendEncounter(){
+		String last_entry = Context.getService(SHRActionAuditInfoService.class)
+				.getLastEntryForEncounter();
 		List<EventRecordsDTO> records = Context.getService(SHRActionAuditInfoService.class)
-				.getEventRecords("Encounter");
+				.getEventRecords("Encounter",last_entry);
 		///openmrs/ws/rest/v1/patient/d8b039a9-1dd3-46df-8571-cddeca6c092b?v=full
 		for(EventRecordsDTO rec: records){
-			String patientUUid = rec.getObject().split("/|\\?")[6];
+			String patientUUid = rec.getObject().split("/|\\?")[7];
 			List<SHRExternalPatient> patientsToSend = Context.
 					getService(SHRExternalPatientService.class).
 						findByPatientUuid(patientUUid,"Encounter");
 			if(patientsToSend.size() == 0){
-				// check shr_action_audit_info for last sent id
 				// send the patient to central server
 				// update shr_action_audit_info
 				// try - catch
@@ -178,7 +189,10 @@ public class SHRListener {
 		
 		for(SHRActionErrorLog receipt: failedReceipts){
 			String mid = Integer.toString(receipt.getId());
-			MoneyReceiptFetchAndPost(mid,true);		
+			Context.getService(SHRActionErrorLogService.class).
+			delete_by_type_and_id("Money Receipt", mid);
+			MoneyReceiptFetchAndPost(mid,true);
+			
 		}
 	}
 	
@@ -287,7 +301,7 @@ public class SHRListener {
 				String timestamp=Context.getService(SHRActionAuditInfoService.class)
 						.getTimeStampForMoneyReceipt(mid);
 //				if(!"".equalsIgnoreCase(timestamp))
-					Context.getService(SHRActionAuditInfoService.class)
+					String timestampUpdate = 	Context.getService(SHRActionAuditInfoService.class)
 				.updateAuditMoneyReceipt(timestamp);
 				}
 			}
@@ -310,6 +324,49 @@ public class SHRListener {
 			Context.getService(SHRActionErrorLogService.class)
 				.insertErrorLog(log);
 		}
+	}
+	private void patientFetchAndPost(String patientUUid,String id) throws ParseException{
+		
+			JSONParser jsonParser = new JSONParser();
+		
+			// Get Patient Info from Local Server
+			String patientUrl = localServer+"openmrs/ws/rest/v1/patient/"+
+					patientUUid+"?v=full";
+			String patientResponse = HttpUtil.get(patientUrl, "", "admin:test");
+			JSONObject getPatient = (JSONObject) jsonParser.parse(patientResponse);
+			try{
+				
+			
+				String personUuid = (String) getPatient.get("uuid");
+				
+				// Model Conversion for Post into Central Server
+				org.json.simple.JSONObject getPatient_ = (org.json.simple.JSONObject)
+						jsonParser.parse(getPatient.toString());
+				
+				String postData = SharedHealthRecordManageRestController.
+						getPatientObject(getPatient_, personUuid);
+				
+				//Post to Central Server
+				String patientPostUrl = centralServer+
+						"/openmrs/ws/rest/v1/bahmnicore/patientprofile";
+				
+				String returnedResult = HttpUtil.post(patientPostUrl, "", postData);
+				
+				// Save last entry in Audit Table
+				String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
+						.updateAuditPatient(id);
+				
+			}catch(Exception e){
+				// Error Log Generation on Exception
+				SHRActionErrorLog log = new SHRActionErrorLog();
+				log.setAction_type("Patient");
+				log.setId(Integer.parseInt(id));
+				log.setError_message(e.toString());
+				log.setUuid(patientUUid);
+				Context.getService(SHRActionErrorLogService.class)
+					.insertErrorLog(log);
+			}
+	
 	}
 	
 	

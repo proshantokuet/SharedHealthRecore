@@ -40,4 +40,22 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		String sql = "";
 		return null;
 	}
+	@Override
+	public String delete_by_type_and_id(String action_type,
+			String mid) {
+		// TODO Auto-generated method stub
+		String sql = ""
+				+ " DELETE FROM openmrs.shr_action_error_log "
+				+ " WHERE action_type = '"+action_type+"' "
+				+ " AND id='"+mid+"' ";
+		
+		try{
+			return sessionFactory.getCurrentSession().
+				createSQLQuery(sql).list().get(0).toString();
+		}catch(Exception e){
+			
+		}
+		return "";
+	}
+
 }

@@ -34,13 +34,18 @@ protected final Log log = LogFactory.getLog(this.getClass());
 	public SHRExternalPatient saveExternalPatient(
 			SHRExternalPatient externalPatient) {
 		// TODO Auto-generated method stub
-		return null;
+		sessionFactory.getCurrentSession().saveOrUpdate(externalPatient);
+		return externalPatient;
 	}
 
 	@Override
 	public List<SHRExternalPatient> findByPatientUuid(String patientUuid,
 			String type) {
 		// TODO Auto-generated method stub
-		return null;
+		List<SHRExternalPatient> ret = sessionFactory.getCurrentSession().
+				createQuery(" from SHRExternalPatient "
+				+ " where patient_uuid = '"+patientUuid+"'"
+				+ " and action_type = '"+type+"'").list();
+		return ret;
 	}
 }

@@ -9,7 +9,7 @@ public class SHRActionErrorLog extends BaseOpenmrsObject implements Serializable
     private int eid;
     private String action_type;
     private String error_message;
-    
+    private int id;
    
 	public String getAction_type() {
 		return action_type;
@@ -22,13 +22,13 @@ public class SHRActionErrorLog extends BaseOpenmrsObject implements Serializable
 	@Override
 	public Integer getId() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.id;
 	}
 
 	@Override
 	public void setId(Integer id) {
 		// TODO Auto-generated method stub
-		
+		this.setId(id);
 	}
 
 	public int getEid() {

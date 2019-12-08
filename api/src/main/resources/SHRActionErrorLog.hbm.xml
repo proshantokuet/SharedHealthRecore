@@ -8,5 +8,6 @@
        	  <property name="action_type" column="action_type" type="java.lang.String"/>
        	  <property name="error_message" column="error_message" type="java.lang.String"/>
        	  <property name="uuid" column="uuid" type="java.lang.String"/> 
+       	  <property name="id" column="id" type="java.lang.Integer"/>
 	</class>
 </hibernate-mapping>

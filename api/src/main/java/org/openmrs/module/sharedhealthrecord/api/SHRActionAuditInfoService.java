@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface SHRActionAuditInfoService extends OpenmrsService{
 
 	public List<EventRecordsDTO> getEventRecords(String type);
+	public List<EventRecordsDTO> getEventRecords(String type, String last_entry);
 	public List<MoneyReceiptDTO> getMoneyReceipt();
 	public List<MoneyReceiptDTO> getMoneyReceipt(String timestamp);
 	
@@ -18,9 +19,9 @@ public interface SHRActionAuditInfoService extends OpenmrsService{
 	public String getLastEntryForEncounter();
 	public String getLastEntryForMoneyReceipt();
 	
-	public void updateAuditPatient(String last_id);
-	public void updateAuditEncounter(String last_id);
-	public void updateAuditMoneyReceipt(String last_timestamp);
+	public String updateAuditPatient(String last_id);
+	public String updateAuditEncounter(String last_id);
+	public String updateAuditMoneyReceipt(String last_timestamp);
 	
 	public String getTimeStampForMoneyReceipt(String mid);
 }
