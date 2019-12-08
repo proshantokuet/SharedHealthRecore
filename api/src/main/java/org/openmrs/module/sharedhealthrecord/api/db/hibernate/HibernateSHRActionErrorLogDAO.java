@@ -37,6 +37,7 @@ protected final Log log = LogFactory.getLog(this.getClass());
 	@Override
 	public List<SHRActionErrorLog> get_list_by_Action_type(String action_type) {
 		// TODO Auto-generated method stub
+		String sql = "";
 		return null;
 	}
 }
