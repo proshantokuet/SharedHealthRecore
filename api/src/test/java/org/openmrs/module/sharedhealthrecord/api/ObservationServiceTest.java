@@ -24,6 +24,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Test;
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sharedhealthrecord.domain.Encounter;
 import org.openmrs.module.sharedhealthrecord.domain.Observation;
@@ -31,6 +32,7 @@ import org.openmrs.module.sharedhealthrecord.domain.ObservationWithGroupMemebrs;
 import org.openmrs.module.sharedhealthrecord.domain.ObservationWithValues;
 import org.openmrs.module.sharedhealthrecord.utils.HttpUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.test.web.servlet.result.PrintingResultHandler;
 
 import ca.uhn.hl7v2.model.v25.segment.IIM;
@@ -57,8 +59,9 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 		
 			try {
 	        
-			String patientVisitUrl = "https://192.168.19.145/openmrs/ws/rest/v1/visit?includeInactive=true&patient=0074de49-bd7e-427a-a192-e94195533cd6&v=custom:(encounters:(uuid))";
+			String patientVisitUrl = "https://192.168.19.145/openmrs/ws/rest/v1/visit?includeInactive=true&patient=30e0df77-2f58-4198-9862-1ea4e058fe29&v=custom:(encounters:(uuid))";
 			String patientVisitResponse = HttpUtil.get(patientVisitUrl, "", "admin:test");
+			
 			JSONObject patientVisitObject = (JSONObject) jsonParser.parse(patientVisitResponse);
 			JSONArray visitsArray = (JSONArray) patientVisitObject.get("results");
 		    visitsArray.forEach(_ob -> {
@@ -76,34 +79,35 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 
 					try {
 						obj = (JSONObject) jsonParser.parse(patientencounterResponse);
-						String visitUUIdString = (String)obj.get("visitUuid");
-						String visitDetailsByVIsitUuidURL = "https://192.168.19.145/openmrs/ws/rest/v1/visit/"+visitUUIdString+"?includeAll=true";
-						String visitDetailsByVIsitUuid = HttpUtil.get(visitDetailsByVIsitUuidURL, "", "admin:test");
-						JSONObject visitObject = (JSONObject) jsonParser.parse(visitDetailsByVIsitUuid);
-						JSONObject visitStartJsonObject = new JSONObject();
-						visitStartJsonObject.put("visitType", visitObject.get("visitType"));
-						visitStartJsonObject.put("patient", visitObject.get("patient"));
-						visitStartJsonObject.put("startDatetime", visitObject.get("startDatetime"));
-						visitStartJsonObject.put("stopDatetime", visitObject.get("stopDatetime"));
-						String visitSavingUrl = "https://192.168.19.147/openmrs/ws/rest/v1/visit";
-						String visitSavingResponse = HttpUtil.post(visitSavingUrl, "", visitStartJsonObject.toString());
-						 //String visitSavingResponse = HttpUtil.get(visitSavingUrl, "", "admin:test");
-						JSONObject visitJsonAfterSaving = (JSONObject) jsonParser.parse(visitSavingResponse);
-						System.out.println("visitJsonAfterSaving" + visitJsonAfterSaving);
-						String visitUuid = (String) visitJsonAfterSaving.get("uuid");
-						String visitTypeUuidString = (String)obj.get("visitTypeUuid");
-						String visitTypeValue = visitTypeMapping.get(visitTypeUuidString);
-						obj.put("visitType", visitTypeValue);
-						obj.remove("visitUuid");
-						obj.put("visitUuid", visitUuid);
-						JSONArray obs = (JSONArray) obj.get("observations");
-						JSONArray obervations = getObservations(obs);
-						JSONObject encounter = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(obj.toString(),Encounter.class)));
-						encounter.put("observations", obervations);
-						System.out.println("parsed Json :" + encounter.toJSONString());
+//						String visitUUIdString = (String)obj.get("visitUuid");
+//						String visitDetailsByVIsitUuidURL = "https://192.168.19.145/openmrs/ws/rest/v1/visit/"+visitUUIdString+"?includeAll=true";
+//						String visitDetailsByVIsitUuid = HttpUtil.get(visitDetailsByVIsitUuidURL, "", "admin:test");
+//						JSONObject visitObject = (JSONObject) jsonParser.parse(visitDetailsByVIsitUuid);
+//						JSONObject visitStartJsonObject = new JSONObject();
+//						visitStartJsonObject.put("visitType", visitObject.get("visitType"));
+//						visitStartJsonObject.put("patient", visitObject.get("patient"));
+//						visitStartJsonObject.put("startDatetime", visitObject.get("startDatetime"));
+//						visitStartJsonObject.put("stopDatetime", visitObject.get("stopDatetime"));
+//						String visitSavingUrl = "https://192.168.19.147/openmrs/ws/rest/v1/visit";
+//						String visitSavingResponse = HttpUtil.post(visitSavingUrl, "", visitStartJsonObject.toString());
+						
+						String visitSavingResponse = createVisit(obj);
+//						JSONObject visitJsonAfterSaving = (JSONObject) jsonParser.parse(visitSavingResponse);
+//						System.out.println("visitJsonAfterSaving" + visitJsonAfterSaving);
+//						String visitUuid = (String) visitJsonAfterSaving.get("uuid");
+//						String visitTypeUuidString = (String)obj.get("visitTypeUuid");
+//						String visitTypeValue = visitTypeMapping.get(visitTypeUuidString);
+//						obj.put("visitType", visitTypeValue);
+//						obj.remove("visitUuid");
+//						obj.put("visitUuid", visitUuid);
+//						JSONArray obs = (JSONArray) obj.get("observations");
+//						JSONArray obervations = getObservations(obs);
+//						JSONObject encounter = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(obj.toString(),Encounter.class)));
+//						encounter.put("observations", obervations);
+//						System.out.println("parsed Json :" + encounter.toJSONString());
 						String patientServiceUrl = "https://192.168.19.147/openmrs/ws/rest/v1/bahmnicore/bahmniencounter";
-						String postResponse = HttpUtil.post(patientServiceUrl, "", encounter.toJSONString());
-						System.out.println("After Post Request Response :" + postResponse.toString());
+						// String postResponse = HttpUtil.post(patientServiceUrl, "", encounter.toJSONString());
+						//System.out.println("After Post Request Response :" + postResponse.toString());
 						
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -155,6 +159,32 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 			}
 		});
 		return observations;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static String createVisit (JSONObject obj) {
+		
+		String visitSavingResponse = "";
+		JSONParser jsonParser = new JSONParser();
+		
+		try {
+			
+			String visitUUIdString = (String)obj.get("visitUuid");
+			String visitDetailsByVIsitUuidURL = "https://192.168.19.145/openmrs/ws/rest/v1/visit/"+visitUUIdString+"?includeAll=true";
+			String visitDetailsByVIsitUuid = HttpUtil.get(visitDetailsByVIsitUuidURL, "", "admin:test");
+			JSONObject visitObject = (JSONObject) jsonParser.parse(visitDetailsByVIsitUuid);
+			JSONObject visitStartJsonObject = new JSONObject();
+			visitStartJsonObject.put("visitType", visitObject.get("visitType"));
+			visitStartJsonObject.put("patient", visitObject.get("patient"));
+			visitStartJsonObject.put("startDatetime", visitObject.get("startDatetime"));
+			visitStartJsonObject.put("stopDatetime", visitObject.get("stopDatetime"));
+			String visitSavingUrl = "https://192.168.19.147/openmrs/ws/rest/v1/visit";
+			// visitSavingResponse = HttpUtil.post(visitSavingUrl, "", visitStartJsonObject.toString());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return visitSavingResponse;
 	}
 	
 	public static final Map<String, String> visitTypeMapping = new HashMap<String, String>();
