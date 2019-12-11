@@ -76,7 +76,7 @@ public class SHRListener {
 			try{
 				sendMoneyReceipt();
 			}catch(Exception e){
-	
+				e.printStackTrace();
 			}
 		}
 		
