@@ -239,7 +239,7 @@ public class SharedHealthRecordManageRestController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Boolean encounter(String patientUuidString, String loginLocationUuid) {
+	public  Boolean encounter(String patientUuidString, String loginLocationUuid) {
 
 		JSONParser jsonParser = new JSONParser();
 		Boolean postResponseOfService = true ;
