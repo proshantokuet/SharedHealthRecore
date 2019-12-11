@@ -19,5 +19,11 @@ public class SHRExternalPatientServiceImpl extends BaseOpenmrsService implements
 		// TODO Auto-generated method stub
 		return dao.saveExternalPatient(externalPatient);
 	}
+	@Override
+	public SHRExternalPatient findExternalPatientByPatientUUid(
+			String patientUuid) {
+		// TODO Auto-generated method stub
+		return dao.findExternalPatientByPatientUUid(patientUuid);
+	}
 	
 }

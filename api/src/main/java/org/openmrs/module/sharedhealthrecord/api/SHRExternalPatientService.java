@@ -7,4 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface SHRExternalPatientService extends OpenmrsService{
 	
 	public SHRExternalPatient saveExternalPatient(SHRExternalPatient externalPatient); 
+	
+	public SHRExternalPatient findExternalPatientByPatientUUid (String patientUuid);
 }

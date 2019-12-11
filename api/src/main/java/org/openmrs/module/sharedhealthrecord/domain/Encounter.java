@@ -27,6 +27,8 @@ public class Encounter {
 	
 	private List<DrugOrders> drugOrders;
 	
+	private List<BahmniDiagnoses> bahmniDiagnoses;
+	
 	public String getLocationUuid() {
 		return locationUuid;
 	}
@@ -113,6 +115,14 @@ public class Encounter {
 	
 	public void setDrugOrders(List<DrugOrders> drugOrders) {
 		this.drugOrders = drugOrders;
+	}
+
+	public List<BahmniDiagnoses> getBahmniDiagnoses() {
+		return bahmniDiagnoses;
+	}
+
+	public void setBahmniDiagnoses(List<BahmniDiagnoses> bahmniDiagnoses) {
+		this.bahmniDiagnoses = bahmniDiagnoses;
 	}
 	
 }
