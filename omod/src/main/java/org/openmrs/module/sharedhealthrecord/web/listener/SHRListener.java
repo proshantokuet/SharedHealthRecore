@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -34,7 +35,7 @@ import org.springframework.stereotype.Service;
 @Controller
 public class SHRListener {
 	String localServer = "http://192.168.19.145/";
-	String centralServer="http://192.168.19.147/";
+	String centralServer="https://192.168.19.147/";
 	
 	@SuppressWarnings("rawtypes")
 	public void sendData() throws Exception {
@@ -104,13 +105,35 @@ public class SHRListener {
 						findByPatientUuid(patientUUid,"patient");
 			// If patient is not found in table it must be sent
 			if(patientsToSend.size() == 0){				
-				patientFetchAndPost(patientUUid,Integer.toString(rec.getId()),false);
+				try {
+					patientFetchAndPost(patientUUid,Integer.toString(rec.getId()),false);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					SHRActionErrorLog log = new SHRActionErrorLog();
+					log.setAction_type("Patient");
+					log.setId(rec.getId());
+					log.setError_message(e.toString());
+					log.setUuid(patientUUid);
+					Context.getService(SHRActionErrorLogService.class)
+						.insertErrorLog(log);
+				}
 				
 			}
 			else {
 				//If patient is found in table with Is_Send_to_Central = 1, it must be sent
 				if(patientsToSend.get(0).getIs_send_to_central().contains("1")){
-					patientFetchAndPost(patientUUid,Integer.toString(rec.getId()),false);
+					try {
+						patientFetchAndPost(patientUUid,Integer.toString(rec.getId()),false);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						SHRActionErrorLog log = new SHRActionErrorLog();
+						log.setAction_type("Patient");
+						log.setId(rec.getId());
+						log.setError_message(e.toString());
+						log.setUuid(patientUUid);
+						Context.getService(SHRActionErrorLogService.class)
+							.insertErrorLog(log);
+					}
 				}
 				else {
 					// do nothing
@@ -125,7 +148,18 @@ public class SHRListener {
 		for(SHRActionErrorLog failPat : failedPatients){
 			Context.getService(SHRActionErrorLogService.class).
 			delete_by_type_and_id("Patient", Integer.toString(failPat.getId()));
-			patientFetchAndPost(failPat.getUuid(),Integer.toString(failPat.getId()),true);						
+			try {
+				patientFetchAndPost(failPat.getUuid(),Integer.toString(failPat.getId()),true);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				SHRActionErrorLog log = new SHRActionErrorLog();
+				log.setAction_type("Patient");
+				log.setId(failPat.getId());
+				log.setError_message(e.toString());
+				log.setUuid(failPat.getUuid());
+				Context.getService(SHRActionErrorLogService.class)
+					.insertErrorLog(log);
+			}						
 		}
 		
 		
@@ -348,7 +382,7 @@ public class SHRListener {
 				.insertErrorLog(log);
 		}
 	}
-	private void patientFetchAndPost(String patientUUid,String id,Boolean failedPatient) throws ParseException{
+	private void patientFetchAndPost(String patientUUid,String id,Boolean failedPatient) throws ParseException, JSONException{
 		
 			JSONParser jsonParser = new JSONParser();
 		
@@ -356,7 +390,7 @@ public class SHRListener {
 			String patientUrl = localServer+"openmrs/ws/rest/v1/patient/"+
 					patientUUid+"?v=full";
 			String patientResponse = HttpUtil.get(patientUrl, "", "admin:test");
-			JSONObject getPatient = (JSONObject) jsonParser.parse(patientResponse);
+			JSONObject getPatient = new JSONObject(patientResponse);
 			try{
 				
 			
@@ -371,7 +405,7 @@ public class SHRListener {
 				
 				//Post to Central Server
 				String patientPostUrl = centralServer+
-						"/openmrs/ws/rest/v1/bahmnicore/patientprofile";
+						"openmrs/ws/rest/v1/bahmnicore/patientprofile";
 				
 				String returnedResult = HttpUtil.post(patientPostUrl, "", postData);
 				
@@ -399,10 +433,9 @@ public class SHRListener {
 			
 			
 			Boolean status = false;
-			;
 			try{
 				String getUrl = localServer + "openmrs/ws/rest/v1/bahmnicore/bahmniencounter/"
-						+ encounterUuid + "??includeAll=true";
+						+ encounterUuid + "?includeAll=true";
 				String response = HttpUtil.get(getUrl, "", "admin:test");
 				JSONObject encounterResponse = (JSONObject) jsonParser.parse(response);
 				String postUrl = centralServer + "openmrs/ws/rest/v1/bahmnicore/bahmniencounter";
