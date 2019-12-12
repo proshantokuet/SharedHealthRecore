@@ -49,29 +49,29 @@ public class SHRListener {
 		
 		if(status){
 			try{
-				sendFailedPatient();
+//				sendFailedPatient();
 			}catch(Exception e){
-				
+//				e.printStackTrace();
 			}
 			try{
 				sendPatient();
 			}catch(Exception e){
-				
+				e.printStackTrace();
 			}
 			try{
-				sendFailedEncounter();
+//				sendFailedEncounter();
 			}catch(Exception e){
-				
+//				e.printStackTrace();
 			}
 			try{
-				sendEncounter();
+//				sendEncounter();
 			}catch(Exception e){
-	
+//				e.printStackTrace();
 			}
 			try{
-				sendFailedMoneyReceipt();
+//				sendFailedMoneyReceipt();
 			}catch(Exception e){
-	
+//				e.printStackTrace();
 			}
 			try{
 				sendMoneyReceipt();
@@ -86,9 +86,16 @@ public class SHRListener {
 		JSONParser jsonParser = new JSONParser();
 		String last_entry = Context.getService(SHRActionAuditInfoService.class)
 				.getLastEntryForPatient();
+		
+		
 		List<EventRecordsDTO> records = Context.getService(SHRActionAuditInfoService.class)
 				.getEventRecords("Patient",last_entry);
 		///openmrs/ws/rest/v1/patient/d8b039a9-1dd3-46df-8571-cddeca6c092b?v=full
+		
+		//Test code 
+//		String last_entry = "0";
+//		List<EventRecordsDTO> records = new ArrayList<EventRecordsDTO>();
+//		EventRecordsDTO rec_ = new EventRecordsDTO();
 		
 		for(EventRecordsDTO rec: records){
 			String patientUUid = rec.getObject().split("/|\\?")[6];
