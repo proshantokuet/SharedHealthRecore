@@ -12,9 +12,11 @@ import org.json.simple.parser.ParseException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sharedhealthrecord.SHRActionErrorLog;
 import org.openmrs.module.sharedhealthrecord.SHRExternalPatient;
+import org.openmrs.module.sharedhealthrecord.api.ObservationServiceTest;
 import org.openmrs.module.sharedhealthrecord.api.SHRActionAuditInfoService;
 import org.openmrs.module.sharedhealthrecord.api.SHRActionErrorLogService;
 import org.openmrs.module.sharedhealthrecord.api.SHRExternalPatientService;
+import org.openmrs.module.sharedhealthrecord.domain.Encounter;
 import org.openmrs.module.sharedhealthrecord.domain.EventRecordsDTO;
 import org.openmrs.module.sharedhealthrecord.domain.MoneyReceiptDTO;
 import org.openmrs.module.sharedhealthrecord.utils.HttpUtil;
@@ -26,6 +28,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
+
+import com.google.gson.Gson;
 
 
 @Service
@@ -50,9 +54,9 @@ public class SHRListener {
 		
 		if(status){
 			try{
-//				sendFailedPatient();
+				sendFailedPatient();
 			}catch(Exception e){
-//				e.printStackTrace();
+				e.printStackTrace();
 			}
 			try{
 				sendPatient();
@@ -60,14 +64,14 @@ public class SHRListener {
 				e.printStackTrace();
 			}
 			try{
-//				sendFailedEncounter();
+				sendFailedEncounter();
 			}catch(Exception e){
-//				e.printStackTrace();
+				e.printStackTrace();
 			}
 			try{
-//				sendEncounter();
+				sendEncounter();
 			}catch(Exception e){
-//				e.printStackTrace();
+				e.printStackTrace();
 			}
 			try{
 //				sendFailedMoneyReceipt();
@@ -260,7 +264,7 @@ public class SHRListener {
 			String localGetUrl = localServer+"openmrs/ws/rest/v1/money-receipt"
 					+ "/get/"+mid;
 			String moneyReceipt = HttpUtil.get(localGetUrl,"","admin:test");
-			jsonMoneyReceipt = (JSONObject) jsonParser.parse(moneyReceipt);
+			jsonMoneyReceipt = new JSONObject(moneyReceipt);
 			JSONObject jsonPostMoneyReceipt = new JSONObject();
 			JSONObject jsonNestedPostMoneyReceipt = new JSONObject();
 			JSONArray jsonNestedPostServices = new JSONArray();
@@ -345,11 +349,11 @@ public class SHRListener {
 				servicePost.put("totalAmount", service.get("totalAmount").toString());
 				servicePost.put("netPayable", service.get("netPayable"));
 				
-				jsonNestedPostServices.put(servicePost.toString());
+				jsonNestedPostServices.put(servicePost);
 			}
 			jsonPostMoneyReceipt.put("services", jsonNestedPostServices);
 			//JSON Money Receipt Update to Central Server
-			String centralPostUrl = centralServer+"openmrs/ws/rest/v1/add-or-update";
+			String centralPostUrl = centralServer+"openmrs/ws/rest/v1/money-receipt/add-or-update";
 			//IF success update timestamp
 			String postAction = HttpUtil.post(centralPostUrl, "", jsonPostMoneyReceipt.toString());
 			
@@ -437,11 +441,40 @@ public class SHRListener {
 				String getUrl = localServer + "openmrs/ws/rest/v1/bahmnicore/bahmniencounter/"
 						+ encounterUuid + "?includeAll=true";
 				String response = HttpUtil.get(getUrl, "", "admin:test");
-				JSONObject encounterResponse = (JSONObject) jsonParser.parse(response);
+				JSONObject encounterResponse = new JSONObject(response);
+				org.json.simple.JSONObject enc_response = (org.json.simple.JSONObject) jsonParser.
+						parse(encounterResponse.toString());
+				String visitUuid = SharedHealthRecordManageRestController.createVisit(enc_response,"c5854fd7-3f12-11e4-adec-0800271c1b75");
+				
+				org.json.simple.JSONObject visitObj = (org.json.simple.JSONObject)
+						jsonParser.parse(visitUuid);
+				enc_response.remove("visitUuid");
+				enc_response.put("visitUuid", visitObj.get("uuid"));
+				
+				String visitTypeValue =SharedHealthRecordManageRestController.visitTypeMapping.get(enc_response.get("visitTypeUuid").toString());
+				enc_response.remove("visitTypeUuid");
+				enc_response.put("visitType", visitTypeValue);
+				
+				org.json.simple.JSONArray obs = SharedHealthRecordManageRestController.getObservations((org.json.simple.JSONArray)enc_response.get("observations"));
+				enc_response.remove("observations");
+				enc_response.put("observations", obs);
+				
+				if(enc_response.containsKey("locationUuid"))
+				{
+					enc_response.remove("locationUuid");
+				}
+				if(enc_response.containsKey("location"))
+					enc_response.remove("location");
+				
+				enc_response.put("location", "c5854fd7-3f12-11e4-adec-0800271c1b75");
+				
 				String postUrl = centralServer + "openmrs/ws/rest/v1/bahmnicore/bahmniencounter";
 				
-				String postResponse = HttpUtil.post(postUrl, "", encounterResponse.toString());
-			
+				org.json.simple.JSONObject encounter = (org.json.simple.JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(enc_response.toString(),Encounter.class)));
+				
+				String postResponse = HttpUtil.post(postUrl, "", encounter.toJSONString());
+				
+				
 				if(failedEncounter == false){
 					Context.getService(SHRActionAuditInfoService.class)
 						.updateAuditEncounter(id);					
