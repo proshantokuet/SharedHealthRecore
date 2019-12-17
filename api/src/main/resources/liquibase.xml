@@ -20,6 +20,15 @@
 			<column name="uuid" type="varchar(255)" />
     	</createTable>
     </changeSet>
+    <changeSet id="shr_patient_origin-1.0.0" author="tanvir">
+    	<createTable tableName="shr_patient_origin">
+    		<column name="origin_id" type="int(11)" autoIncrement="true">
+    			<constraints primaryKey="true" nullable="false" />
+    		</column>
+    		<column name="patient_uuid" type="varchar(255)"/>
+    		<column name="patient_origin" type="varchar(1000)"/>
+    	</createTable>
+    </changeSet>
     <changeSet id="shr_action_error_log-1.0.0" author="jysan">
     	<createTable tableName="shr_action_error_log">
     		<column name="eid" type="int(11)" autoIncrement="true">

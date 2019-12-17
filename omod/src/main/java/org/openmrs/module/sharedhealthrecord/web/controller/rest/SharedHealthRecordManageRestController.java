@@ -6,11 +6,14 @@ import java.util.UUID;
 
 import org.openmrs.api.context.Context;
 import org.apache.commons.lang.StringUtils;
+import org.h2.util.New;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.openmrs.module.sharedhealthrecord.SHRExternalPatient;
+import org.openmrs.module.sharedhealthrecord.SHRPatientOrigin;
 import org.openmrs.module.sharedhealthrecord.api.SHRExternalPatientService;
+import org.openmrs.module.sharedhealthrecord.api.SHRPatientOriginService;
 import org.openmrs.module.sharedhealthrecord.domain.Encounter;
 import org.openmrs.module.sharedhealthrecord.domain.Observation;
 import org.openmrs.module.sharedhealthrecord.domain.ObservationWithGroupMemebrs;
@@ -168,6 +171,33 @@ public class SharedHealthRecordManageRestController {
 		String patientSearchResponse = HttpUtil.get(patientUrl, "", "admin:test");
 		JSONObject getPatient = (JSONObject) jsonParser.parse(patientSearchResponse);
 		return new ResponseEntity<>(getPatient.toString(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/insert/patientOriginDetails", method = RequestMethod.GET)
+	public ResponseEntity<String> savePatientOriginDetails(@RequestParam(required = true) String patient_uuid,@RequestParam(required = true) String patient_origin) throws Exception {
+		SHRPatientOrigin shrpatientorigin = new SHRPatientOrigin();
+		shrpatientorigin.setPatient_uuid(patient_uuid);
+		shrpatientorigin.setPatient_origin(patient_origin);
+		SHRPatientOrigin shrpatientoriginresponse = Context.getService(SHRPatientOriginService.class).savePatientOrigin(shrpatientorigin);
+		return new ResponseEntity<>(shrpatientoriginresponse.toString(), HttpStatus.OK);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/search/patientOriginByUuid", method = RequestMethod.GET)
+	public ResponseEntity<String> savePatientOriginDetails(@RequestParam(required = true) String patient_uuid) throws Exception {
+		SHRPatientOrigin shrpatientoriginresponse = Context.getService(SHRPatientOriginService.class).getpatientOriginByPatientuuid(patient_uuid);
+		if (shrpatientoriginresponse != null) {
+			JSONObject patientObject = new JSONObject();
+			patientObject.put("Origin_ID", shrpatientoriginresponse.getOriginId());
+			patientObject.put("Patient_uuid", shrpatientoriginresponse.getPatient_uuid());
+			patientObject.put("Patient_origin", shrpatientoriginresponse.getPatient_origin());
+			return new ResponseEntity<>(patientObject.toJSONString(), HttpStatus.OK);
+		}
+		else {
+			String message = "No patient Found";
+			return new ResponseEntity<>(new Gson().toJson(message), HttpStatus.OK);
+		}
+		
 	}
 	
 	@SuppressWarnings("unchecked")
