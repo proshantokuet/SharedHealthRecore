@@ -11,4 +11,6 @@ public interface SHRActionErrorLogDAO {
 	
 	public String delete_by_type_and_id(String action_type,
 			String mid);
+	
+	public void testInsert();
 }

@@ -1,10 +1,12 @@
 package org.openmrs.module.sharedhealthrecord.api.db.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.module.sharedhealthrecord.SHRActionErrorLog;
 import org.openmrs.module.sharedhealthrecord.api.db.SHRActionAuditInfoDAO;
@@ -155,9 +157,9 @@ protected final Log log = LogFactory.getLog(this.getClass());
 				+ "SET last_id = '"+last_id+"' "
 				+ "WHERE record_name = 'Patient'";
 		try{
-			return sessionFactory.getCurrentSession().createSQLQuery(sql).list().get(0).toString();
+			return Integer.toString(sessionFactory.getCurrentSession().createSQLQuery(sql).executeUpdate());
 		}catch(Exception e){
-			return "0";
+			return e.toString();
 		}
 		
 	}
@@ -170,7 +172,7 @@ protected final Log log = LogFactory.getLog(this.getClass());
 				+ "SET last_id = '"+last_id+"' "
 				+ "WHERE record_name = 'Encounter'";
 		try{
-			return sessionFactory.getCurrentSession().createSQLQuery(sql).list().get(0).toString();
+			return Integer.toString(sessionFactory.getCurrentSession().createSQLQuery(sql).executeUpdate());
 		}catch(Exception e){
 			return "0";
 		}
@@ -229,12 +231,18 @@ protected final Log log = LogFactory.getLog(this.getClass());
 					.addScalar("object",StandardBasicTypes.STRING)
 					.addScalar("category",StandardBasicTypes.STRING)
 					.addScalar("date_created",StandardBasicTypes.STRING)
-					.addScalar("tags",StandardBasicTypes.STRING).list();
+					.addScalar("tags",StandardBasicTypes.STRING).
+					setResultTransformer(new AliasToBeanResultTransformer(EventRecordsDTO.class)).
+					list();
 			
 			return records;
 		}
 		catch(Exception e){
-			return null;
+			List<EventRecordsDTO> records = new ArrayList<EventRecordsDTO>();
+			EventRecordsDTO rec = new EventRecordsDTO();
+			rec.setTitle(e.toString());
+			records.add(rec);
+			return records;
 		}
 	}
 

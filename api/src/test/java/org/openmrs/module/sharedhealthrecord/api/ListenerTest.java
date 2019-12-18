@@ -50,7 +50,7 @@ public class ListenerTest extends BaseModuleContextSensitiveTest {
 //		rec_.setId(48512);
 		rec_.setUuid("2aef663c-a947-44e2-96b3-b58f1ab6e53d");
 		rec_.setTitle("Patient");
-		rec_.setTimeStamp("2019-12-12 19:40:38");
+		rec_.setTimestamp("2019-12-12 19:40:38");
 		rec_.setUri("");
 		rec_.setObject("/openmrs/ws/rest/v1/patient/2eaf3f42-f320-4633-8af4-97268539f0f0?v=full");
 		rec_.setCategory("patient");
@@ -146,7 +146,7 @@ public class ListenerTest extends BaseModuleContextSensitiveTest {
 		EventRecordsDTO rec_ = new EventRecordsDTO();
 		rec_.setUuid("7bc54e4a-9b3d-43e7-a956-3c05e32ae00e");
 		rec_.setTitle("Encounter");
-		rec_.setTimeStamp("2019-12-12 19:44:22");
+		rec_.setTimestamp("2019-12-12 19:44:22");
 		rec_.setUri("");
 		rec_.setObject("/openmrs/ws/rest/v1/bahmnicore/bahmniencounter/7c791340-6951-4ac3-9d29-6d85be11aa0a?includeAll=true");
 		rec_.setCategory("Encounter");
@@ -248,12 +248,12 @@ public class ListenerTest extends BaseModuleContextSensitiveTest {
 			List<MoneyReceiptDTO> receipts = new ArrayList<MoneyReceiptDTO>();
 			MoneyReceiptDTO receipt_ = new MoneyReceiptDTO();
 			String mid_ = "42292";
-			MoneyReceiptFetchAndPost(mid_,true);
+//			MoneyReceiptFetchAndPost(mid_,true);
 			for(MoneyReceiptDTO receipt: receipts){
 					//Local Money Receipt update
 				String mid = Integer.toString(receipt.getMid());
 				
-				MoneyReceiptFetchAndPost(mid,false);
+//				MoneyReceiptFetchAndPost(mid,false);
 			}
 		}catch(Exception e){
 			
@@ -393,5 +393,6 @@ public class ListenerTest extends BaseModuleContextSensitiveTest {
 		}
 	}
 
+	
 
 }

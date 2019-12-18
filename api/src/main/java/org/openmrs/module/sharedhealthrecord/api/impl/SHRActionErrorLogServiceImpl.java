@@ -48,4 +48,11 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		// TODO Auto-generated method stub
 		return dao.delete_by_type_and_id(action_type, mid);
 	}
+
+	@Override
+	public void testInsert() {
+		// TODO Auto-generated method stub
+		dao.testInsert();
+		
+	}
 }

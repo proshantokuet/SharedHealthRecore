@@ -58,4 +58,18 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		return "";
 	}
 
+	@Override
+	public void testInsert() {
+		// TODO Auto-generated method stub
+		String sql = "INSERT into openmrs.shr_action_error_log values(1,'error','I am hitting',NULL,NULL)";
+		
+		try{
+			 sessionFactory.getCurrentSession().
+				createSQLQuery(sql).list().get(0).toString();
+		}catch(Exception e){
+			
+		}
+		
+	}
+
 }
