@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="org.openmrs.module.sharedhealthrecord.api.db.SHRActionAuditInfoDao"/>
+<fullyQualifiedTypeName name="javax.transaction.Transactional"/>
+<fullyQualifiedTypeName name="org.openmrs.module.sharedhealthrecord.api.SHRActionAuditInfoService"/>
+<fullyQualifiedTypeName name="org.openmrs.module.sharedhealthrecord.api.SHRActionErrorLogService"/>
+<fullyQualifiedTypeName name="org.openmrs.module.sharedhealthrecord.api.db.SHRActionErrorLogDAO"/>
+</qualifiedTypeNameHistroy>

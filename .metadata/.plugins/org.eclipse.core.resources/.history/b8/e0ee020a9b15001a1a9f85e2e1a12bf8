@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="org.openmrs.module.sharedhealthrecord.SRHActionErrorLog" table="shr_action_error_log" lazy="false">
+		  <id column="aid" name="aid" type="int">
+            <generator class="native"/>
+       	  </id>
+       	  <property name="record_name" column="record_name" type="java.lang.String"/>
+       	  <property name="last_id" column="last_id" type="java.lang.String"/>
+       	  <property name="last_timestamp" column="last_timestamp" type="java.lang.String"/>
+       	  <property name="action_time" column="action_time" type="java.lang.String"/>
+       	  <property name="uuid" column="uuid" type="java.lang.String" not-null="true" /> 
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,7 @@
+package org.openmrs.module.sharedhealthrecord;
+
+import java.io.Serializable;
+
+import org.openmrs.BaseOpenmrsObject;
+
+

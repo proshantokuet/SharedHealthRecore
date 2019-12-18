@@ -1,0 +1,8 @@
+package org.openmrs.module.sharedhealthrecord.api;
+
+import org.springframework.transaction.annotation.Transactional;
+@Transactional
+
+public interface SHRActionErrorLogService {
+
+}

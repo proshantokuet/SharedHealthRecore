@@ -1,0 +1,13 @@
+package org.openmrs.module.sharedhealthrecord.api;
+
+import java.util.List;
+
+import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.sharedhealthrecord.domain.EventRecordsDTO;
+import org.springframework.transaction.annotation.Transactional;
+
+@Transactional
+public interface SHRActionAuditInfoService extends OpenmrsService{
+
+	public List<EventRecordsDTO> getEventRecords(String type);
+}
