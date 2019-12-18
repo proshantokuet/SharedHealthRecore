@@ -48,4 +48,11 @@ protected final Log log = LogFactory.getLog(this.getClass());
 				+ " and action_type = '"+type+"'").list();
 		return ret;
 	}
+
+	@Override
+	public SHRExternalPatient findExternalPatientByPatientUUid(
+			String patientUuid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
