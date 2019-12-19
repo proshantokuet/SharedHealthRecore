@@ -195,7 +195,7 @@ public class SHRListener{
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				SHRActionErrorLog log = new SHRActionErrorLog();
-				log.setAction_type("Patient ");
+				log.setAction_type("Patient");
 //				log.setId(failPat.getId());
 				log.setError_message(e.toString());
 				log.setUuid(failPat.getUuid());
@@ -532,7 +532,7 @@ public class SHRListener{
 	
 	private void encounterFetchAndPost(String encounterUuid, String id,Boolean failedEncounter) throws ParseException{
 		JSONParser jsonParser = new JSONParser();
-			
+		Boolean visitFlagError = false;
 			
 			Boolean status = false;
 			try{
@@ -543,10 +543,9 @@ public class SHRListener{
 					response = HttpUtil.get(getUrl, "", "admin:test");
 				}catch(Exception e){
 					SHRActionErrorLog logN = new SHRActionErrorLog();
-					logN.setAction_type("Encounter Get Error");
-//					log.setId();
-					logN.setError_message(e.toString());
-					logN.setUuid(UUID.randomUUID().toString());
+					logN.setAction_type("Encounter");
+					logN.setError_message("Encounter Get Error");
+					logN.setUuid(encounterUuid);
 					Context.getService(SHRActionErrorLogService.class)
 						.insertErrorLog(logN);
 				}
@@ -558,108 +557,92 @@ public class SHRListener{
 						parse(encounterResponse.toString());
 				}catch(Exception e){
 					SHRActionErrorLog logN = new SHRActionErrorLog();
-					logN.setAction_type("Encounter JSon Parse Error");
-//					log.setId();
-					logN.setError_message(e.toString());
-					logN.setUuid(UUID.randomUUID().toString());
+					logN.setAction_type("Encounter");
+					logN.setError_message("Parse Error on Encounter Response");
+					logN.setUuid(encounterUuid);
 					Context.getService(SHRActionErrorLogService.class)
 						.insertErrorLog(logN);
 				}
-//				String visitUuid = SharedHealthRecordManageRestController.createVisit(enc_response,"c5854fd7-3f12-11e4-adec-0800271c1b75");
 				String visitUuid = enc_response.get("visitUuid").toString();
 				String visitFetchUrl = "";
 				String vis_global_response = "";
-				SHRActionErrorLog logN_ = new SHRActionErrorLog();
-				logN_.setAction_type("Encounter Visit Uuid");
-//				log.setId();
-				logN_.setError_message(visitUuid);
-				logN_.setUuid(UUID.randomUUID().toString());
-				Context.getService(SHRActionErrorLogService.class)
-					.insertErrorLog(logN_);
+				
+				//Central Server Visit Existence Check
 				try{
+				
 					visitFetchUrl = centralServer+
 							"openmrs/ws/rest/v1/save-Patient/search/patientVisitByUuid?visit_uuid="+visitUuid;
 					vis_global_response = HttpUtil.get(visitFetchUrl, "","admin:test");
+					errorLogUpdate("Encounter visit global fetch",vis_global_response,encounterUuid);
 				}catch(Exception e){
 					SHRActionErrorLog logN = new SHRActionErrorLog();
-					logN.setAction_type("Encounter Search Global Error");
-//					log.setId();
-					logN.setError_message(e.toString());
-					logN.setUuid(UUID.randomUUID().toString());
+					logN.setAction_type("Encounter");
+					logN.setError_message("Visit Fetch Error");
+					logN.setUuid(encounterUuid);
 					Context.getService(SHRActionErrorLogService.class)
 						.insertErrorLog(logN);
 				}
-				
-				SHRActionErrorLog logN = new SHRActionErrorLog();
-				logN.setAction_type("Encounter JSon Search Done");
-//				log.setId();
-				logN.setError_message("JSON Search Done");
-				logN.setUuid(UUID.randomUUID().toString());
-				Context.getService(SHRActionErrorLogService.class)
-					.insertErrorLog(logN);
+				//Central Server Visit Existence Check
+		
 				JSONParser jsonParser1 = new JSONParser();
 				org.json.simple.JSONObject visitFetchJsonObj = (org.json.simple.JSONObject) 
 						jsonParser1.parse(vis_global_response);
 				
 				String vis_response = "";
-					
+				//IF Not exist proceed to create Visit on Central Server	
 				if(visitFetchJsonObj.get("isFound").toString().contains("false")){
 					String vis_url =  localServer+
 							"openmrs/ws/rest/v1/save-Patient/search/patientVisitByUuid?visit_uuid="+visitUuid;
 					 vis_response = HttpUtil.get(vis_url, "", "admin:test");
-
+					 errorLogUpdate("Encounter visit Local Fetch",vis_response,encounterUuid);
 					org.json.simple.JSONObject visit_response = new org.json.simple.JSONObject();
 					try{
 					 visit_response = (org.json.simple.JSONObject) jsonParser.parse(vis_response);
+					 errorLogUpdate("Visit Json Parse",visit_response.toString(),encounterUuid);
 					}catch(Exception e){
 						SHRActionErrorLog _logN = new SHRActionErrorLog();
-						_logN.setAction_type("Encounter Visit Parse Error");
+						_logN.setAction_type("Search Patient Json Error");
 //						log.setId();
-						_logN.setError_message(e.toString());
-						_logN.setUuid(UUID.randomUUID().toString());
+						_logN.setError_message(visit_response.toString());
+						_logN.setUuid(encounterUuid);
 						Context.getService(SHRActionErrorLogService.class)
 							.insertErrorLog(_logN);
 					}
 					String createVisit_ = "";
-					Boolean visitFlagError = false;
+					
 					try{ 
-						createVisit_ = createVisit(visit_response);
+						createVisit_ = createVisit(visit_response,enc_response.get("patientUuid").toString());
+						JSONObject createVisitResponse = new JSONObject(createVisit_);
+						errorLogUpdate("Visit Create Post Response",createVisitResponse.toString(),encounterUuid);
+						visitFlagError = createVisitResponse.get("isSuccessfull").toString().contains("true")
+											? false: true;
+						
+						SHRActionErrorLog log_N = new SHRActionErrorLog();
+						log_N.setAction_type("Encounter Flag Visit Check");
+//						log.setId();
+						log_N.setError_message(visitFlagError.toString());
+						log_N.setUuid(encounterUuid);
+						Context.getService(SHRActionErrorLogService.class)
+							.insertErrorLog(log_N);
 					}catch(Exception e){
 						SHRActionErrorLog log_N = new SHRActionErrorLog();
 						log_N.setAction_type("Encounter Visit Create Error");
 //						log.setId();
-						log_N.setError_message(e.toString());
-						log_N.setUuid(UUID.randomUUID().toString());
+						log_N.setError_message(createVisit_);
+						log_N.setUuid(encounterUuid);
 						Context.getService(SHRActionErrorLogService.class)
 							.insertErrorLog(log_N);	
 					}
 					
-					SHRActionErrorLog _logN_ = new SHRActionErrorLog();
-					_logN_.setAction_type("Encounter Create Visit Complete");
-//					log.setId();
-					_logN_.setError_message("Error Create Visit Complete");
-					_logN_.setUuid(UUID.randomUUID().toString());
-					Context.getService(SHRActionErrorLogService.class)
-						.insertErrorLog(_logN_);
 				}
+				// If exist on central Server do nothing
 				else if(visitFetchJsonObj.get("isFound").toString().contains("true")){
-					// do nothing
-					SHRActionErrorLog _logN_ = new SHRActionErrorLog();
-					_logN_.setAction_type("Found");
-//					log.setId();
-					_logN_.setError_message("Else section");
-					_logN_.setUuid(UUID.randomUUID().toString());
-					Context.getService(SHRActionErrorLogService.class)
-						.insertErrorLog(_logN_);
+					// do nothing		
 				}
-
-				SHRActionErrorLog _logN_ = new SHRActionErrorLog();
-				_logN_.setAction_type("parse");
-//				log.setId();
-				_logN_.setError_message("visit parse");
-				_logN_.setUuid(UUID.randomUUID().toString());
-				Context.getService(SHRActionErrorLogService.class)
-					.insertErrorLog(_logN_);
+				// Create Visit Exception will stop the proceeding process
+				if(visitFlagError == true)
+					return;
+				// Encounter Post JSON Format Preparation
 				String visitTypeValue =SharedHealthRecordManageRestController.visitTypeMapping.get(enc_response.get("visitTypeUuid").toString());
 				enc_response.remove("visitTypeUuid");
 				enc_response.put("visitType", visitTypeValue);
@@ -676,18 +659,20 @@ public class SHRListener{
 					enc_response.remove("location");
 
 				enc_response.put("location", "8d6c993e-c2cc-11de-8d13-0010c6dffd0f");
-				
+				errorLogUpdate("Encounter Post Json Format",enc_response.toString(),encounterUuid);
+				//Encounter Post
 				String postUrl = centralServer + "openmrs/ws/rest/v1/bahmnicore/bahmniencounter";
 				
 				org.json.simple.JSONObject encounter = (org.json.simple.JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(enc_response.toString(),Encounter.class)));
 				try{
 				String postResponse = HttpUtil.post(postUrl, "", encounter.toJSONString());
+				errorLogUpdate("Encounter Post Response",postResponse,encounterUuid);
 				}catch(Exception e){
 					SHRActionErrorLog logN2 = new SHRActionErrorLog();
-					logN2.setAction_type("Encounter Post Encounter Error");
+					logN2.setAction_type("Encounter");
 //					logN.setId();
-					logN2.setError_message(e.toString());
-					logN2.setUuid(UUID.randomUUID().toString());
+					logN2.setError_message("Encounter Post Error");
+					logN2.setUuid(encounterUuid);
 					Context.getService(SHRActionErrorLogService.class)
 						.insertErrorLog(logN2);
 				}
@@ -696,18 +681,18 @@ public class SHRListener{
 					
 						String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
 						.updateAuditEncounter(id);
-						SHRActionErrorLog log1 = new SHRActionErrorLog();
-						log1.setAction_type("Audit Info Save Check Encounter");
-//						log1.setId(Integer.parseInt(id));
-						log1.setError_message(audit_info_save);
-						log1.setUuid(UUID.randomUUID().toString());
-						Context.getService(SHRActionErrorLogService.class)
-							.insertErrorLog(log1);
+//						SHRActionErrorLog log1 = new SHRActionErrorLog();
+//						log1.setAction_type("Audit Info Save Check Encounter");
+////						log1.setId(Integer.parseInt(id));
+//						log1.setError_message(audit_info_save);
+//						log1.setUuid(UUID.randomUUID().toString());
+//						Context.getService(SHRActionErrorLogService.class)
+//							.insertErrorLog(log1);
 					
 				}
 			}catch(Exception e){
 				SHRActionErrorLog log = new SHRActionErrorLog();
-				log.setAction_type("Encounter Error");
+				log.setAction_type("Encounter");
 //				log.setId(Integer.parseInt(id));
 				log.setError_message(e.toString());
 				log.setUuid(encounterUuid);
@@ -716,14 +701,14 @@ public class SHRListener{
 			}		
 		}
 	
-	private String createVisit(org.json.simple.JSONObject obj){
+	private String createVisit(org.json.simple.JSONObject obj,String patientUuid){
 		String visitSavingResponse = "";
 		obj.remove("isFound");
-		
+		obj.put("patient_uuid", patientUuid);
 		try {
 			
 			String visitSavingUrl = centralServer + "openmrs/ws/rest/v1/save-Patient/insert/patientVisitDetails";
-
+			
 			
 			visitSavingResponse = HttpUtil.post(visitSavingUrl, "", obj.toString());
 			
@@ -733,24 +718,18 @@ public class SHRListener{
 		return visitSavingResponse;
 	}
 
-//	@Override
-//	public void execute() {
-//		// TODO Auto-generated method stub
-//		try{
-//			SHRActionErrorLog log = new SHRActionErrorLog();
-//			log.setAction_type("error");
-//			log.setError_message("I am hitting");
-//			Context.getService(SHRActionErrorLogService.class)
-//			.insertErrorLog(log);
-//			sendAllData();
-//			super.startExecuting();
-//		}catch(Exception e){
-//			e.printStackTrace();
-//		}finally{
-//			this.stopExecuting();
-//		}
-//	}
-	
+	private void errorLogUpdate(String type,String message, String uuId){
+		Context.clearSession();
+		Context.openSession();
+		SHRActionErrorLog log = new SHRActionErrorLog();
+		log.setAction_type(type);
+		log.setError_message(message);
+		log.setUuid(uuId);
+		Context.getService(SHRActionErrorLogService.class)
+			.insertErrorLog(log);
+		Context.clearSession();
+		Context.openSession();
+	}
 	
 	
 	
