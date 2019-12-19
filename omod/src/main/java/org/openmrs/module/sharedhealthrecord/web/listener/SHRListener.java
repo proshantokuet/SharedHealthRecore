@@ -621,6 +621,7 @@ public class SHRListener{
 							.insertErrorLog(_logN);
 					}
 					String createVisit_ = "";
+					Boolean visitFlagError = false;
 					try{ 
 						createVisit_ = createVisit(visit_response);
 					}catch(Exception e){
