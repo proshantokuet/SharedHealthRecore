@@ -29,6 +29,8 @@ public class SHRPatientVisit extends BaseOpenmrsObject implements Serializable {
 	
 	private int person_id;
 	
+	private String stopDatetime;
+	
 	
 	public String getVisitType() {
 		return visitType;
@@ -108,6 +110,14 @@ public class SHRPatientVisit extends BaseOpenmrsObject implements Serializable {
 
 	public void setPerson_id(int person_id) {
 		this.person_id = person_id;
+	}
+
+	public String getStopDatetime() {
+		return stopDatetime;
+	}
+
+	public void setStopDatetime(String stopDatetime) {
+		this.stopDatetime = stopDatetime;
 	}
 
 	@Override
