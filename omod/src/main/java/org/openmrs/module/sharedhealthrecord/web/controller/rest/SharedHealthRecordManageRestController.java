@@ -42,7 +42,7 @@ public class SharedHealthRecordManageRestController {
 	
 	private final static String globalServerUrl = "https://192.168.19.145";
 	
-	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@RequestMapping(value = "/patient/toLocalServer", method = RequestMethod.GET)
 	public ResponseEntity<String> getPatientFromGlobalServer(@RequestParam(required = true) String patientUuid,@RequestParam(required = true) String loginLocationUuid) throws Exception {
