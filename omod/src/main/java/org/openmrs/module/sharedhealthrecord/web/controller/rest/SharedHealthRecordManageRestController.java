@@ -249,8 +249,8 @@ public class SharedHealthRecordManageRestController {
 				shrPatientVisit.setDate_stopped(dateFormatTwentyFourHour.parse(dateStopped));
 			}
 			else {
-				String dateStarted = (String) patientVisitJsonObject.get("date_started");
-				shrPatientVisit.setDate_stopped(dateFormatTwentyFourHour.parse(dateStarted));
+				//String dateStarted = (String) patientVisitJsonObject.get("date_started");
+				shrPatientVisit.setDate_stopped(null);
 			}
 		}
 		if (patientVisitJsonObject.containsKey("location_id")) {
@@ -260,7 +260,7 @@ public class SharedHealthRecordManageRestController {
 		JSONObject patientVisitObject = new JSONObject();
 		patientVisitObject.put("visit_type_id", Integer.toString(shrpatientoriginresponse.getVisit_type_id()));
 		patientVisitObject.put("date_started", shrpatientoriginresponse.getDate_started().toString());
-		patientVisitObject.put("date_stopped", shrpatientoriginresponse.getDate_stopped().toString());
+		patientVisitObject.put("date_stopped", shrpatientoriginresponse.getDate_stopped() == null ? "null" : shrpatientoriginresponse.getDate_stopped().toString());
 		patientVisitObject.put("location_id", Integer.toString(shrpatientoriginresponse.getLocation_id()));
 		patientVisitObject.put("patient_id", Integer.toString(shrpatientoriginresponse.getPatient_id()));
 		patientVisitObject.put("uuid", shrpatientoriginresponse.getUuid());

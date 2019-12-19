@@ -39,13 +39,20 @@ protected final Log log = LogFactory.getLog(this.getClass());
 	public SHRPatientVisit savePatientVisit(SHRPatientVisit shrPatientVisit) {
 		Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String startDate = formatter.format(shrPatientVisit.getDate_started());
-		String endDate = formatter.format(shrPatientVisit.getDate_stopped());
+		String endDate = "";
+		if (shrPatientVisit.getDate_stopped() != null) {
+			 String endDateFormat = formatter.format(shrPatientVisit.getDate_stopped());
+			 endDate = "'"+endDateFormat+"'";
+		}
+		else {
+			 endDate = null;
+		}
 		String date_created = formatter.format(new Date());
 		
 		String visitSavingSql = ""
 				+ "INSERT INTO visit "
 				+ "(patient_id, visit_type_id, date_started, date_stopped,location_id, uuid,creator,date_created) "
-				+ "VALUES("+ shrPatientVisit.getPatient_id() +","+shrPatientVisit.getVisit_type_id() +", '"+ startDate +"','"+ endDate +"', "+ shrPatientVisit.getLocation_id() +",'"+ shrPatientVisit.getUuid() +"',0,'"+date_created+"');";
+				+ "VALUES("+ shrPatientVisit.getPatient_id() +","+shrPatientVisit.getVisit_type_id() +", '"+ startDate +"',"+ endDate +", "+ shrPatientVisit.getLocation_id() +",'"+ shrPatientVisit.getUuid() +"',0,'"+date_created+"');";
 		SQLQuery visit = sessionFactory.getCurrentSession().createSQLQuery(visitSavingSql);
 		int Status = visit.executeUpdate();
 		if (Status == 1) {
