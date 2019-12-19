@@ -222,7 +222,7 @@ public class SharedHealthRecordManageRestController {
 			}
 			else {
 				JSONObject patientObject = new JSONObject();
-				patientObject.put("isFound", false);
+				patientObject.put("isSuccessfull", false);
 				patientObject.put("message", "No patient Found by this uuid");
 				return new ResponseEntity<>(patientObject.toJSONString(), HttpStatus.OK);
 			}
