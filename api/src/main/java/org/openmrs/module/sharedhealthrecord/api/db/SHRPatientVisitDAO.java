@@ -7,4 +7,6 @@ public interface SHRPatientVisitDAO {
 	public SHRPatientVisit savePatientVisit (SHRPatientVisit shrPatientVisit);
 	
 	public SHRPatientVisit getPatientVisitByVisitUuid (String visitUuid);
+	
+	public SHRPatientVisit getPatientIdByPatientUuid (String patientUuid);
 }

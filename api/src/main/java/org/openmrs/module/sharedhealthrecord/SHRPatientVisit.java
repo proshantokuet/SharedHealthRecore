@@ -27,6 +27,8 @@ public class SHRPatientVisit extends BaseOpenmrsObject implements Serializable {
 	
 	private boolean successfull;
 	
+	private int person_id;
+	
 	
 	public String getVisitType() {
 		return visitType;
@@ -98,6 +100,14 @@ public class SHRPatientVisit extends BaseOpenmrsObject implements Serializable {
 
 	public void setSuccessfull(boolean successfull) {
 		this.successfull = successfull;
+	}
+
+	public int getPerson_id() {
+		return person_id;
+	}
+
+	public void setPerson_id(int person_id) {
+		this.person_id = person_id;
 	}
 
 	@Override

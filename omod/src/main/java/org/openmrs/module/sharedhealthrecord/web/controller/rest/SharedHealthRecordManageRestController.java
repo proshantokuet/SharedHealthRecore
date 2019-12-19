@@ -213,9 +213,20 @@ public class SharedHealthRecordManageRestController {
 		JSONParser jsonParser = new JSONParser();
 		JSONObject patientVisitJsonObject = (JSONObject) jsonParser.parse(visitJson);
 		SHRPatientVisit shrPatientVisit = new SHRPatientVisit();
-		if (patientVisitJsonObject.containsKey("patient_id")) {
-			String patient_id = (String) patientVisitJsonObject.get("patient_id");
-			shrPatientVisit.setPatient_id(Integer.parseInt(patient_id));
+		if (patientVisitJsonObject.containsKey("patient_uuid")) {
+			String patient_id = (String) patientVisitJsonObject.get("patient_uuid");
+			SHRPatientVisit patientIdResponse = Context.getService(SHRPatientVisitService.class).getPatientIdByPatientUuid(patient_id);
+			if (patientIdResponse != null) {
+				
+				shrPatientVisit.setPatient_id(patientIdResponse.getPerson_id());
+			}
+			else {
+				JSONObject patientObject = new JSONObject();
+				patientObject.put("isFound", false);
+				patientObject.put("message", "No patient Found by this uuid");
+				return new ResponseEntity<>(patientObject.toJSONString(), HttpStatus.OK);
+			}
+			
 		}
 		if (patientVisitJsonObject.containsKey("visit_type_id")) {
 			String visit_type_id =  (String) patientVisitJsonObject.get("visit_type_id");
@@ -233,8 +244,7 @@ public class SharedHealthRecordManageRestController {
 			shrPatientVisit.setDate_stopped(dateFormatTwentyFourHour.parse(dateStopped));
 		}
 		if (patientVisitJsonObject.containsKey("location_id")) {
-			String location_id = (String) patientVisitJsonObject.get("location_id");
-			shrPatientVisit.setLocation_id(Integer.parseInt(location_id));
+			shrPatientVisit.setLocation_id(1);
 		}
 		SHRPatientVisit shrpatientoriginresponse = Context.getService(SHRPatientVisitService.class).savePatientVisit(shrPatientVisit);
 		JSONObject patientVisitObject = new JSONObject();
