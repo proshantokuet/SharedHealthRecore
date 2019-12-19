@@ -1,5 +1,7 @@
 package org.openmrs.module.sharedhealthrecord.api;
 
+import java.util.List;
+
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.sharedhealthrecord.SHRPatientOrigin;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,5 +10,5 @@ public interface SHRPatientOriginService  extends OpenmrsService {
 	
 	public SHRPatientOrigin savePatientOrigin (SHRPatientOrigin shrPatientOrigin);
 	
-	public SHRPatientOrigin getpatientOriginByPatientuuid (String patientUuid);
+	public List<SHRPatientOrigin> getpatientOriginByOriginName (String originName);
 }

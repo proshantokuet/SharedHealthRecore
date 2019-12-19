@@ -3,6 +3,7 @@ package org.openmrs.module.sharedhealthrecord.web.controller.rest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -189,21 +190,24 @@ public class SharedHealthRecordManageRestController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/search/patientOriginByUuid", method = RequestMethod.GET)
-	public ResponseEntity<String> savePatientOriginDetails(@RequestParam(required = true) String patient_uuid) throws Exception {
-		SHRPatientOrigin shrpatientoriginresponse = Context.getService(SHRPatientOriginService.class).getpatientOriginByPatientuuid(patient_uuid);
+	@RequestMapping(value = "/search/patientOriginByOriginName", method = RequestMethod.GET)
+	public ResponseEntity<String> getPatientOriginDetailsById(@RequestParam(required = true) String originName) throws Exception {
+		List<SHRPatientOrigin> shrpatientoriginresponse = Context.getService(SHRPatientOriginService.class).getpatientOriginByOriginName(originName);
+		JSONArray patienJsonArray = new JSONArray();
 		if (shrpatientoriginresponse != null) {
-			JSONObject patientObject = new JSONObject();
-			patientObject.put("Origin_ID", shrpatientoriginresponse.getOriginId());
-			patientObject.put("Patient_uuid", shrpatientoriginresponse.getPatient_uuid());
-			patientObject.put("Patient_origin", shrpatientoriginresponse.getPatient_origin());
-			return new ResponseEntity<>(patientObject.toJSONString(), HttpStatus.OK);
+			for (SHRPatientOrigin originobj : shrpatientoriginresponse) {
+				JSONObject patientObject = new JSONObject();
+				patientObject.put("patient_uuid", originobj.getPatient_uuid());
+				patientObject.put("action_type", originobj.getAction_type());
+				patientObject.put("patient_origin", originobj.getPatient_origin());
+				patienJsonArray.add(patientObject);
+			}
+			return new ResponseEntity<>(patienJsonArray.toJSONString(), HttpStatus.OK);
 		}
 		else {
-			String message = "No patient Found";
-			return new ResponseEntity<>(new Gson().toJson(message), HttpStatus.OK);
+			
+			return new ResponseEntity<>(patienJsonArray.toJSONString(), HttpStatus.OK);
 		}
-		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -236,12 +240,18 @@ public class SharedHealthRecordManageRestController {
 			shrPatientVisit.setUuid((String) patientVisitJsonObject.get("uuid"));
 		}
 		if (patientVisitJsonObject.containsKey("date_started")) {
-			String daeStarted = (String) patientVisitJsonObject.get("date_started");
-			shrPatientVisit.setDate_started(dateFormatTwentyFourHour.parse(daeStarted));
+			String dateStarted = (String) patientVisitJsonObject.get("date_started");
+			shrPatientVisit.setDate_started(dateFormatTwentyFourHour.parse(dateStarted));
 		}
 		if (patientVisitJsonObject.containsKey("date_stopped")) {
 			String dateStopped = (String) patientVisitJsonObject.get("date_stopped");
-			shrPatientVisit.setDate_stopped(dateFormatTwentyFourHour.parse(dateStopped));
+			if (dateStopped != null) {
+				shrPatientVisit.setDate_stopped(dateFormatTwentyFourHour.parse(dateStopped));
+			}
+			else {
+				String dateStarted = (String) patientVisitJsonObject.get("date_started");
+				shrPatientVisit.setDate_stopped(dateFormatTwentyFourHour.parse(dateStarted));
+			}
 		}
 		if (patientVisitJsonObject.containsKey("location_id")) {
 			shrPatientVisit.setLocation_id(1);
