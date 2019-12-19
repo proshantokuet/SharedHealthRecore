@@ -608,10 +608,7 @@ public class SHRListener{
 				String visitTypeValue =SharedHealthRecordManageRestController.visitTypeMapping.get(enc_response.get("visitTypeUuid").toString());
 				enc_response.remove("visitTypeUuid");
 				enc_response.put("visitType", visitTypeValue);
-				
-				
-				
-				
+								
 				if(enc_response.containsKey("locationUuid"))
 				{
 					enc_response.remove("locationUuid");
