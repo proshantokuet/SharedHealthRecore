@@ -1,12 +1,16 @@
 package org.openmrs.module.sharedhealthrecord.api.db.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.AliasToBeanResultTransformer;
+import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.module.sharedhealthrecord.SHRExternalPatient;
 import org.openmrs.module.sharedhealthrecord.SHRPatientOrigin;
+import org.openmrs.module.sharedhealthrecord.SHRPatientVisit;
 import org.openmrs.module.sharedhealthrecord.api.db.SHRPatientOriginDAO;
 
 public class HibernateSHRPatientOriginDAO implements SHRPatientOriginDAO {
@@ -38,15 +42,37 @@ protected final Log log = LogFactory.getLog(this.getClass());
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public SHRPatientOrigin getpatientOriginByPatientuuid(String patientUuid) {
-		List <SHRPatientOrigin> shrPatientOrigins = sessionFactory.getCurrentSession()
-				.createQuery("from SHRPatientOrigin where patient_uuid = :patientid")
-		        .setString("patientid", patientUuid).list();
-		if (shrPatientOrigins.size() != 0) {
-			return shrPatientOrigins.get(0); 
-		} else {
+	public List<SHRPatientOrigin> getpatientOriginByOriginName(String originName) {
+		String patientOriginSql = ""
+				+ "SELECT ep.patient_uuid, "
+				+ "       ep.action_type, "
+				+ "       po.patient_origin "
+				+ "FROM   shr_external_patient AS ep "
+				+ "       JOIN shr_patient_origin po "
+				+ "         ON ep.patient_uuid = po.patient_uuid "
+				+ "WHERE  ep.action_type = 'patient' "
+				+ "       AND po.patient_origin = '"+originName+"' AND ep.is_send_to_central = '1'";
+
+		List<SHRPatientOrigin> shrPatientOrigins = new ArrayList<SHRPatientOrigin>();
+		try {
+			shrPatientOrigins = sessionFactory
+					.getCurrentSession()
+					.createSQLQuery(patientOriginSql)
+					.addScalar("patient_uuid", StandardBasicTypes.STRING)
+					.addScalar("patient_origin", StandardBasicTypes.STRING)
+					.addScalar("action_type", StandardBasicTypes.STRING)
+					.setResultTransformer(
+							new AliasToBeanResultTransformer(
+									SHRPatientOrigin.class)).list();
+			if (shrPatientOrigins.size() > 0) {
+				return shrPatientOrigins;
+			} 
+			else {
+				return null;
+			}
+		} 
+		catch (Exception e) {
 			return null;
 		}
 	}
-
 }

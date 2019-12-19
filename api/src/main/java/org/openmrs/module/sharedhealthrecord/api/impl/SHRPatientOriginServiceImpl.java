@@ -1,5 +1,7 @@
 package org.openmrs.module.sharedhealthrecord.api.impl;
 
+import java.util.List;
+
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.sharedhealthrecord.SHRPatientOrigin;
 import org.openmrs.module.sharedhealthrecord.api.SHRPatientOriginService;
@@ -24,9 +26,12 @@ public class SHRPatientOriginServiceImpl extends BaseOpenmrsService implements S
 	}
 
 	@Override
-	public SHRPatientOrigin getpatientOriginByPatientuuid(String patientUuid) {
+	public List<SHRPatientOrigin> getpatientOriginByOriginName(
+			String originName) {
 		// TODO Auto-generated method stub
-		return dao.getpatientOriginByPatientuuid(patientUuid);
+		return dao.getpatientOriginByOriginName(originName);
 	}
+
+
 
 }
