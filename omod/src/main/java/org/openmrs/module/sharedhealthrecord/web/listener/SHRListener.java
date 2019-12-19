@@ -38,11 +38,11 @@ import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Service
-@EnableScheduling
-@Configuration
-@EnableAsync
-@Controller
+//@Service
+//@EnableScheduling
+//@Configuration
+//@EnableAsync
+//@Controller
 public class SHRListener{
 	
 	
@@ -75,7 +75,7 @@ public class SHRListener{
 //				e.printStackTrace();
 //			}
 			try{
-				sendPatient();
+//				sendPatient();
 
 			}catch(Exception e){
 				e.printStackTrace();
@@ -86,7 +86,7 @@ public class SHRListener{
 //				e.printStackTrace();
 //			}
 //			try{
-				sendEncounter();
+//				sendEncounter();
 //			}catch(Exception e){
 //				e.printStackTrace();
 //			}
