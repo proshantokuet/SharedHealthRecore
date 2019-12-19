@@ -276,7 +276,7 @@ public class SharedHealthRecordManageRestController {
 			JSONObject patientVisitObject = new JSONObject();
 			patientVisitObject.put("visit_type_id", Integer.toString(shrpatientVisitresponse.getVisit_type_id()));
 			patientVisitObject.put("date_started", shrpatientVisitresponse.getDate_started().toString());
-			patientVisitObject.put("date_stopped", shrpatientVisitresponse.getDate_stopped().toString());
+			patientVisitObject.put("date_stopped", shrpatientVisitresponse.getStopDatetime());
 			patientVisitObject.put("location_id", Integer.toString(shrpatientVisitresponse.getLocation_id()));
 			patientVisitObject.put("patient_id", Integer.toString(shrpatientVisitresponse.getPatient_id()));
 			patientVisitObject.put("uuid", shrpatientVisitresponse.getUuid());
