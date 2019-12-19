@@ -80,4 +80,25 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHRPatientVisit getPatientIdByPatientUuid(String patientUuid) {
+		// TODO Auto-generated method stub
+		String patientSql = "select person_id from person where uuid = '"+patientUuid+"'";
+		List<SHRPatientVisit> patientVisit = new ArrayList<SHRPatientVisit>();
+		try {
+			patientVisit = sessionFactory.getCurrentSession().createSQLQuery(patientSql).addScalar("person_id", StandardBasicTypes.INTEGER).setResultTransformer(new AliasToBeanResultTransformer(SHRPatientVisit.class)).
+					list();
+			
+			if (patientVisit.size() > 0) {
+				return patientVisit.get(0);
+			}
+			else {
+				return null;
+			}
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 }
