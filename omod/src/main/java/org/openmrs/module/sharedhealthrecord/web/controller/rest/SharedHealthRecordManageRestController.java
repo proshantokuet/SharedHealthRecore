@@ -180,13 +180,25 @@ public class SharedHealthRecordManageRestController {
 		return new ResponseEntity<>(getPatient.toString(), HttpStatus.OK);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/insert/patientOriginDetails", method = RequestMethod.GET)
 	public ResponseEntity<String> savePatientOriginDetails(@RequestParam(required = true) String patient_uuid,@RequestParam(required = true) String patient_origin) throws Exception {
 		SHRPatientOrigin shrpatientorigin = new SHRPatientOrigin();
 		shrpatientorigin.setPatient_uuid(patient_uuid);
 		shrpatientorigin.setPatient_origin(patient_origin);
 		SHRPatientOrigin shrpatientoriginresponse = Context.getService(SHRPatientOriginService.class).savePatientOrigin(shrpatientorigin);
-		return new ResponseEntity<>(shrpatientoriginresponse.toString(), HttpStatus.OK);
+		if(StringUtils.isBlank(shrpatientoriginresponse.getPatient_uuid())) {
+			JSONObject patientOriginObject = new JSONObject();
+			patientOriginObject.put("isSuccessfull", false);
+			patientOriginObject.put("message", "Error Occured");
+			return new ResponseEntity<>(patientOriginObject.toJSONString(), HttpStatus.OK);
+		}
+		else {
+			JSONObject patientOriginObject = new JSONObject();
+			patientOriginObject.put("isSuccessfull", true);
+			patientOriginObject.put("patient_uuid", shrpatientoriginresponse.getPatient_uuid());
+			return new ResponseEntity<>(patientOriginObject.toJSONString(), HttpStatus.OK);
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -512,5 +524,39 @@ public class SharedHealthRecordManageRestController {
 		externalPatient.setIs_send_to_central("0");
 		externalPatient.setUuid(UUID.randomUUID().toString());
 		Context.getService(SHRExternalPatientService.class).saveExternalPatient(externalPatient);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/insert/externalPatient", method = RequestMethod.GET)
+	public ResponseEntity<String> saveExternalPatientDetails(@RequestParam(required = true) String patient_uuid, @RequestParam(required = true) String action_status) throws Exception {
+		SHRExternalPatient shrExternalPatient = Context.getService(SHRExternalPatientService.class).findExternalPatientByPatientUUid(patient_uuid);
+		if(shrExternalPatient != null) {
+			shrExternalPatient.setIs_send_to_central(action_status);
+			Context.getService(SHRExternalPatientService.class).saveExternalPatient(shrExternalPatient);
+			JSONObject responseoJsonObject = new JSONObject();
+			responseoJsonObject.put("patientUuid", patient_uuid);
+			responseoJsonObject.put("isSuccessfull", true);
+			return new ResponseEntity<>(responseoJsonObject.toJSONString(), HttpStatus.OK);
+		}
+		else {
+			SHRExternalPatient externalPatient = new SHRExternalPatient();
+			externalPatient.setAction_type("patient");
+			externalPatient.setPatient_uuid(patient_uuid);
+			externalPatient.setIs_send_to_central(action_status);
+			externalPatient.setUuid(UUID.randomUUID().toString());
+			SHRExternalPatient responseExternalPatient =  Context.getService(SHRExternalPatientService.class).saveExternalPatient(externalPatient);
+			if(StringUtils.isBlank(responseExternalPatient.getPatient_uuid())) {
+				JSONObject externalPatientObject = new JSONObject();
+				externalPatientObject.put("isSuccessfull", false);
+				externalPatientObject.put("message", "Error Occured");
+				return new ResponseEntity<>(externalPatientObject.toJSONString(), HttpStatus.OK);
+			}
+			else {
+				JSONObject externalPatientObject = new JSONObject();
+				externalPatientObject.put("isSuccessfull", true);
+				externalPatientObject.put("patient_uuid", responseExternalPatient.getPatient_uuid());
+				return new ResponseEntity<>(externalPatientObject.toJSONString(), HttpStatus.OK);
+			}
+		}
 	}
 }
