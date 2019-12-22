@@ -38,18 +38,19 @@ import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//@Service
-//@EnableScheduling
-//@Configuration
-//@EnableAsync
-//@Controller
+@Service
+@EnableScheduling
+@Configuration
+@EnableAsync
+@Controller
 public class SHRListener{
 	
 	
 	String localServer = "https://192.168.19.145/";
-	
+//	String localServer = "https://192.168.19.147/";
 //	String localServer = "http://192.168.33.10/";
 	String centralServer="https://192.168.19.147/";
+//	String centralServer = "https://192.168.33.10/";
 	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@SuppressWarnings("rawtypes")
@@ -78,7 +79,7 @@ public class SHRListener{
 //				sendPatient();
 
 			}catch(Exception e){
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
 //			try{
 //				sendFailedEncounter();
@@ -336,7 +337,7 @@ public class SHRListener{
 			
 			jsonNestedPostMoneyReceipt.put("dataCollector", jsonNestedDataCollector);
 			
-			//Mid will be remain null
+			//Mid will remain null
 			jsonNestedPostMoneyReceipt.put("mid",
 					"");
 			
@@ -633,12 +634,9 @@ public class SHRListener{
 					errorLogUpdate("Encounter Post Error",e.toString(),encounterUuid);
 				}
 				
-				if(failedEncounter == false){
-					
-						String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
-						.updateAuditEncounter(id);
-
-					
+				if(failedEncounter == false){					
+					String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
+					.updateAuditEncounter(id);					
 				}
 			}catch(Exception e){
 				errorLogUpdate("Encouner Audit row update error",e.toString(),encounterUuid);
