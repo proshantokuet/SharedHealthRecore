@@ -76,21 +76,21 @@ public class SHRListener{
 //				e.printStackTrace();
 //			}
 			try{
-//				sendPatient();
+				sendPatient();
 
 			}catch(Exception e){
-//				e.printStackTrace();
+				e.printStackTrace();
 			}
 //			try{
 //				sendFailedEncounter();
 //			}catch(Exception e){
 //				e.printStackTrace();
 //			}
-//			try{
-//				sendEncounter();
-//			}catch(Exception e){
-//				e.printStackTrace();
-//			}
+			try{
+				sendEncounter();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 //			try{
 //				sendFailedMoneyReceipt();
 //			}catch(Exception e){
@@ -127,13 +127,7 @@ public class SHRListener{
 			
 			String patientUUid = rec.getObject().split("/|\\?")[6];
 			
-//			SHRActionErrorLog logE = new SHRActionErrorLog();
-//			logE.setAction_type("loop_Check");
-////			logE.setId(Integer.parseInt(id));
-//			logE.setError_message(patientUUid);
-//			logE.setUuid(UUID.randomUUID().toString());
-//			Context.getService(SHRActionErrorLogService.class)
-//				.insertErrorLog(logE);
+
 			List<SHRExternalPatient> patientsToSend = Context.
 					getService(SHRExternalPatientService.class).
 						findByPatientUuid(patientUUid,"patient");
@@ -444,6 +438,7 @@ public class SHRListener{
 //				logJ.setUuid(UUID.randomUUID().toString());
 //				Context.getService(SHRActionErrorLogService.class)
 //					.insertErrorLog(logJ);
+				
 			}catch(Exception e){
 				SHRActionErrorLog logN = new SHRActionErrorLog();
 				logN.setAction_type("Patient");
@@ -474,8 +469,8 @@ public class SHRListener{
 				String postData = SharedHealthRecordManageRestController.
 						getPatientObject(getPatient_, personUuid);
 				
-				//Post to Central Ser
-//				ver
+				//Post to Central Server
+
 				String patientPostUrl = centralServer+
 						"openmrs/ws/rest/v1/bahmnicore/patientprofile";
 				String returnedResult = "";
@@ -489,11 +484,20 @@ public class SHRListener{
 //				_log.setUuid(UUID.randomUUID().toString());
 //				Context.getService(SHRActionErrorLogService.class)
 //					.insertErrorLog(_log);
+				String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
+				insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+localServer;
+					String get = "";
+					try{
+						get = HttpUtil.get(insertUrl, "", "admin:test");
+					}catch(Exception e){
+						errorLogUpdate("Patient","Local Server Save Info Error",patientUUid);
+					}
+				
 				}catch(Exception e){
 					SHRActionErrorLog _log = new SHRActionErrorLog();
 					_log.setAction_type("Patient");
 //					_log.setId();
-					_log.setError_message(" Not OK Posted");
+					_log.setError_message("Not OK Posted");
 					_log.setUuid(UUID.randomUUID().toString());
 					Context.getService(SHRActionErrorLogService.class)
 						.insertErrorLog(_log);
@@ -530,6 +534,7 @@ public class SHRListener{
 		Boolean visitFlagError = false;
 			
 			Boolean status = false;
+			Boolean visitCreate = false;
 			try{
 				String getUrl = localServer + "openmrs/ws/rest/v1/bahmnicore/bahmniencounter/"
 						+ encounterUuid + "?includeAll=true";
@@ -592,6 +597,7 @@ public class SHRListener{
 						errorLogUpdate("Encounter Visit Create Post Response",createVisitResponse.toString(),encounterUuid);
 						visitFlagError = createVisitResponse.get("isSuccessfull").toString().contains("true")
 											? false: true;
+						visitCreate = true;
 						
 					}catch(Exception e){
 						errorLogUpdate("Encounter Visit Create Error",e.toString(),encounterUuid);	
@@ -604,6 +610,8 @@ public class SHRListener{
 				}
 				// Create Visit Exception will stop the proceeding process
 				if(visitFlagError == true)
+					return;
+				if(visitCreate == false)
 					return;
 				// Encounter Post JSON Format Preparation
 				String visitTypeValue =SharedHealthRecordManageRestController.visitTypeMapping.get(enc_response.get("visitTypeUuid").toString());
