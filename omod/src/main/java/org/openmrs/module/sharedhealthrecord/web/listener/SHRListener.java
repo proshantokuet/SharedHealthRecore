@@ -131,9 +131,10 @@ public class SHRListener{
 			List<SHRExternalPatient> patientsToSend = Context.
 					getService(SHRExternalPatientService.class).
 						findByPatientUuid(patientUUid,"patient");
-			// If patient is not found in table it must be sent
+			// If patient is not found in  shr_external_patient table it must be sent
 			if(patientsToSend.size() == 0){				
 				try {
+					
 					patientFetchAndPost(patientUUid,Integer.toString(rec.getId()),false);
 					errorLogUpdate("patient","Patient Update/Add Check",patientUUid);
 				} catch (JSONException e) {					
@@ -142,9 +143,17 @@ public class SHRListener{
 				
 			}
 			else {
-				//If patient is found in table with Is_Send_to_Central = 1, it must be sent
+//				If patient is found in shr_external_patient 
+//				table with Is_Send_to_Central = 1, it must be sent
 				if(patientsToSend.get(0).getIs_send_to_central().contains("1")){
 					try {
+						//insert/external_patient will be called to central server (uuid,"1")
+						String externalPatientUpdateUrl = centralServer + 
+								"rest/v1/save-Patient/insert/externalPatient?patient_uuid="
+									+patientUUid+"&action_status=1";
+						String get_result = HttpUtil.get(externalPatientUpdateUrl, "", "admin:test");
+						errorLogUpdate("patient Update to Central Server",get_result,patientUUid);
+						
 						patientFetchAndPost(patientUUid,Integer.toString(rec.getId()),false);
 						errorLogUpdate("patient","Patient Update/Add Check",patientUUid);
 					} catch (JSONException e) {
@@ -431,16 +440,30 @@ public class SHRListener{
 
 				String patientPostUrl = centralServer+
 						"openmrs/ws/rest/v1/bahmnicore/patientprofile";
+				//Finding Add or Update action 
 				//If add to central Server then previous patientPostUrl is Ok
 				//Else if update to central Server than previous patientPost += uuid
-				String returnedResult = "";
 				
+				//Add or Update ? which Action to Find 
+				//By checking exist in central server or not
+				
+				//Central Server patientUuid Check
+				String centralServerPatientCheckUrl = centralServer+"openmrs/ws/rest/v1/patient/"+
+						patientUUid+"?v=full";
+				String centralServerPatientCheckResponse = HttpUtil.get(centralServerPatientCheckUrl,
+								"", "admin:test");
+				JSONObject patienResponseCheck = new JSONObject(centralServerPatientCheckResponse);
+				
+				//If Error No String concat as Add Action - Else Update action API
+				patientPostUrl += patienResponseCheck.has("error") ? "" : "/"+patientUUid;
+				String returnedResult = "";
+								
 				try{ 
 					
 					returnedResult = HttpUtil.post(patientPostUrl, "", postData);
 					errorLogUpdate("patient post",returnedResult,patientUUid);
-				String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
-				insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+localServer;
+					String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
+						insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+localServer;
 					String get = "";
 					try{
 						get = HttpUtil.get(insertUrl, "", "admin:test");
