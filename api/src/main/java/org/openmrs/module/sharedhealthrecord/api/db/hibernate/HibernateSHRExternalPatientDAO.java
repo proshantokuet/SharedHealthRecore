@@ -53,6 +53,7 @@ protected final Log log = LogFactory.getLog(this.getClass());
 	public SHRExternalPatient findExternalPatientByPatientUUid(
 			String patientUuid) {
 		// TODO Auto-generated method stub
+		
 		return null;
 	}
 }

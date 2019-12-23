@@ -87,7 +87,7 @@ public class SHRListener{
 //				e.printStackTrace();
 //			}
 			try{
-//				sendEncounter();
+				sendEncounter();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -149,7 +149,8 @@ public class SHRListener{
 					try {
 						//insert/external_patient will be called to central server (uuid,"1")
 						String externalPatientUpdateUrl = centralServer + 
-								"rest/v1/save-Patient/insert/externalPatient?patient_uuid="
+								"openmrs/ws/rest/v1/save-Patient/insert/"
+								+ "externalPatient?patient_uuid="
 									+patientUUid+"&action_status=1";
 						String get_result = HttpUtil.get(externalPatientUpdateUrl, "", "admin:test");
 						errorLogUpdate("patient Update to Central Server",get_result,patientUUid);
@@ -157,7 +158,7 @@ public class SHRListener{
 						patientFetchAndPost(patientUUid,Integer.toString(rec.getId()),false);
 						errorLogUpdate("patient","Patient Update/Add Check",patientUUid);
 					} catch (JSONException e) {
-						errorLogUpdate("patient",e.toString(),patientUUid);
+						errorLogUpdate("patient external Send Error",e.toString(),patientUUid);
 					}
 				}
 				else {
@@ -570,6 +571,7 @@ public class SHRListener{
 				// Create Visit Exception will stop the proceeding process
 				if(visitFlagError == true)
 					return;
+				
 				if(visitCreate == false)
 					return;
 				// Encounter Post JSON Format Preparation
