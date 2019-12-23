@@ -44,7 +44,7 @@ protected final Log log = LogFactory.getLog(this.getClass());
 	@Override
 	public List<SHRPatientOrigin> getpatientOriginByOriginName(String originName) {
 		String patientOriginSql = ""
-				+ "SELECT ep.patient_uuid, "
+				+ "SELECT DISTINCT ep.patient_uuid, "
 				+ "       ep.action_type, "
 				+ "       po.patient_origin "
 				+ "FROM   shr_external_patient AS ep "
