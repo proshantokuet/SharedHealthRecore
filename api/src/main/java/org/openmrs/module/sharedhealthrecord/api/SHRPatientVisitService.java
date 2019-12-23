@@ -8,4 +8,6 @@ public interface SHRPatientVisitService extends OpenmrsService {
 	public SHRPatientVisit savePatientVisit (SHRPatientVisit shrPatientVisit);
 	
 	public SHRPatientVisit getPatientVisitByVisitUuid (String visitUuid);
+	
+	public SHRPatientVisit getPatientIdByPatientUuid (String patientUuid);
 }

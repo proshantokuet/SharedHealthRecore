@@ -28,5 +28,11 @@ public class SHRPatientVisitServiceImpl extends BaseOpenmrsService implements SH
 		// TODO Auto-generated method stub
 		return dao.getPatientVisitByVisitUuid(visitUuid);
 	}
+
+	@Override
+	public SHRPatientVisit getPatientIdByPatientUuid(String patientUuid) {
+		// TODO Auto-generated method stub
+		return dao.getPatientIdByPatientUuid(patientUuid);
+	}
 	
 }
