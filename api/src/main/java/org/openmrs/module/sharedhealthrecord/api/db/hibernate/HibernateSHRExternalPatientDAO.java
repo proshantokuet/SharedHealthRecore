@@ -36,12 +36,15 @@ protected final Log log = LogFactory.getLog(this.getClass());
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public SHRExternalPatient findExternalPatientByPatientUUid(String patientUuid) {
-		List <SHRExternalPatient> shrExternalPatient = sessionFactory.getCurrentSession()
-				.createQuery("from SHRExternalPatient where patient_uuid = :patientid and action_type = 'patient'")
-		        .setString("patientid", patientUuid).list();
+	public SHRExternalPatient findExternalPatientByPatientUUid(
+			String patientUuid) {
+		List<SHRExternalPatient> shrExternalPatient = sessionFactory
+				.getCurrentSession()
+				.createQuery(
+						"from SHRExternalPatient where patient_uuid = :patientid and action_type = 'patient'")
+				.setString("patientid", patientUuid).list();
 		if (shrExternalPatient.size() != 0) {
-			return shrExternalPatient.get(0); 
+			return shrExternalPatient.get(0);
 		} else {
 			return null;
 		}
