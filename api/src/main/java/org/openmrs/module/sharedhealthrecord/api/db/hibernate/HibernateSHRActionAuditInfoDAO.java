@@ -98,6 +98,7 @@ protected final Log log = LogFactory.getLog(this.getClass());
 					.addScalar("mid",StandardBasicTypes.INTEGER)
 					.addScalar("patient_uuid",StandardBasicTypes.STRING)
 					.addScalar("timestamp",StandardBasicTypes.STRING)
+					.setResultTransformer(new AliasToBeanResultTransformer(MoneyReceiptDTO.class))
 					.list();
 			return receipts;
 		}catch(Exception e){

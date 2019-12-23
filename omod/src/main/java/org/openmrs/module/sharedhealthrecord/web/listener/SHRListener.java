@@ -97,7 +97,7 @@ public class SHRListener{
 //				e.printStackTrace();
 //			}
 //			try{
-//				sendMoneyReceipt();
+				sendMoneyReceipt();
 //			}catch(Exception e){
 //				e.printStackTrace();
 //			}
@@ -243,7 +243,7 @@ public class SHRListener{
 		// Check shr_action_audit_info for last sent timestamp
 		String timestamp = Context.getService(SHRActionAuditInfoService.class)
 				.getLastEntryForMoneyReceipt();
-		
+		String mid_ = "";
 		// iterate Money receipt
 		try{
 			List<MoneyReceiptDTO> receipts = Context.
@@ -252,11 +252,12 @@ public class SHRListener{
 			for(MoneyReceiptDTO receipt: receipts){
 					//Local Money Receipt update
 				String mid = Integer.toString(receipt.getMid());
-				
+				errorLogUpdate("Money Receipt","Money Receipt Fetch Check",mid.toString());
 				MoneyReceiptFetchAndPost(mid,false);
+				mid_ = mid.toString();
 			}
 		}catch(Exception e){
-			
+			errorLogUpdate("Money Receipt Error",e.toString(),mid_);
 		}
 		// catch will enter the data into shr_action_error_log table
 		
@@ -283,6 +284,10 @@ public class SHRListener{
 			String localGetUrl = localServer+"openmrs/ws/rest/v1/money-receipt"
 					+ "/get/"+mid;
 			String moneyReceipt = HttpUtil.get(localGetUrl,"","admin:test");
+			
+			errorLogUpdate("Money Receipt Get Check",moneyReceipt,mid);
+			
+			
 			jsonMoneyReceipt = new JSONObject(moneyReceipt);
 			JSONObject jsonPostMoneyReceipt = new JSONObject();
 			JSONObject jsonNestedPostMoneyReceipt = new JSONObject();
@@ -372,9 +377,11 @@ public class SHRListener{
 			}
 			jsonPostMoneyReceipt.put("services", jsonNestedPostServices);
 			//JSON Money Receipt Update to Central Server
+			errorLogUpdate("Money Receipt Format Post",jsonPostMoneyReceipt.toString(),mid);
 			String centralPostUrl = centralServer+"openmrs/ws/rest/v1/money-receipt/add-or-update";
 			//IF success update timestamp
 			String postAction = HttpUtil.post(centralPostUrl, "", jsonPostMoneyReceipt.toString());
+			errorLogUpdate("Money Receipt Post",postAction,mid);
 			
 			if(postAction != null && !"".equalsIgnoreCase(postAction)){
 				if(failedReceipt == false){
@@ -572,8 +579,8 @@ public class SHRListener{
 				if(visitFlagError == true)
 					return;
 				
-				if(visitCreate == false)
-					return;
+//				if(visitCreate == false)
+//					return;
 				// Encounter Post JSON Format Preparation
 				String visitTypeValue =SharedHealthRecordManageRestController.visitTypeMapping.get(enc_response.get("visitTypeUuid").toString());
 				enc_response.remove("visitTypeUuid");
