@@ -39,6 +39,7 @@ protected final Log log = LogFactory.getLog(this.getClass());
 	}
 
 	@Override
+
 	public List<SHRExternalPatient> findByPatientUuid(String patientUuid,
 			String type) {
 		// TODO Auto-generated method stub
@@ -50,10 +51,19 @@ protected final Log log = LogFactory.getLog(this.getClass());
 	}
 
 	@Override
+	
 	public SHRExternalPatient findExternalPatientByPatientUUid(
 			String patientUuid) {
-		// TODO Auto-generated method stub
-		
-		return null;
+		List<SHRExternalPatient> shrExternalPatient = sessionFactory
+				.getCurrentSession()
+				.createQuery(
+						"from SHRExternalPatient where patient_uuid = :patientid and action_type = 'patient'")
+				.setString("patientid", patientUuid).list();
+		if (shrExternalPatient.size() != 0) {
+			return shrExternalPatient.get(0);
+		} else {
+			return null;
+		}
+
 	}
 }
