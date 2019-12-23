@@ -12,6 +12,14 @@ public class SHRExternalPatient extends BaseOpenmrsObject implements Serializabl
 	 private String is_send_to_central;
 	 
 	 
+	public String getAction_type() {
+		return action_type;
+	}
+
+	public void setAction_type(String action_type) {
+		this.action_type = action_type;
+	}
+
 	public int getEpid() {
 		return epid;
 	}
@@ -20,13 +28,7 @@ public class SHRExternalPatient extends BaseOpenmrsObject implements Serializabl
 		this.epid = epid;
 	}
 
-	public String getAction_type() {
-		return action_type;
-	}
-
-	public void setAction_type(String action_type) {
-		this.action_type = action_type;
-	}
+	
 
 	public String getPatient_uuid() {
 		return patient_uuid;

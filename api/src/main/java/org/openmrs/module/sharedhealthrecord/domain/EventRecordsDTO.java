@@ -4,7 +4,7 @@ public class EventRecordsDTO {
 	private int id;
 	private String uuid;
 	private String title;
-	private String timeStamp;
+	private String timestamp;
 	private String uri;
 	private String object;
 	private String category;
@@ -28,11 +28,12 @@ public class EventRecordsDTO {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getTimeStamp() {
-		return timeStamp;
+	
+	public String getTimestamp() {
+		return timestamp;
 	}
-	public void setTimeStamp(String timeStamp) {
-		this.timeStamp = timeStamp;
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
 	}
 	public String getUri() {
 		return uri;

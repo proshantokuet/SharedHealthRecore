@@ -5,4 +5,9 @@
 <fullyQualifiedTypeName name="org.openmrs.module.sharedhealthrecord.api.SHRActionAuditInfoService"/>
 <fullyQualifiedTypeName name="org.openmrs.module.sharedhealthrecord.api.SHRActionErrorLogService"/>
 <fullyQualifiedTypeName name="org.openmrs.module.sharedhealthrecord.api.db.SHRActionErrorLogDAO"/>
+<fullyQualifiedTypeName name="org.openmrs.module.sharedhealthrecord.api.SHRExternalPatientService"/>
+<fullyQualifiedTypeName name="org.hibernate.type.StandardBasicTypes"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="org.openmrs.module.sharedhealthrecord.domain.EventRecordsDTO"/>
+<fullyQualifiedTypeName name="org.openmrs.api.context.Context"/>
 </qualifiedTypeNameHistroy>

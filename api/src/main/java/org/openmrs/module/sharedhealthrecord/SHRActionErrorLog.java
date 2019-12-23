@@ -7,18 +7,28 @@ import org.openmrs.BaseOpenmrsObject;
 public class SHRActionErrorLog extends BaseOpenmrsObject implements Serializable {
     private static final long serialVersionUID = 1L;
     private int eid;
-    private String type;
+    private String action_type;
     private String error_message;
-    @Override
+    private int id;
+   
+	public String getAction_type() {
+		return action_type;
+	}
+
+	public void setAction_type(String action_type) {
+		this.action_type = action_type;
+	}
+
+	@Override
 	public Integer getId() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.id;
 	}
 
 	@Override
 	public void setId(Integer id) {
 		// TODO Auto-generated method stub
-		
+		this.setId(id);
 	}
 
 	public int getEid() {
@@ -29,13 +39,7 @@ public class SHRActionErrorLog extends BaseOpenmrsObject implements Serializable
 		this.eid = eid;
 	}
 
-	public String getType() {
-		return this.type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
+	
 
 	public String getError_message() {
 		return this.error_message;
