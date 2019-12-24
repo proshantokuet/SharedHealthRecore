@@ -88,9 +88,9 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		// TODO Auto-generated method stub
 		String sql = ""
 				+ "SELECT mid as mid, patient_uuid as patient_uuid, "
-				+ " `timestamp` as `timestamp` "
-				+ " FROM openmrs.psi_money_receipt"
-				+ " WHERE timestamp >= '"+timestamp+"' "
+				+ " `timestamp` as timestamp "
+				+ " FROM openmrs.psi_money_receipt "
+				+ " WHERE timestamp > '"+timestamp+"' "
 				+ " LIMIT 500 ";
 		try{
 			List<MoneyReceiptDTO> receipts = sessionFactory.getCurrentSession()
@@ -189,7 +189,7 @@ protected final Log log = LogFactory.getLog(this.getClass());
 				+ "	WHERE record_name = 'Money Receipt'";
 		
 		try{
-			return sessionFactory.getCurrentSession().createSQLQuery(sql).list().get(0).toString();
+			return Integer.toString(sessionFactory.getCurrentSession().createSQLQuery(sql).executeUpdate());
 		}catch(Exception e){
 			return "0";
 		}

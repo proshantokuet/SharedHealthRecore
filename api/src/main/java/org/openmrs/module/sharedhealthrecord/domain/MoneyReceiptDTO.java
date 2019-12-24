@@ -3,7 +3,7 @@ package org.openmrs.module.sharedhealthrecord.domain;
 public class MoneyReceiptDTO {
 	private int mid;
 	private String patient_uuid;
-	private String timeStamp;
+	private String timestamp;
 	public int getMid() {
 		return mid;
 	}
@@ -16,12 +16,13 @@ public class MoneyReceiptDTO {
 	public void setPatient_uuid(String patient_uuid) {
 		this.patient_uuid = patient_uuid;
 	}
-	public String getTimeStamp() {
-		return timeStamp;
+	public String getTimestamp() {
+		return timestamp;
 	}
-	public void setTimeStamp(String timeStamp) {
-		this.timeStamp = timeStamp;
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
 	}
+	
 	
 	
 }
