@@ -117,14 +117,10 @@ public class SHRListener{
 		
 		List<EventRecordsDTO> records = Context.getService(SHRActionAuditInfoService.class)
 				.getEventRecords("Patient",last_entry);
-		///openmrs/ws/rest/v1/patient/d8b039a9-1dd3-46df-8571-cddeca6c092b?v=full
-		
-		
-		
+						
 		try{
 			for(EventRecordsDTO rec: records){
-		
-			
+					
 			String patientUUid = rec.getObject().split("/|\\?")[6];
 			patUuid = patientUUid;
 
@@ -200,7 +196,6 @@ public class SHRListener{
 				.getEventRecords("Encounter",last_entry);
 		
 		JSONParser jsonParser = new JSONParser();
-		///openmrs/ws/rest/v1/patient/d8b039a9-1dd3-46df-8571-cddeca6c092b?v=full
 		for(EventRecordsDTO rec: records){
 			String encounterUUid = rec.getObject().split("/|\\?")[7];
 			List<SHRExternalPatient> patientsToSend = Context.
@@ -543,7 +538,7 @@ public class SHRListener{
 		return visitSavingResponse;
 	}
 
-	private void errorLogUpdate(String type,String message, String uuId){
+	public static void errorLogUpdate(String type,String message, String uuId){
 		Context.clearSession();
 		Context.openSession();
 		SHRActionErrorLog log = new SHRActionErrorLog();

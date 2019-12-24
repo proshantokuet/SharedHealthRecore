@@ -32,12 +32,13 @@
 	<context:component-scan base-package="org.openmrs.module.sharedhealthrecord.web.controller" />
 	<context:annotation-config></context:annotation-config>
 	<bean id="shrListener" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListener"></bean>
-	
+	<bean id="shrPatientFetchListener" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRPatientFetchListener"></bean>
 	<task:scheduled-tasks scheduler="shr2Task">
 		<task:scheduled ref="shrListener" method="sendAllData" cron="*/55 * * * * *" />
+		<task:scheduled ref="shrPatientFetchListener" method="fetchAndUpdatePatient" cron="*/55 * * * * *"/>
 	</task:scheduled-tasks>
 	
-	<task:scheduler pool-size="2" id="shr2Task"/>
+	<task:scheduler pool-size="4" id="shr2Task"/>
 	<!-- <task:annotation-driven /> -->
  
 		
