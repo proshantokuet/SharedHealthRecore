@@ -56,7 +56,6 @@ public class SHRPatientFetchListener {
 				 patient = getPatientInfo(patientUuid);
 				 
 			} catch (JSONException | ParseException e) {
-				// TODO Auto-generated catch block
 				errorLogUpdate("Patient Uuid Fetch",e.toString(),patientUuid);
 				e.printStackTrace();
 				return;
@@ -117,8 +116,12 @@ public class SHRPatientFetchListener {
 	private String postPatientToLocalServer(String postPatient,String patientUuid){
 		String url = localServer+
 				"openmrs/ws/rest/v1/bahmnicore/patientprofile/"+patientUuid;
-		String post = HttpUtil.post(url, "",postPatient);
-	
+		String post = "";
+		try{
+		 post = HttpUtil.post(url, "",postPatient);
+		}catch(Exception e){
+			errorLogUpdate("Patient Fetch Uuid",e.toString(),patientUuid);
+		}
 		return post;
 	}
 	
