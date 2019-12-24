@@ -538,7 +538,7 @@ public class SHRListener{
 		return visitSavingResponse;
 	}
 
-	public static void errorLogUpdate(String type,String message, String uuId){
+	public void errorLogUpdate(String type,String message, String uuId){
 		Context.clearSession();
 		Context.openSession();
 		SHRActionErrorLog log = new SHRActionErrorLog();

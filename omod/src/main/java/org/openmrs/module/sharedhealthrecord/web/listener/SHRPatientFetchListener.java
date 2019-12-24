@@ -48,7 +48,7 @@ public class SHRPatientFetchListener {
 		try{
 			patientUuidList = getPatientUuidList();
 		}catch(Exception e){
-			SHRListener.errorLogUpdate("Patient Uuid Fetch", e.toString(),UUID.randomUUID().toString());
+			errorLogUpdate("Patient Uuid Fetch", e.toString(),UUID.randomUUID().toString());
 		}
 		for(String patientUuid: patientUuidList){
 			String patient = "";
@@ -57,6 +57,7 @@ public class SHRPatientFetchListener {
 				 
 			} catch (JSONException | ParseException e) {
 				// TODO Auto-generated catch block
+				errorLogUpdate("Patient Uuid Fetch",e.toString(),patientUuid);
 				e.printStackTrace();
 				return;
 			}
@@ -64,12 +65,11 @@ public class SHRPatientFetchListener {
 			try{
 				postPatientResponse = postPatientToLocalServer(patient,patientUuid);
 				JSONObject response = new JSONObject(postPatientResponse);
-				if(response.has("object")){
+//				if(response.has("object")){
 					//Update Shr_external_patient to global as 0
 					updateExternalPatient(patientUuid);
-				}
+//				}
 			}catch(Exception e){
-				SHRListener.
 					errorLogUpdate("Patient Uuid Fetch", e.toString(), patientUuid);
 			}
 			
@@ -109,7 +109,7 @@ public class SHRPatientFetchListener {
 		
 		String postData = SharedHealthRecordManageRestController.
 				getPatientObject(patientJSONPost, personUuid);
-		SHRListener.errorLogUpdate("Patient Post Format Data",postData,patientUuid);
+		errorLogUpdate("Patient Post Format Data",postData,patientUuid);
 		
 		return postData;
 	}
@@ -128,6 +128,19 @@ public class SHRPatientFetchListener {
 				+ "externalPatient?patient_uuid="
 					+patientUuid+"&action_status=0";
 		String get_result = HttpUtil.get(externalPatientUpdateUrl, "", "admin:test");
-		SHRListener.errorLogUpdate("patient Update to Central Server",get_result,patientUuid);
+		errorLogUpdate("patient Update to Central Server",get_result,patientUuid);
+	}
+	
+	public void errorLogUpdate(String type,String message, String uuId){
+		Context.clearSession();
+		Context.openSession();
+		SHRActionErrorLog log = new SHRActionErrorLog();
+		log.setAction_type(type);
+		log.setError_message(message);
+		log.setUuid(uuId);
+		Context.getService(SHRActionErrorLogService.class)
+			.insertErrorLog(log);
+		Context.clearSession();
+		Context.openSession();
 	}
 }
