@@ -55,4 +55,10 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		dao.testInsert();
 		
 	}
+
+	@Override
+	public String delete_by_type_and_uuid(String action_type, String uuid) {
+		// TODO Auto-generated method stub
+		return dao.delete_by_type_and_uuid(action_type, uuid);
+	}
 }

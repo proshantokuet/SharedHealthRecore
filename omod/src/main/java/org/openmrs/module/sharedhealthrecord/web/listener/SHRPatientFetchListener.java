@@ -32,11 +32,11 @@ public class SHRPatientFetchListener {
 	
 	public void fetchAndUpdatePatient(){
 		Context.openSession();
-			
+		errorLogUpdate("Patient Fetch Problem","Hitting in Patient Fetch",UUID.randomUUID().toString());
 		try{
 			patientFetchAndUpdateExecute();
 		}catch(Exception e){
-			
+			errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
 		}
 		Context.closeSession();
 	}

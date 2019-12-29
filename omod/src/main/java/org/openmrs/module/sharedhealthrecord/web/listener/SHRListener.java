@@ -57,8 +57,9 @@ public class SHRListener{
 //	@Scheduled(fixedRate=10000)
 //	private static final Logger log = LoggerFactory.getLogger(SHRListener.class);
 	public void sendAllData() throws Exception {
-		
+	
 		Context.openSession();
+		
 		JSONObject getResponse = null;
 		boolean status = true;
 	
@@ -74,33 +75,35 @@ public class SHRListener{
 //				sendFailedPatient();
 //			}catch(Exception e){
 //				e.printStackTrace();
+//				errorLogUpdate("FailedPatient",e.toString(),UUID.randomUUID().toString());
 //			}
-			try{
-				sendPatient();
-
-			}catch(Exception e){
-				e.printStackTrace();
-			}
+//			try{
+//				sendPatient();
+//
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
 //			try{
 //				sendFailedEncounter();
 //			}catch(Exception e){
 //				e.printStackTrace();
+//				errorLogUpdate("FailedEncounter",e.toString(),UUID.randomUUID().toString());
 //			}
-			try{
-				sendEncounter();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
 //			try{
-//				sendFailedMoneyReceipt();
+//				sendEncounter();
 //			}catch(Exception e){
 //				e.printStackTrace();
 //			}
 			try{
-				sendMoneyReceipt();
+				sendFailedMoneyReceipt();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
+//			try{
+//				sendMoneyReceipt();
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
 		}
 		
 		Context.closeSession();
@@ -132,9 +135,9 @@ public class SHRListener{
 				try {
 					
 					patientFetchAndPost(patientUUid,Integer.toString(rec.getId()),false);
-					errorLogUpdate("patient","Patient Update/Add Check",patientUUid);
+//					errorLogUpdate("patient","Patient Update/Add Check",patientUUid);
 				} catch (JSONException e) {					
-					errorLogUpdate("patient",e.toString(),patientUUid);
+					errorLogUpdate("Patient",e.toString(),patientUUid);
 				}
 				
 			}
@@ -148,13 +151,15 @@ public class SHRListener{
 								"openmrs/ws/rest/v1/save-Patient/insert/"
 								+ "externalPatient?patient_uuid="
 									+patientUUid+"&action_status=1";
+						
 						String get_result = HttpUtil.get(externalPatientUpdateUrl, "", "admin:test");
-						errorLogUpdate("patient Update to Central Server",get_result,patientUUid);
+//						errorLogUpdate("patient Update to Central Server",get_result,patientUUid);
 						
 						patientFetchAndPost(patientUUid,Integer.toString(rec.getId()),false);
-						errorLogUpdate("patient","Patient Update/Add Check",patientUUid);
+//						errorLogUpdate("patient","Patient Update/Add Check",patientUUid);
 					} catch (JSONException e) {
-						errorLogUpdate("patient external Send Error",e.toString(),patientUUid);
+						errorLogUpdate("Patient",e.toString(),patientUUid);
+						return;
 					}
 				}
 				else {
@@ -170,20 +175,17 @@ public class SHRListener{
 	public void sendFailedPatient() throws ParseException{
 		List<SHRActionErrorLog> failedPatients = new ArrayList<SHRActionErrorLog>();
 		
+		failedPatients = Context.getService(SHRActionErrorLogService.class)
+				.get_list_by_Action_type("Patient");
+		
 		for(SHRActionErrorLog failPat : failedPatients){
-			Context.getService(SHRActionErrorLogService.class).
-			delete_by_type_and_id("Patient", Integer.toString(failPat.getId()));
-			try {
+			String delResponse = Context.getService(SHRActionErrorLogService.class).
+				delete_by_type_and_uuid("Patient", failPat.getUuid());
+			try {				
 				patientFetchAndPost(failPat.getUuid(),Integer.toString(failPat.getId()),true);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
-				SHRActionErrorLog log = new SHRActionErrorLog();
-				log.setAction_type("Patient");
-//				log.setId(failPat.getId());
-				log.setError_message(e.toString());
-				log.setUuid(failPat.getUuid());
-				Context.getService(SHRActionErrorLogService.class)
-					.insertErrorLog(log);
+				errorLogUpdate("Patient",e.toString(),failPat.getUuid());
 			}						
 		}
 		
@@ -222,7 +224,7 @@ public class SHRListener{
 		for(SHRActionErrorLog encounter: failedEncounters){
 			String id = Integer.toString(encounter.getId());
 			Context.getService(SHRActionErrorLogService.class).
-				delete_by_type_and_id("Encounter", id);
+				delete_by_type_and_uuid("Encounter", encounter.getUuid());
 			try {
 				encounterFetchAndPost(encounter.getUuid(),Integer.toString(encounter.getId()),true);
 			} catch (ParseException e) {
@@ -248,13 +250,12 @@ public class SHRListener{
 					//Local Money Receipt update
 //				
 				String mid = Integer.toString(receipt.getMid());
-				errorLogUpdate("Money Receipt","Error Check",receipt.getPatient_uuid());
-				errorLogUpdate("Money Receipt","Money Receipt Fetch Check",mid);
+
 				MoneyReceiptFetchAndPost(mid,false);
 				mid_ = mid.toString();
 			}
 		}catch(Exception e){
-			errorLogUpdate("Money Receipt Error",e.toString(),mid_);
+			errorLogMoneyReceipt("Money Receipt Error",e.toString(),mid_);
 		}
 		// catch will enter the data into shr_action_error_log table
 		
@@ -264,11 +265,12 @@ public class SHRListener{
 	public void sendFailedMoneyReceipt(){
 		List<SHRActionErrorLog> failedReceipts = Context.getService(SHRActionErrorLogService.class)
 				.get_list_by_Action_type("Money Receipt");
-		
+//		errorLogUpdate("Money Receipt List","list size check",Integer.toString(failedReceipts.size()));
 		for(SHRActionErrorLog receipt: failedReceipts){
-			String mid = Integer.toString(receipt.getId());
+			String mid = receipt.getUuid();
+			errorLogUpdate("Money Receipt Mid","mid value Check",mid);
 			Context.getService(SHRActionErrorLogService.class).
-			delete_by_type_and_id("Money Receipt", mid);
+			delete_by_type_and_uuid("Money Receipt", mid);
 			MoneyReceiptFetchAndPost(mid,true);
 			
 		}
@@ -282,9 +284,13 @@ public class SHRListener{
 			String localGetUrl = localServer+"openmrs/ws/rest/v1/money-receipt"
 					+ "/get/"+mid;
 			errorLogUpdate("Money Receript Get Url",localGetUrl,mid);
-			String moneyReceipt = HttpUtil.get(localGetUrl,"","admin:test");
-			
-			errorLogUpdate("Money Receipt Get Check",moneyReceipt,mid);
+			String moneyReceipt = "";
+			try{
+			 moneyReceipt = HttpUtil.get(localGetUrl,"","admin:test");
+			}catch(Exception e){
+				errorLogUpdate("Money Receipt","Money Receipt Get:"+e.toString(),mid);
+				return;
+			}
 			
 			
 			//JSON Money Receipt Update to Central Server
@@ -293,12 +299,18 @@ public class SHRListener{
 				 postMoneyReceipt = moneyReceiptConverter(moneyReceipt);
 			 }catch(Exception e){
 				 errorLogUpdate("Money Receipt",e.toString(),mid);
+				 return;
 			 }
-			errorLogUpdate("Money Receipt Format Post",postMoneyReceipt,mid);
+//			errorLogUpdate("Money Receipt Format Post",postMoneyReceipt,mid);
 			String centralPostUrl = centralServer+"openmrs/ws/rest/v1/money-receipt/add-or-update";
 			//IF success update timestamp
-			String postAction = HttpUtil.post(centralPostUrl, "", postMoneyReceipt);
-			errorLogUpdate("Money Receipt Post",postAction,mid);
+			String postAction = "";
+			try{
+			 postAction = HttpUtil.post(centralPostUrl, "", postMoneyReceipt);
+			}catch(Exception e){
+				errorLogUpdate("Money Receipt","Money Receipt Post:"+e.toString(),mid);
+				return;
+			}
 			
 			if(!"".equalsIgnoreCase(postAction)){
 				if(failedReceipt == false){
@@ -310,10 +322,12 @@ public class SHRListener{
 				}
 			}
 			else {
-				errorLogUpdate("Money Receipt",postAction,mid);
+				errorLogUpdate("Money Receipt","Money Receipt Post:"+postAction,mid);
+				return;
 			}
 		}catch(Exception e){
 			errorLogUpdate("Money Receipt",e.toString(),mid);
+			return;
 		}
 	}
 	private void patientFetchAndPost(String patientUUid,String id,Boolean failedPatient) throws ParseException, JSONException{
@@ -323,16 +337,13 @@ public class SHRListener{
 			// Get Patient Info from Local Server
 			String patientUrl = localServer+"openmrs/ws/rest/v1/patient/"+
 					patientUUid+"?v=full";
-			SHRActionErrorLog log_ = new SHRActionErrorLog();
 
 			String patientResponse = "";
 			try{
-				patientResponse = HttpUtil.get(patientUrl, "", "admin:test");
-				
-				errorLogUpdate("patient get",patientResponse,patientUUid);
-				
+				patientResponse = HttpUtil.get(patientUrl, "", "admin:test");								
 			}catch(Exception e){
-				errorLogUpdate("patient get error",e.toString(),patientUUid);
+				errorLogUpdate("Patient","Patient Get Error"+e.toString(),patientUUid);
+				return;
 			}
 
 			JSONObject getPatient = new JSONObject(patientResponse);
@@ -347,7 +358,7 @@ public class SHRListener{
 				
 				String postData = SharedHealthRecordManageRestController.
 						getPatientObject(getPatient_, personUuid);
-				errorLogUpdate("Patient Post Format Data",postData,patientUUid);
+//				errorLogUpdate("Patient Post Format Data",postData,patientUUid);
 				//Post to Central Server
 
 				String patientPostUrl = centralServer+
@@ -362,8 +373,14 @@ public class SHRListener{
 				//Central Server patientUuid Check
 				String centralServerPatientCheckUrl = centralServer+"openmrs/ws/rest/v1/patient/"+
 						patientUUid+"?v=full";
-				String centralServerPatientCheckResponse = HttpUtil.get(centralServerPatientCheckUrl,
+				String centralServerPatientCheckResponse = "";
+				try{
+					centralServerPatientCheckResponse = HttpUtil.get(centralServerPatientCheckUrl,
 								"", "admin:test");
+				}catch(Exception e){
+					errorLogUpdate("Patient","Server Patient Check: "+ e.toString(),patientUUid);
+					return;
+				}
 				JSONObject patienResponseCheck = new JSONObject(centralServerPatientCheckResponse);
 				
 				//If Error No String concat as Add Action - Else Update action API
@@ -373,18 +390,20 @@ public class SHRListener{
 				try{ 
 					
 					returnedResult = HttpUtil.post(patientPostUrl, "", postData);
-					errorLogUpdate("patient post",returnedResult,patientUUid);
+//					errorLogUpdate("patient post",returnedResult,patientUUid);
 					String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
 						insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+localServer;
+						
 					String get = "";
 					try{
 						get = HttpUtil.get(insertUrl, "", "admin:test");
 					}catch(Exception e){
-						errorLogUpdate("Patient","Local Server Save Info Error",patientUUid);
+						errorLogUpdate("Patient","Local Server Save Info Error:" + e.toString(),patientUUid);
+						return;
 					}
 				
 				}catch(Exception e){
-					errorLogUpdate("patient post error",e.toString(),patientUUid);
+					errorLogUpdate("Patient",e.toString(),patientUUid);
 					return;
 				}
 				// Save last entry in Audit Table
@@ -395,7 +414,7 @@ public class SHRListener{
 				
 			}catch(Exception e){
 				// Error Log Generation on Exception
-				errorLogUpdate("patient",e.toString(),patientUUid);
+				errorLogUpdate("Patient",e.toString(),patientUUid);
 			}
 	
 	}
@@ -413,7 +432,8 @@ public class SHRListener{
 					response = HttpUtil.get(getUrl, "", "admin:test");
 				}catch(Exception e){
 					SHRActionErrorLog logN = new SHRActionErrorLog();
-					errorLogUpdate("Encounter Local Get Error",response,encounterUuid);
+					errorLogUpdate("Encounter","Encounter get Error:"+response,encounterUuid);
+					return;
 				}
 				
 				JSONObject encounterResponse = new JSONObject(response);
@@ -422,7 +442,8 @@ public class SHRListener{
 				 enc_response = (org.json.simple.JSONObject) jsonParser.
 						parse(encounterResponse.toString());
 				}catch(Exception e){
-					errorLogUpdate("Encounter Response Error",e.toString(),encounterUuid);
+					errorLogUpdate("Encounter",e.toString(),encounterUuid);
+					return;
 				}
 				String visitUuid = enc_response.get("visitUuid").toString();
 				String visitFetchUrl = "";
@@ -434,9 +455,10 @@ public class SHRListener{
 					visitFetchUrl = centralServer+
 							"openmrs/ws/rest/v1/save-Patient/search/patientVisitByUuid?visit_uuid="+visitUuid;
 					vis_global_response = HttpUtil.get(visitFetchUrl, "","admin:test");
-					errorLogUpdate("Encounter visit global fetch",vis_global_response,encounterUuid);
+					
 				}catch(Exception e){
-					errorLogUpdate("Encounter Visit Global Parse Error",e.toString(),encounterUuid);
+					errorLogUpdate("Encounter","Encounter Search Error"+e.toString(),encounterUuid);
+					return;
 				}
 				//Central Server Visit Existence Check
 		
@@ -449,28 +471,36 @@ public class SHRListener{
 				if(visitFetchJsonObj.get("isFound").toString().contains("false")){
 					String vis_url =  localServer+
 							"openmrs/ws/rest/v1/save-Patient/search/patientVisitByUuid?visit_uuid="+visitUuid;
-					 vis_response = HttpUtil.get(vis_url, "", "admin:test");
-					 errorLogUpdate("Encounter visit Local Fetch",vis_response,encounterUuid);
+					try{ 
+					vis_response = HttpUtil.get(vis_url, "", "admin:test");
+					}catch(Exception e){
+						errorLogUpdate("Encounter","Encounter Visit Response:"+e.toString()
+								,encounterUuid);
+						return;
+					}
+//					 errorLogUpdate("Encounter visit Local Fetch",vis_response,encounterUuid);
 					org.json.simple.JSONObject visit_response = new org.json.simple.JSONObject();
 					try{
 					 visit_response = (org.json.simple.JSONObject) jsonParser.parse(vis_response);
-					 errorLogUpdate("Visit Json Parse",visit_response.toString(),encounterUuid);
+//					 errorLogUpdate("Visit Json Parse",visit_response.toString(),encounterUuid);
 					}catch(Exception e){
-						errorLogUpdate("Encounter Visit Json Local parse Error",e.toString(),
+						errorLogUpdate("Encounter","Encounter Visit Json Parse Error:"+e.toString(),
 								encounterUuid);
+						return;
 					}
 					String createVisit_ = "";
 					
 					try{ 
 						createVisit_ = createVisit(visit_response,enc_response.get("patientUuid").toString());
 						JSONObject createVisitResponse = new JSONObject(createVisit_);
-						errorLogUpdate("Encounter Visit Create Post Response",createVisitResponse.toString(),encounterUuid);
+//						errorLogUpdate("Encounter Visit Create Post Response",createVisitResponse.toString(),encounterUuid);
 						visitFlagError = createVisitResponse.get("isSuccessfull").toString().contains("true")
 											? false: true;
 						
 						
 					}catch(Exception e){
-						errorLogUpdate("Encounter Visit Create Error",e.toString(),encounterUuid);	
+						errorLogUpdate("Encounter","Create Visit Error:"+e.toString(),encounterUuid);
+						return;
 					}
 					
 				}
@@ -506,12 +536,13 @@ public class SHRListener{
 //				enc_response.remove("observations");
 				org.json.simple.JSONObject encounter = (org.json.simple.JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(enc_response.toString(),Encounter.class)));
 				encounter.put("observations", obs);
-				errorLogUpdate("Encounter Post Json Format",encounter.toString(),encounterUuid);
+//				errorLogUpdate("Encounter Post Json Format",encounter.toString(),encounterUuid);
 				try{
-				String postResponse = HttpUtil.post(postUrl, "", encounter.toJSONString());
-				errorLogUpdate("Encounter Post Response",postResponse,encounterUuid);
+					String postResponse = HttpUtil.post(postUrl, "", encounter.toJSONString());
+				
 				}catch(Exception e){
-					errorLogUpdate("Encounter Post Error",e.toString(),encounterUuid);
+					errorLogUpdate("Encounter","Encounter post error:"+e.toString(),encounterUuid);
+					return;
 				}
 				
 				if(failedEncounter == false){					
@@ -519,7 +550,7 @@ public class SHRListener{
 					.updateAuditEncounter(id);					
 				}
 			}catch(Exception e){
-				errorLogUpdate("Encouner Audit row update error",e.toString(),encounterUuid);
+				errorLogUpdate("Encouner","Encounter Update Error:"+e.toString(),encounterUuid);
 			}		
 		}
 	
@@ -551,6 +582,19 @@ public class SHRListener{
 		Context.openSession();
 	}
 	
+	public void errorLogMoneyReceipt(String type,String message,String mid){
+		Context.clearSession();
+		Context.openSession();
+		SHRActionErrorLog log = new SHRActionErrorLog();
+		log.setAction_type(type);
+		log.setError_message(message);
+		log.setId(Integer.parseInt(mid));
+		log.setUuid(UUID.randomUUID().toString());
+		Context.getService(SHRActionErrorLogService.class)
+			.insertErrorLog(log);
+		Context.clearSession();
+		Context.openSession();
+	}
 	private String moneyReceiptConverter(String moneyReceipt) throws JSONException{
 		String moneyReceiptPost = "";
 		JSONObject jsonMoneyReceipt = new JSONObject(moneyReceipt);
