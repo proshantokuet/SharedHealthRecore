@@ -78,28 +78,28 @@ public class SHRListener{
 				errorLogUpdate("FailedPatient",e.toString(),UUID.randomUUID().toString());
 			}
 			try{
-//				sendPatient();
+				sendPatient();
 
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			try{
-//				sendFailedEncounter();
+				sendFailedEncounter();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			try{
-//				sendEncounter();
+				sendEncounter();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			try{
-//				sendFailedMoneyReceipt();
+				sendFailedMoneyReceipt();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			try{
-//				sendMoneyReceipt();
+				sendMoneyReceipt();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
