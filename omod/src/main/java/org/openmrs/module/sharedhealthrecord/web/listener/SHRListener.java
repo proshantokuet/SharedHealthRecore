@@ -71,20 +71,20 @@ public class SHRListener{
 		}
 		
 		if(status){
-//			try{
-//				sendFailedPatient();
-//			}catch(Exception e){
-//				e.printStackTrace();
-//				errorLogUpdate("FailedPatient",e.toString(),UUID.randomUUID().toString());
-//			}
-//			try{
-//				sendPatient();
-//
-//			}catch(Exception e){
-//				e.printStackTrace();
-//			}
 			try{
-				sendFailedEncounter();
+				sendFailedPatient();
+			}catch(Exception e){
+				e.printStackTrace();
+				errorLogUpdate("FailedPatient",e.toString(),UUID.randomUUID().toString());
+			}
+			try{
+//				sendPatient();
+
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+//				sendFailedEncounter();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -133,10 +133,11 @@ public class SHRListener{
 			if(patientsToSend.size() == 0){				
 				try {
 					
-					patientFetchAndPost(patientUUid,Integer.toString(rec.getId()),false);
+					//Init voidedStatus will be 0 in this case
+					patientFetchAndPost(patientUUid,Integer.toString(rec.getId()),0);
 //					errorLogUpdate("patient","Patient Update/Add Check",patientUUid);
 				} catch (JSONException e) {					
-					errorLogUpdate("Patient",e.toString(),patientUUid);
+					errorLogInsert("Patient",e.toString(),patientUUid,0);
 				}
 				
 			}
@@ -154,10 +155,10 @@ public class SHRListener{
 						String get_result = HttpUtil.get(externalPatientUpdateUrl, "", "admin:test");
 //						errorLogUpdate("patient Update to Central Server",get_result,patientUUid);
 						
-						patientFetchAndPost(patientUUid,Integer.toString(rec.getId()),false);
+						patientFetchAndPost(patientUUid,Integer.toString(rec.getId()),0);
 //						errorLogUpdate("patient","Patient Update/Add Check",patientUUid);
 					} catch (JSONException e) {
-						errorLogUpdate("Patient",e.toString(),patientUUid);
+						errorLogInsert("Patient",e.toString(),patientUUid,0);
 						return;
 					}
 				}
@@ -168,7 +169,7 @@ public class SHRListener{
 			
 		}
 		}catch(Exception e){
-			errorLogUpdate("patient",e.toString(),patUuid);
+			errorLogInsert("Patient",e.toString(),patUuid,0);
 		}
 	}
 	public void sendFailedPatient() throws ParseException{
@@ -179,30 +180,19 @@ public class SHRListener{
 		
 		for(SHRActionErrorLog failPat : failedPatients){
 			String delResponse = "";
-			Boolean flag = false;
-			if(failPat.getVoided() == 0) {
-				delResponse = Context.getService(SHRActionErrorLogService.class).
-						delete_by_type_and_uuid("Patient", failPat.getUuid());
-				flag = true;
-			}
-				
-			else if(failPat.getVoided() == 1) {
-				delResponse = 
-					Context.getService(SHRActionErrorLogService.class).
-						failedUpdate("Patient", failPat.getUuid());
-				flag = true;
-			}
-			else {
-				// do Nothing
-			}
-			try {				
-				if(flag == true) {
-					patientFetchAndPost(failPat.getUuid(),Integer.toString(failPat.getId()),true);
+			if(failPat.getVoided() < 2 && failPat.getSent_status() == 0){
+				try {
+					Boolean flag = patientFetchAndPost(failPat.getUuid(),"",failPat.getVoided()+1);
+					Context.getService(SHRActionErrorLogService.class)
+					.updateSentStatus(failPat.getEid(), flag == true ? 1 :0);
+					
+				} catch (JSONException e1) {
+					// TODO Auto-generated catch block
+					errorLogInsert("Patient",e1.toString(),failPat.getUuid(),failPat.getVoided());
+					e1.printStackTrace();
 				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				errorLogUpdate("Patient",e.toString(),failPat.getUuid());
-			}						
+			}
+			
 		}
 		
 		
@@ -229,6 +219,7 @@ public class SHRListener{
 				}
 				else {
 					// do nothing
+					
 				}
 			}
 			
@@ -374,7 +365,7 @@ public class SHRListener{
 		//id - of event records - for updating last index of a table.
 		//failedPatient - flag to check which kind of encounter it is.
 		//</param>
-	private void patientFetchAndPost(String patientUUid,String id,Boolean failedPatient) throws ParseException, JSONException{
+	private Boolean patientFetchAndPost(String patientUUid,String id,int voidedStatus) throws ParseException, JSONException{
 		
 			JSONParser jsonParser = new JSONParser();
 		
@@ -386,8 +377,8 @@ public class SHRListener{
 			try{
 				patientResponse = HttpUtil.get(patientUrl, "", "admin:test");								
 			}catch(Exception e){
-				errorLogUpdate("Patient","Patient Get Error"+e.toString(),patientUUid);
-				return;
+				errorLogInsert("Patient","Patient Get Error"+e.toString(),patientUUid,voidedStatus);
+				return false;
 			}
 
 			JSONObject getPatient = new JSONObject(patientResponse);
@@ -422,8 +413,8 @@ public class SHRListener{
 					centralServerPatientCheckResponse = HttpUtil.get(centralServerPatientCheckUrl,
 								"", "admin:test");
 				}catch(Exception e){
-					errorLogUpdate("Patient","Server Patient Check: "+ e.toString(),patientUUid);
-					return;
+					errorLogInsert("Patient","Server Patient Check: "+ e.toString(),patientUUid,voidedStatus);
+					return false;
 				}
 				JSONObject patienResponseCheck = new JSONObject(centralServerPatientCheckResponse);
 				
@@ -442,24 +433,26 @@ public class SHRListener{
 					try{
 						get = HttpUtil.get(insertUrl, "", "admin:test");
 					}catch(Exception e){
-						errorLogUpdate("Patient","Local Server Save Info Error:" + e.toString(),patientUUid);
-						return;
+						errorLogInsert("Patient","Local Server Save Info Error:" + e.toString(),patientUUid,voidedStatus);
+						return false;
 					}
 				
 				}catch(Exception e){
-					errorLogUpdate("Patient",e.toString(),patientUUid);
-					return;
+					errorLogInsert("Patient",e.toString(),patientUUid,voidedStatus);
+					return false;
 				}
 				// Save last entry in Audit Table
-				if(failedPatient == false){
+				if(voidedStatus == 0){
 					String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
 						.updateAuditPatient(id);
 				}
 				
 			}catch(Exception e){
 				// Error Log Generation on Exception
-				errorLogUpdate("Patient",e.toString(),patientUUid);
+				errorLogInsert("Patient",e.toString(),patientUUid,voidedStatus);
 			}
+			
+			return true;
 	
 	}
 	//<param>
