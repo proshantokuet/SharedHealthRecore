@@ -61,4 +61,16 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		// TODO Auto-generated method stub
 		return dao.delete_by_type_and_uuid(action_type, uuid);
 	}
+
+	@Override
+	public String failedUpdate(String action_type, String uuid) {
+		// TODO Auto-generated method stub
+		return dao.failedUpdate(action_type, uuid);
+	}
+
+	@Override
+	public String updateSentStatus(int eid, int sent_status) {
+		// TODO Auto-generated method stub
+		return dao.updateSentStatus(eid, sent_status);
+	}
 }

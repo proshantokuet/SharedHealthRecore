@@ -32,7 +32,7 @@ public class SHRPatientFetchListener {
 	
 	public void fetchAndUpdatePatient(){
 		Context.openSession();
-		errorLogUpdate("Patient Fetch Problem","Hitting in Patient Fetch",UUID.randomUUID().toString());
+//		errorLogUpdate("Patient Fetch Problem","Hitting in Patient Fetch",UUID.randomUUID().toString());
 		try{
 			patientFetchAndUpdateExecute();
 		}catch(Exception e){
@@ -53,8 +53,7 @@ public class SHRPatientFetchListener {
 		for(String patientUuid: patientUuidList){
 			String patient = "";
 			try {
-				 patient = getPatientInfo(patientUuid);
-				 
+				 patient = getPatientInfo(patientUuid);		 
 			} catch (JSONException | ParseException e) {
 				errorLogUpdate("Patient Uuid Fetch",e.toString(),patientUuid);
 				e.printStackTrace();
@@ -108,7 +107,7 @@ public class SHRPatientFetchListener {
 		
 		String postData = SharedHealthRecordManageRestController.
 				getPatientObject(patientJSONPost, personUuid);
-		errorLogUpdate("Patient Post Format Data",postData,patientUuid);
+//		errorLogUpdate("Patient Post Format Data",postData,patientUuid);
 		
 		return postData;
 	}
@@ -131,7 +130,7 @@ public class SHRPatientFetchListener {
 				+ "externalPatient?patient_uuid="
 					+patientUuid+"&action_status=0";
 		String get_result = HttpUtil.get(externalPatientUpdateUrl, "", "admin:test");
-		errorLogUpdate("patient Update to Central Server",get_result,patientUuid);
+//		errorLogUpdate("patient Update to Central Server",get_result,patientUuid);
 	}
 	
 	public void errorLogUpdate(String type,String message, String uuId){

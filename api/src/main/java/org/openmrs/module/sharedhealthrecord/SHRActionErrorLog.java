@@ -12,8 +12,33 @@ public class SHRActionErrorLog extends BaseOpenmrsObject implements
 	private String error_message;
 	private String uuid;
 	private String mid;
+	private int voided;
+	private int sent_status;
 	
-	
+	@Override
+	public String toString() {
+		return "SHRActionErrorLog [eid=" + eid + ", action_type=" + action_type
+				+ ", error_message=" + error_message + ", uuid=" + uuid
+				+ ", mid=" + mid + ", voided=" + voided + ", sent_status="
+				+ sent_status + "]";
+	}
+
+	public int getSent_status() {
+		return sent_status;
+	}
+
+	public void setSent_status(int sent_status) {
+		this.sent_status = sent_status;
+	}
+
+	public int getVoided() {
+		return voided;
+	}
+
+	public void setVoided(int voided) {
+		this.voided = voided;
+	}
+
 	public String getMid() {
 		return mid;
 	}

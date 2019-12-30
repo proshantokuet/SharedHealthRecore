@@ -45,16 +45,19 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		List<SHRActionErrorLog> ret = new ArrayList<SHRActionErrorLog>();
 		String sql = ""
 				+ "SELECT eid as eid, action_type as action_type, "
-				+ "error_message as error_message, uuid as uuid "
+				+ "error_message as error_message, uuid as uuid, "
+				+" voided as voided, sent_status as sent_status "
 				+ "FROM openmrs.shr_action_error_log "
 				+ "WHERE action_type = '"+action_type+"'";
+		
 		ret = sessionFactory.getCurrentSession().
 				createSQLQuery(sql)
 				.addScalar("eid",StandardBasicTypes.INTEGER)
 					.addScalar("action_type",StandardBasicTypes.STRING)
 					.addScalar("error_message",StandardBasicTypes.STRING)
 					.addScalar("uuid",StandardBasicTypes.STRING)
-//					.addScalar("id",StandardBasicTypes.INTEGER)
+					.addScalar("voided",StandardBasicTypes.INTEGER)
+					.addScalar("sent_status",StandardBasicTypes.INTEGER)
 					.setResultTransformer(new AliasToBeanResultTransformer(SHRActionErrorLog.class)).
 					list();
 		return ret;
@@ -106,6 +109,38 @@ protected final Log log = LogFactory.getLog(this.getClass());
 			return e.toString();
 		}
 		
+	}
+
+	@Override
+	public String failedUpdate(String action_type, String uuid) {
+		// TODO Auto-generated method stub
+				String sql = ""
+						+ " UPDATE openmrs.shr_action_error_log "
+						+" SET voided = 2 "
+						+ " WHERE action_type = '"+action_type+"' "
+						+ " AND uuid='"+uuid+"' ";
+				
+				try{
+					return Integer.toString(sessionFactory.getCurrentSession().
+						createSQLQuery(sql).executeUpdate());
+				}catch(Exception e){
+					return e.toString();
+				}
+	}
+
+	@Override
+	public String updateSentStatus(int eid, int sent_status) {
+		// TODO Auto-generated method stub
+		String sql = ""
+				+ "UPDATE openmrs.shr_action_error_log "
+				+ "SET sent_status = '"+sent_status+"' "
+				+ "WHERE eid = '"+eid+"'";
+		try{
+			return Integer.toString(sessionFactory.getCurrentSession().
+				createSQLQuery(sql).executeUpdate());
+		}catch(Exception e){
+			return e.toString();
+		}
 	}
 
 }

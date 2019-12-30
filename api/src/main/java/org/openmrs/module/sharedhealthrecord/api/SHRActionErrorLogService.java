@@ -17,4 +17,8 @@ public interface SHRActionErrorLogService extends OpenmrsService{
 	public void testInsert();
 	
 	public String delete_by_type_and_uuid(String action_type, String uuid);
+	
+	public String failedUpdate(String action_type,String uuid);
+	
+	public String updateSentStatus(int eid, int sent_status);
 }

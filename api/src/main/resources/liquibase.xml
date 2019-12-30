@@ -50,6 +50,16 @@
 			<column name="mid" type="varchar(255)" />			
 		</addColumn>
 	 </changeSet>
+	 <changeSet author="jysan" id="shr_action_error_log-1.0.3">
+	 	<addColumn tableName="shr_action_error_log">
+			<column name="voided" type="int(11)" />			
+		</addColumn>
+	 </changeSet>
+	 <changeSet author="jysan" id="shr_action_error_log-1.0.4">
+	 	<addColumn tableName="shr_action_error_log">
+			<column name="sent_status" type="int(11)" />			
+		</addColumn>
+	 </changeSet>
     <changeSet id="shr_external_patient-1.0.0" author="jysan">
     	<createTable tableName="shr_external_patient">
     		<column name="epid" type="int(11)" autoIncrement="true">
