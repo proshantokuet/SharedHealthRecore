@@ -75,7 +75,6 @@ public class SHRListener{
 				sendFailedPatient();
 			}catch(Exception e){
 				e.printStackTrace();
-				errorLogUpdate("FailedPatient",e.toString(),UUID.randomUUID().toString());
 			}
 			try{
 				sendPatient();
@@ -229,12 +228,7 @@ public class SHRListener{
 		List<SHRActionErrorLog> failedEncounters = Context.getService(SHRActionErrorLogService.class)
 				.get_list_by_Action_type("Encounter");
 //		errorLogUpdate("Encounter size",Integer.toString(failedEncounters.size()),UUID.randomUUID().toString());
-		for(SHRActionErrorLog encounter: failedEncounters){
-			
-//			errorLogUpdate("Encounter loop hits","Void:"+Integer.toString(encounter.getVoided())+
-//						" sent_status"+Integer.toString(encounter.getSent_status()),
-//					UUID.randomUUID().toString());
-			
+		for(SHRActionErrorLog encounter: failedEncounters){			
 			if(encounter.getVoided() < 2 && encounter.getSent_status() == 0){
 				try {
 					int val = encounter.getVoided() + 1;
@@ -274,7 +268,6 @@ public class SHRListener{
 				mid_ = mid.toString();
 			}
 		}catch(Exception e){
-//			errorLogMoneyReceipt("Money Receipt Error",e.toString(),mid_);
 			errorLogInsert("Money Receipt Error",e.toString(),mid_,0);
 		}
 		// catch will enter the data into shr_action_error_log table
@@ -364,7 +357,7 @@ public class SHRListener{
 		//patientUuid - patient's identity key.
 		//id - of event records - for updating last index of a table.
 		//failedPatient - flag to check which kind of encounter it is.
-		//</param>
+	//</param>
 	private Boolean patientFetchAndPost(String patientUUid,String id,int voidedStatus) throws ParseException, JSONException{
 		
 			JSONParser jsonParser = new JSONParser();

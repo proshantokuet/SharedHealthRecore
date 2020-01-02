@@ -38,6 +38,11 @@ public class SHRPatientFetchListener {
 		}catch(Exception e){
 			errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
 		}
+		try{
+			encounterFetchAndUpdateExecute();
+		}catch(Exception e){
+			
+		}
 		Context.closeSession();
 	}
 	
@@ -120,6 +125,7 @@ public class SHRPatientFetchListener {
 		 post = HttpUtil.post(url, "",postPatient);
 		}catch(Exception e){
 			errorLogUpdate("Patient Fetch Uuid",e.toString(),patientUuid);
+			
 		}
 		return post;
 	}
@@ -133,6 +139,54 @@ public class SHRPatientFetchListener {
 //		errorLogUpdate("patient Update to Central Server",get_result,patientUuid);
 	}
 	
+	public void encounterFetchAndUpdateExecute(){
+		List<String> encounterUuidList = new ArrayList<String>();
+		String postEncounterResponse = "";
+		try{
+			encounterUuidList = getEncounterUuidList();
+		}catch(Exception e){
+			errorLogUpdate("Encounter Uuid Fetch", e.toString(),UUID.randomUUID().toString());
+		}
+		
+		for(String encounterUuid: encounterUuidList){
+			String encounter = "";
+			try{
+				encounter = getEncounterInfo(encounterUuid);
+			}catch(Exception e){
+				errorLogUpdate("Encounter Fetch Uuid",e.toString(),encounterUuid);
+				return;
+			}
+			try{
+				 postEncounterResponse = postEncounterToLocalServer(encounter,encounterUuid);
+				 JSONObject response = new JSONObject(postEncounterResponse);
+				 //If condition on response
+				 updateExternalEncounter(encounterUuid);
+				 
+			}catch(Exception e){
+				
+			}
+		}
+	}
+	
+	public List<String> getEncounterUuidList(){
+		List<String> encounterUuidList = new ArrayList<String>();
+		
+		return encounterUuidList;
+	}
+	
+	private String getEncounterInfo(String encounterUuid){
+		String ret = "";
+		
+		return ret;
+	}
+	private void updateExternalEncounter(String encounterUuid){
+		
+	}
+	private String postEncounterToLocalServer(String postEncounter,String encounterUuid){
+		String ret = "";
+		
+		return ret;
+	}
 	public void errorLogUpdate(String type,String message, String uuId){
 		Context.clearSession();
 		Context.openSession();
