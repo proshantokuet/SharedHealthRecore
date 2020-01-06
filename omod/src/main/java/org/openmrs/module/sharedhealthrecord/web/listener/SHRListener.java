@@ -72,18 +72,18 @@ public class SHRListener{
 		
 		if(status){
 			try{
-//				sendFailedPatient();
+				sendFailedPatient();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			try{
-//				sendPatient();
+				sendPatient();
 
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			try{
-//				sendFailedEncounter();
+				sendFailedEncounter();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -93,12 +93,12 @@ public class SHRListener{
 				e.printStackTrace();
 			}
 			try{
-//				sendFailedMoneyReceipt();
+				sendFailedMoneyReceipt();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			try{
-//				sendMoneyReceipt();
+				sendMoneyReceipt();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -133,7 +133,6 @@ public class SHRListener{
 					
 					//Init voidedStatus will be 0 in this case
 					patientFetchAndPost(patientUUid,Integer.toString(rec.getId()),0);
-//					errorLogUpdate("patient","Patient Update/Add Check",patientUUid);
 				} catch (JSONException e) {					
 					errorLogInsert("Patient",e.toString(),patientUUid,0);
 				}
@@ -185,7 +184,6 @@ public class SHRListener{
 					.updateSentStatus(failPat.getEid(), flag == true ? 1 :0);
 					
 				} catch (JSONException e1) {
-					// TODO Auto-generated catch block
 					errorLogInsert("Patient",e1.toString(),failPat.getUuid(),failPat.getVoided());
 					e1.printStackTrace();
 				}
@@ -230,18 +228,15 @@ public class SHRListener{
 	public void sendFailedEncounter(){
 		List<SHRActionErrorLog> failedEncounters = Context.getService(SHRActionErrorLogService.class)
 				.get_list_by_Action_type("Encounter");
-//		errorLogUpdate("Encounter size",Integer.toString(failedEncounters.size()),UUID.randomUUID().toString());
 		for(SHRActionErrorLog encounter: failedEncounters){			
 			if(encounter.getVoided() < 2 && encounter.getSent_status() == 0){
 				try {
 					int val = encounter.getVoided() + 1;
-//					errorLogUpdate("Encounter Object",encounter.toString(),encounter.getUuid());
 					Boolean flag = encounterFetchAndPost(encounter.getUuid(),"",
 							val);	
 					Context.getService(SHRActionErrorLogService.class)
 						.updateSentStatus(encounter.getEid(), flag == true ? 1 :0);
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
 					errorLogInsert("Encounter","Encounter Error",encounter.getUuid(),encounter.getVoided()+1);
 					e.printStackTrace();
 				}
@@ -458,10 +453,10 @@ public class SHRListener{
 	//</param>
 	private Boolean encounterFetchAndPost(String encounterUuid, String id,int voidedStatus) throws ParseException{
 		JSONParser jsonParser = new JSONParser();
-		errorLogInsert("Encounter Hits","Encounter Hitting",encounterUuid,0);
 		Boolean visitFlagError = false;
 			
 			try{
+				//Get Encounter Info From Local Server
 				String getUrl = localServer + "openmrs/ws/rest/v1/bahmnicore/bahmniencounter/"
 						+ encounterUuid + "?includeAll=true";
 				String response = "";
@@ -472,6 +467,7 @@ public class SHRListener{
 					return false;
 				}
 				
+				//Encounter Response Formatting
 				JSONObject encounterResponse = new JSONObject(response);
 				org.json.simple.JSONObject enc_response = new org.json.simple.JSONObject();
 				try{
@@ -481,6 +477,8 @@ public class SHRListener{
 					errorLogInsert("Encounter",e.toString(),encounterUuid,voidedStatus);
 					return false;
 				}
+				
+				//Fetching visit from Encounter
 				String visitUuid = enc_response.get("visitUuid").toString();
 				String visitFetchUrl = "";
 				String vis_global_response = "";
@@ -496,8 +494,8 @@ public class SHRListener{
 					errorLogInsert("Encounter","Encounter Search Error"+e.toString(),encounterUuid,voidedStatus);
 					return false;
 				}
-				//Central Server Visit Existence Check
-		
+				
+				//Visit Response Parsing
 				JSONParser jsonParser1 = new JSONParser();
 				org.json.simple.JSONObject visitFetchJsonObj = (org.json.simple.JSONObject) 
 						jsonParser1.parse(vis_global_response);
@@ -505,6 +503,7 @@ public class SHRListener{
 				String vis_response = "";
 				//IF Not exist proceed to create Visit on Central Server	
 				if(visitFetchJsonObj.get("isFound").toString().contains("false")){
+					//Local Server Visit Fetch
 					String vis_url =  localServer+
 							"openmrs/ws/rest/v1/save-Patient/search/patientVisitByUuid?visit_uuid="+visitUuid;
 					try{ 
@@ -514,8 +513,9 @@ public class SHRListener{
 								,encounterUuid,voidedStatus);
 						return false;
 					}
-//					 errorLogUpdate("Encounter visit Local Fetch",vis_response,encounterUuid);
+					
 					org.json.simple.JSONObject visit_response = new org.json.simple.JSONObject();
+					//Visit Response Parsing
 					try{
 					 visit_response = (org.json.simple.JSONObject) jsonParser.parse(vis_response);
 					}catch(Exception e){
@@ -524,14 +524,12 @@ public class SHRListener{
 						return false;
 					}
 					String createVisit_ = "";
-					
+					//Create Visit in Central Server
 					try{ 
 						createVisit_ = createVisit(visit_response,enc_response.get("patientUuid").toString());
 						JSONObject createVisitResponse = new JSONObject(createVisit_);
 						visitFlagError = createVisitResponse.get("isSuccessfull").toString().contains("true")
 											? false: true;
-						
-						
 					}catch(Exception e){
 						errorLogInsert("Encounter","Create Visit Error:"+e.toString(),
 								encounterUuid,voidedStatus);
@@ -577,10 +575,8 @@ public class SHRListener{
 //				enc_response.remove("observations");
 				org.json.simple.JSONObject encounter = (org.json.simple.JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(enc_response.toString(),Encounter.class)));
 				encounter.put("observations", obs);
-//				errorLogUpdate("Encounter Post Json Format",encounter.toString(),encounterUuid);
-				
-				errorLogInsert("Encounter global Search","Start",encounterUuid,0);
-				//Encounter Check in Global Or Not
+
+				//Encounter  Existence Check in Global Server
 				String searchEncounterUrl = centralServer + "openmrs/ws/rest/v1/bahmnicore/bahmniencounter/"
 						+ encounterUuid + "?includeAll=true";
 				String globalEncounterResponse = "";
@@ -591,26 +587,18 @@ public class SHRListener{
 							encounterUuid,voidedStatus);
 					return false;
 				}
-				errorLogInsert("Encounter global Search",globalEncounterResponse,encounterUuid,0);
+				
+				//Json Parsing
 				JSONObject globalSearchEncounter = new JSONObject(globalEncounterResponse);
 				
 				
 				//If found on Global Server then delete Encounter
 				if(globalSearchEncounter.has("encounterUuid")){
-					String deleteWithoutPurge = 
-							centralServer+"openmrs/ws/rest/v1/encounter/"+encounterUuid;
-					String deleteFirst = HttpUtil.delete(deleteWithoutPurge, "", "admin:test");
-					//delete encounter
-//					errorLogInsert("Error Log Delete ",deleteFirst,encounterUuid,0);
-					String deleteUrlString = 
-							centralServer+"openmrs/ws/rest/v1/encounter/"+encounterUuid
-					+"?purge=true";
-					String result = HttpUtil.delete(deleteUrlString, "", "admin:test");
-//					errorLogInsert("Error Log Delete ","Error Log With Purge",encounterUuid,0);
+					deleteEncounter(encounterUuid);
 				}
 				
 				
-				//Post Encounter 
+				//Post Encounter to Global Server
 				try{
 					String postResponse = HttpUtil.post(postUrl, "", encounter.toJSONString());
 //					errorLogUpdate("Encounter Post Final",postResponse,encounterUuid);
@@ -619,7 +607,7 @@ public class SHRListener{
 							encounterUuid,voidedStatus);
 					return false;
 				}
-				
+				//voided Status Increment
 				if(voidedStatus == 0){					
 					String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
 					.updateAuditEncounter(id);					
@@ -796,6 +784,18 @@ public class SHRListener{
 		return jsonPostMoneyReceipt.toString();
 	}
 	
+	
+	private void deleteEncounter(String encounterUuid){
+		String deleteWithoutPurge = 
+				centralServer+"openmrs/ws/rest/v1/encounter/"+encounterUuid;
+		String deleteFirst = HttpUtil.delete(deleteWithoutPurge, "", "admin:test");
+		//delete encounter
+//		errorLogInsert("Error Log Delete ",deleteFirst,encounterUuid,0);
+		String deleteUrlString = 
+				centralServer+"openmrs/ws/rest/v1/encounter/"+encounterUuid
+		+"?purge=true";
+		String result = HttpUtil.delete(deleteUrlString, "", "admin:test");
+	}
 	
 	
 }
