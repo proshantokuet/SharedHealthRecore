@@ -64,4 +64,19 @@ protected final Log log = LogFactory.getLog(this.getClass());
 			return null;
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHRExternalPatient findExternalPatientByEncounterUUid(String encounterUuid) {
+		List<SHRExternalPatient> shrExternalPatientEncounter = sessionFactory
+				.getCurrentSession()
+				.createQuery(
+						"from SHRExternalPatient where encounter_uuid = :encounterid and action_type = 'encounter'")
+				.setString("encounterid", encounterUuid).list();
+		if (shrExternalPatientEncounter.size() != 0) {
+			return shrExternalPatientEncounter.get(0);
+		} else {
+			return null;
+		}
+	}
 }

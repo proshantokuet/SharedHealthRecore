@@ -8,5 +8,5 @@ public interface SHRPatientOriginDAO {
 
 	public SHRPatientOrigin savePatientOrigin (SHRPatientOrigin shrPatientOrigin);
 	
-	public List<SHRPatientOrigin> getpatientOriginByOriginName (String originName);
+	public List<SHRPatientOrigin> getpatientOriginByOriginName (String originName, String actionType);
 }

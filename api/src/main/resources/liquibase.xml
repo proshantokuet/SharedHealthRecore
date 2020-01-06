@@ -71,4 +71,9 @@
     		<column name="uuid" type="varchar(255)"/>
     	</createTable>
     </changeSet>
+    <changeSet author="jysan" id="shr_external_patient-1.0.1">
+	 	<addColumn tableName="shr_external_patient">
+			<column name="encounter_uuid" type="varchar(255)" />		
+		</addColumn>
+	 </changeSet>
 </databaseChangeLog>
