@@ -214,14 +214,14 @@ public class SHRListener{
 			else {
 				//If found and Send_to_central =1 then Send
 				if(encounterToSend != null){
-					String externalPatientUpdateUrl = centralServer + 
+					String externalEncounterUpdateUrl = centralServer + 
 							"openmrs/ws/rest/v1/save-Patient/insert/"
 							+ "externalPatientEncounter?patient_uuid="
 								+encounterToSend.getPatient_uuid()+
 								"&encounterUuid="+encounterToSend.getEncounter_uuid()+
 								"&actionStatus=1";
 					
-					String get_result = HttpUtil.get(externalPatientUpdateUrl, "", "admin:test");
+					String get_result = HttpUtil.get(externalEncounterUpdateUrl, "", "admin:test");
 //	
 					encounterFetchAndPost(encounterUUid,Integer.toString(rec.getId()),0);
 					
