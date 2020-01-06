@@ -41,7 +41,7 @@ protected final Log log = LogFactory.getLog(this.getClass());
 	@Override
 	public List<SHRExternalPatient> findByPatientUuid(String patientUuid,
 			String type) {
-		// TODO Auto-generated method stub
+		
 		List<SHRExternalPatient> ret = sessionFactory.getCurrentSession().
 				createQuery(" from SHRExternalPatient "
 				+ " where patient_uuid = '"+patientUuid+"'"

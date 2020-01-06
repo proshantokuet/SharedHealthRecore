@@ -11,6 +11,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sharedhealthrecord.SHRActionErrorLog;
+import org.openmrs.module.sharedhealthrecord.SHRExternalEncounter;
 import org.openmrs.module.sharedhealthrecord.api.SHRActionErrorLogService;
 import org.openmrs.module.sharedhealthrecord.domain.Encounter;
 import org.openmrs.module.sharedhealthrecord.utils.HttpUtil;
@@ -91,7 +92,7 @@ public class SHRPatientFetchListener {
 		
 		String url = centralServer + 
 				"openmrs/ws/rest/v1/save-Patient/search/patientOriginByOriginName?"
-				+ "originName="+localServer;
+				+ "originName="+localServer+"?actionType=patient";
 		String patientList = HttpUtil.get(url, "", "admin:test");
 		JSONArray getPatientList = new JSONArray(patientList);
 		
@@ -147,7 +148,7 @@ public class SHRPatientFetchListener {
 	}
 	
 	public void encounterFetchAndUpdateExecute() throws JSONException, JsonSyntaxException, ParseException{
-		List<String> encounterUuidList = new ArrayList<String>();
+		List<SHRExternalEncounter> encounterUuidList = new ArrayList<SHRExternalEncounter>();
 		String postEncounterResponse = "";
 		try{
 			encounterUuidList = getEncounterUuidList();
@@ -155,8 +156,10 @@ public class SHRPatientFetchListener {
 			errorLogUpdate("Encounter Uuid Fetch", e.toString(),UUID.randomUUID().toString());
 		}
 		
-		for(String encounterUuid: encounterUuidList){
+		for(SHRExternalEncounter _encounter: encounterUuidList){
 			String encounter = "";
+			String patientUuid = _encounter.getPatientUuid();
+			String encounterUuid = _encounter.getEncounterUuid();
 			try{
 				encounter = getEncounterInfo(encounterUuid);
 			}catch(Exception e){
@@ -222,7 +225,7 @@ public class SHRPatientFetchListener {
 			try{
 				String postResponse = HttpUtil.post(postUrl, "", encounter_.toJSONString());
 //				errorLogUpdate("Encounter Post Final",postResponse,encounterUuid);
-				updateExternalEncounter(encounterUuid);
+				updateExternalEncounter(patientUuid,encounterUuid);
 			}catch(Exception e){
 				errorLogUpdate("Encounter","Encounter post error:"+e.toString(),
 						encounterUuid);
@@ -232,10 +235,24 @@ public class SHRPatientFetchListener {
 		}
 	}
 	
-	public List<String> getEncounterUuidList(){
-		List<String> encounterUuidList = new ArrayList<String>();
+	public List<SHRExternalEncounter> getEncounterUuidList() throws JSONException{
+		List<SHRExternalEncounter> encounterList = new ArrayList<SHRExternalEncounter>();
 		
-		return encounterUuidList;
+		String url = centralServer + 
+				"openmrs/ws/rest/v1/save-Patient/search/patientOriginByOriginName?"
+				+ "originName="+localServer+"?actionType=encounter";
+		String response = HttpUtil.get(url, "", "admin:test");
+		JSONArray getEncounterList = new JSONArray(response);
+		
+		for(int i = 0; i < getEncounterList.length();i++){
+			JSONObject encounterObject = getEncounterList.getJSONObject(i);
+//			patientUuidList.add(patientObject.get("patient_uuid").toString());
+			SHRExternalEncounter encounter = new SHRExternalEncounter();
+			encounter.setEncounterUuid(encounterObject.get("encounterUuid").toString());
+			encounter.setPatientUuid(encounterObject.get("patient_uuid").toString());
+			encounterList.add(encounter);
+		}
+		return encounterList;
 	}
 	
 	private String getEncounterInfo(String encounterUuid) throws JSONException{
@@ -252,8 +269,12 @@ public class SHRPatientFetchListener {
 		JSONObject encounterResponse = new JSONObject(response);
 		return encounterResponse.toString();
 	}
-	private void updateExternalEncounter(String encounterUuid){
-		
+	private void updateExternalEncounter(String patientUuid,String encounterUuid){
+		String externalPatientEncounterUpdateUrl = centralServer + 
+				"openmrs/ws/rest/v1/save-Patient/insert/"
+				+ "externalPatientEncounter?patient_uuid="+patientUuid+"&encounterUuid="
+					+encounterUuid+"&actionStatus=0";
+		String get_result = HttpUtil.get(externalPatientEncounterUpdateUrl, "", "admin:test");
 	}
 	private String postEncounterToLocalServer(String postEncounter,String encounterUuid){
 		String ret = "";

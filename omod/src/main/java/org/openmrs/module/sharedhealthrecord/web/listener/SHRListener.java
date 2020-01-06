@@ -204,18 +204,27 @@ public class SHRListener{
 			String encounterUUid = rec.getObject().split("/|\\?")[7];
 			
 			//External Patient Table Searching using this encounterUUid
-			List<SHRExternalPatient> patientsToSend = Context.
-					getService(SHRExternalPatientService.class).
-						findByPatientUuid(encounterUUid,"Encounter");
+			SHRExternalPatient encounterToSend = Context.
+					getService(SHRExternalPatientService.class).findExternalPatientByEncounterUUid(encounterUUid);
 			
 			//If not found then Send
-			if(patientsToSend.size() == 0){
+			if(encounterToSend == null){
 				encounterFetchAndPost(encounterUUid,Integer.toString(rec.getId()),0);				
 			}
 			else {
 				//If found and Send_to_central =1 then Send
-				if(patientsToSend.get(0).getIs_send_to_central().contains("1")){
+				if(encounterToSend != null){
+					String externalPatientUpdateUrl = centralServer + 
+							"openmrs/ws/rest/v1/save-Patient/insert/"
+							+ "externalPatientEncounter?patient_uuid="
+								+encounterToSend.getPatient_uuid()+
+								"&encounterUuid="+encounterToSend.getEncounter_uuid()+
+								"&actionStatus=1";
+					
+					String get_result = HttpUtil.get(externalPatientUpdateUrl, "", "admin:test");
+//	
 					encounterFetchAndPost(encounterUUid,Integer.toString(rec.getId()),0);
+					
 				}
 				else {
 					// do nothing
