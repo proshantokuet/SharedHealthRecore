@@ -50,14 +50,17 @@ public class SHRPatientFetchListener {
 		//fetch patient 
 		List<String> patientUuidList = new ArrayList<String>();
 		String postPatientResponse = "";
+		//Getting the changed local patient which is in the global server
 		try{
 			patientUuidList = getPatientUuidList();
 		}catch(Exception e){
 			errorLogUpdate("Patient Uuid Fetch", e.toString(),UUID.randomUUID().toString());
 		}
+		//Iterating patient list
 		for(String patientUuid: patientUuidList){
 			String patient = "";
 			try {
+				 // Fetching patient info
 				 patient = getPatientInfo(patientUuid);		 
 			} catch (JSONException | ParseException e) {
 				errorLogUpdate("Patient Uuid Fetch",e.toString(),patientUuid);

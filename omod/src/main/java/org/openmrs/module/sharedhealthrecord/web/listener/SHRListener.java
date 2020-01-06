@@ -72,18 +72,18 @@ public class SHRListener{
 		
 		if(status){
 			try{
-				sendFailedPatient();
+//				sendFailedPatient();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			try{
-				sendPatient();
+//				sendPatient();
 
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			try{
-				sendFailedEncounter();
+//				sendFailedEncounter();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -93,12 +93,12 @@ public class SHRListener{
 				e.printStackTrace();
 			}
 			try{
-				sendFailedMoneyReceipt();
+//				sendFailedMoneyReceipt();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			try{
-				sendMoneyReceipt();
+//				sendMoneyReceipt();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -109,7 +109,6 @@ public class SHRListener{
 	}
 	
 	public void sendPatient() throws ParseException{
-		JSONParser jsonParser = new JSONParser();
 		
 		String last_entry = Context.getService(SHRActionAuditInfoService.class)
 				.getLastEntryForPatient();
@@ -201,18 +200,22 @@ public class SHRListener{
 				.getLastEntryForEncounter();
 		List<EventRecordsDTO> records = Context.getService(SHRActionAuditInfoService.class)
 				.getEventRecords("Encounter",last_entry);
-		
+//		errorLogInsert("Encounter Hits","Encounter Hitting","Testing",0);
 		JSONParser jsonParser = new JSONParser();
 		for(EventRecordsDTO rec: records){
 			String encounterUUid = rec.getObject().split("/|\\?")[7];
+			
+			//External Patient Table Searching using this encounterUUid
 			List<SHRExternalPatient> patientsToSend = Context.
 					getService(SHRExternalPatientService.class).
 						findByPatientUuid(encounterUUid,"Encounter");
 			
+			//If not found then Send
 			if(patientsToSend.size() == 0){
 				encounterFetchAndPost(encounterUUid,Integer.toString(rec.getId()),0);				
 			}
 			else {
+				//If found and Send_to_central =1 then Send
 				if(patientsToSend.get(0).getIs_send_to_central().contains("1")){
 					encounterFetchAndPost(encounterUUid,Integer.toString(rec.getId()),0);
 				}
@@ -455,9 +458,9 @@ public class SHRListener{
 	//</param>
 	private Boolean encounterFetchAndPost(String encounterUuid, String id,int voidedStatus) throws ParseException{
 		JSONParser jsonParser = new JSONParser();
+		errorLogInsert("Encounter Hits","Encounter Hitting",encounterUuid,0);
 		Boolean visitFlagError = false;
 			
-			Boolean status = false;
 			try{
 				String getUrl = localServer + "openmrs/ws/rest/v1/bahmnicore/bahmniencounter/"
 						+ encounterUuid + "?includeAll=true";
@@ -465,7 +468,6 @@ public class SHRListener{
 				try{
 					response = HttpUtil.get(getUrl, "", "admin:test");					
 				}catch(Exception e){
-					SHRActionErrorLog logN = new SHRActionErrorLog();
 					errorLogInsert("Encounter","Encounter get Error:"+response,encounterUuid,voidedStatus);
 					return false;
 				}
@@ -566,13 +568,49 @@ public class SHRListener{
 				//Encounter Post
 				String postUrl = centralServer + "openmrs/ws/rest/v1/bahmnicore/bahmniencounter";
 				
-				//Observation Add
-				///Observations Needs to be checked
+				//Finding Add or Update Action for Post Url
+				
+				
+				
+				
 				org.json.simple.JSONArray obs = SharedHealthRecordManageRestController.getObservations((org.json.simple.JSONArray)enc_response.get("observations"));
 //				enc_response.remove("observations");
 				org.json.simple.JSONObject encounter = (org.json.simple.JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(enc_response.toString(),Encounter.class)));
 				encounter.put("observations", obs);
 //				errorLogUpdate("Encounter Post Json Format",encounter.toString(),encounterUuid);
+				
+				errorLogInsert("Encounter global Search","Start",encounterUuid,0);
+				//Encounter Check in Global Or Not
+				String searchEncounterUrl = centralServer + "openmrs/ws/rest/v1/bahmnicore/bahmniencounter/"
+						+ encounterUuid + "?includeAll=true";
+				String globalEncounterResponse = "";
+				try{
+					globalEncounterResponse = HttpUtil.get(searchEncounterUrl, "", "admin:test");
+				}catch(Exception e){
+					errorLogInsert("Encounter","Encounter Global Search error:"+e.toString(),
+							encounterUuid,voidedStatus);
+					return false;
+				}
+				errorLogInsert("Encounter global Search",globalEncounterResponse,encounterUuid,0);
+				JSONObject globalSearchEncounter = new JSONObject(globalEncounterResponse);
+				
+				
+				//If found on Global Server then delete Encounter
+				if(globalSearchEncounter.has("encounterUuid")){
+					String deleteWithoutPurge = 
+							centralServer+"openmrs/ws/rest/v1/encounter/"+encounterUuid;
+					String deleteFirst = HttpUtil.delete(deleteWithoutPurge, "", "admin:test");
+					//delete encounter
+//					errorLogInsert("Error Log Delete ",deleteFirst,encounterUuid,0);
+					String deleteUrlString = 
+							centralServer+"openmrs/ws/rest/v1/encounter/"+encounterUuid
+					+"?purge=true";
+					String result = HttpUtil.delete(deleteUrlString, "", "admin:test");
+//					errorLogInsert("Error Log Delete ","Error Log With Purge",encounterUuid,0);
+				}
+				
+				
+				//Post Encounter 
 				try{
 					String postResponse = HttpUtil.post(postUrl, "", encounter.toJSONString());
 //					errorLogUpdate("Encounter Post Final",postResponse,encounterUuid);

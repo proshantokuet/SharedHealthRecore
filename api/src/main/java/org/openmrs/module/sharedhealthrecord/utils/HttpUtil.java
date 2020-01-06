@@ -139,5 +139,23 @@ public class HttpUtil {
 		
 	}
 	
+	public static String delete(String url, String payload, String authString) {
+		try {
+			HttpDelete request = (HttpDelete) makeConnection(url, payload, RequestMethod.DELETE, AuthType.BASIC, authString);
+			org.apache.http.HttpResponse response = httpClient.execute(request);
+			
+			int statusCode = response.getStatusLine().getStatusCode();
+			String entity = "";
+			if (response.getEntity() != null) {
+				entity = IOUtils.toString(response.getEntity().getContent());
+			}
+			return entity;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+	
 	
 }

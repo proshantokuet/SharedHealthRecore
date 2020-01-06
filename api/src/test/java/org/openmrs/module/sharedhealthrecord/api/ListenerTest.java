@@ -1,11 +1,14 @@
 package org.openmrs.module.sharedhealthrecord.api;
 
+
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.http.client.methods.HttpDelete;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -21,7 +24,9 @@ import org.openmrs.module.sharedhealthrecord.domain.MoneyReceiptDTO;
 import org.openmrs.module.sharedhealthrecord.domain.PersonAddress;
 import org.openmrs.module.sharedhealthrecord.domain.PreferredName;
 import org.openmrs.module.sharedhealthrecord.utils.HttpUtil;
+import org.openmrs.module.sharedhealthrecord.utils.HttpUtil.AuthType;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.json.JSONTokener;
 
 import com.google.gson.Gson;
@@ -35,7 +40,7 @@ public class ListenerTest extends BaseModuleContextSensitiveTest {
 	String localServer = "http://192.168.19.145/";
 	String centralServer="https://192.168.19.147/";
 	
-	@Test
+//   @Test
 	public void sendPatient() throws ParseException, JSONException{
 		JSONParser jsonParser = new JSONParser();
 //		String last_entry = Context.getService(SHRActionAuditInfoService.class)
@@ -134,7 +139,7 @@ public class ListenerTest extends BaseModuleContextSensitiveTest {
 
 	}
 	
-	@Test
+//	@Test
 	public void sendEncounter() throws ParseException{
 //		String last_entry = Context.getService(SHRActionAuditInfoService.class)
 //				.getLastEntryForEncounter();
@@ -233,7 +238,7 @@ public class ListenerTest extends BaseModuleContextSensitiveTest {
 			}		
 		}
 	
-	@Test
+//	@Test
 	public void sendMoneyReceipt(){
 		JSONParser jsonParser = new JSONParser();
 		// Check shr_action_audit_info for last sent timestamp
@@ -393,6 +398,19 @@ public class ListenerTest extends BaseModuleContextSensitiveTest {
 		}
 	}
 
-	
+	@Test
+	public void encounterDeleteApiTesting(){
+		String encounterUuid = "8d0ad6ba-d27f-4242-ad15-0cff06b3ed64";
+		String deleteWithoutPurge = 
+				centralServer+"openmrs/ws/rest/v1/encounter/"+encounterUuid;
+		String deleteFirst = HttpUtil.delete(deleteWithoutPurge, "", "admin:test");
+		//delete encounter
+//		errorLogInsert("Error Log Delete ","Error Log Without Purge",deleteFirst,0);
+		String deleteUrlString = 
+				centralServer+"openmrs/ws/rest/v1/encounter/"+encounterUuid
+		+"?purge=true";
+		String result = HttpUtil.delete(deleteUrlString, "", "admin:test");
+//		errorLogInsert("Error Log Delete ","Error Log With Purge",result,0);
+	}
 
 }
