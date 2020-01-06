@@ -9,6 +9,7 @@ public class SHRExternalPatient extends BaseOpenmrsObject implements Serializabl
 	 private int epid;
 	 private String action_type;
 	 private String patient_uuid;
+	 private String encounter_uuid;
 	 private String is_send_to_central;
 	 
 	 
@@ -34,6 +35,14 @@ public class SHRExternalPatient extends BaseOpenmrsObject implements Serializabl
 
 	public void setPatient_uuid(String patient_uuid) {
 		this.patient_uuid = patient_uuid;
+	}
+
+	public String getEncounter_uuid() {
+		return encounter_uuid;
+	}
+
+	public void setEncounter_uuid(String encounter_uuid) {
+		this.encounter_uuid = encounter_uuid;
 	}
 
 	public String getIs_send_to_central() {

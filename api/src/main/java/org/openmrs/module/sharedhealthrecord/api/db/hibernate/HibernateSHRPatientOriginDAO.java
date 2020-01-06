@@ -42,15 +42,16 @@ protected final Log log = LogFactory.getLog(this.getClass());
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<SHRPatientOrigin> getpatientOriginByOriginName(String originName) {
+	public List<SHRPatientOrigin> getpatientOriginByOriginName(String originName, String actionType) {
 		String patientOriginSql = ""
 				+ "SELECT DISTINCT ep.patient_uuid, "
 				+ "       ep.action_type, "
-				+ "       po.patient_origin "
+				+ "       po.patient_origin, "
+				+ "       ep.encounter_uuid "
 				+ "FROM   shr_external_patient AS ep "
 				+ "       JOIN shr_patient_origin po "
 				+ "         ON ep.patient_uuid = po.patient_uuid "
-				+ "WHERE  ep.action_type = 'patient' "
+				+ "WHERE  ep.action_type = '"+actionType+"' "
 				+ "       AND po.patient_origin = '"+originName+"' AND ep.is_send_to_central = '1'";
 
 		List<SHRPatientOrigin> shrPatientOrigins = new ArrayList<SHRPatientOrigin>();
@@ -59,8 +60,9 @@ protected final Log log = LogFactory.getLog(this.getClass());
 					.getCurrentSession()
 					.createSQLQuery(patientOriginSql)
 					.addScalar("patient_uuid", StandardBasicTypes.STRING)
-					.addScalar("patient_origin", StandardBasicTypes.STRING)
 					.addScalar("action_type", StandardBasicTypes.STRING)
+					.addScalar("patient_origin", StandardBasicTypes.STRING)
+					.addScalar("encounter_uuid", StandardBasicTypes.STRING)
 					.setResultTransformer(
 							new AliasToBeanResultTransformer(
 									SHRPatientOrigin.class)).list();

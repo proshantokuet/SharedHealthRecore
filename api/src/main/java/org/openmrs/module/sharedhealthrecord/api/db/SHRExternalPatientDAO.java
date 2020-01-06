@@ -6,4 +6,6 @@ public interface SHRExternalPatientDAO {
 	public SHRExternalPatient saveExternalPatient(SHRExternalPatient externalPatient);
 	
 	public SHRExternalPatient findExternalPatientByPatientUUid (String patientUuid);
+	
+	public SHRExternalPatient findExternalPatientByEncounterUUid (String encounterUuid);
 }

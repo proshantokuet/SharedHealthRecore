@@ -14,6 +14,8 @@ public class SHRPatientOrigin  extends BaseOpenmrsObject implements Serializable
 	private String patient_origin;
 	
 	private String action_type;
+	
+	private String encounter_uuid;
 
 	public int getOriginId() {
 		return originId;
@@ -45,6 +47,14 @@ public class SHRPatientOrigin  extends BaseOpenmrsObject implements Serializable
 
 	public void setAction_type(String action_type) {
 		this.action_type = action_type;
+	}
+
+	public String getEncounter_uuid() {
+		return encounter_uuid;
+	}
+
+	public void setEncounter_uuid(String encounter_uuid) {
+		this.encounter_uuid = encounter_uuid;
 	}
 
 	@Override
