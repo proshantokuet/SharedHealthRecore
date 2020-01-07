@@ -25,6 +25,7 @@ import org.openmrs.module.sharedhealthrecord.domain.ObservationWithValues;
 import org.openmrs.module.sharedhealthrecord.domain.PersonAddress;
 import org.openmrs.module.sharedhealthrecord.domain.PreferredName;
 import org.openmrs.module.sharedhealthrecord.utils.HttpUtil;
+import org.openmrs.module.sharedhealthrecord.utils.ServerAddress;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,10 +40,10 @@ import com.google.gson.Gson;
 @RestController
 public class SharedHealthRecordManageRestController {
 	
-	private final static String baseOpenmrsUrl = "https://192.168.19.147";
-	
-	private final static String globalServerUrl = "https://192.168.19.145";
-	
+//	private final static String baseOpenmrsUrl = "https://192.168.19.147";
+	private final static String baseOpenmrsUrl = ServerAddress.centralServer();
+//	private final static String globalServerUrl = "https://192.168.19.145";
+	private final static String globalServerUrl = ServerAddress.localServer();
 	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@RequestMapping(value = "/patient/toLocalServer", method = RequestMethod.GET)

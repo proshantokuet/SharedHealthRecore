@@ -22,6 +22,7 @@ import org.openmrs.module.sharedhealthrecord.domain.Encounter;
 import org.openmrs.module.sharedhealthrecord.domain.EventRecordsDTO;
 import org.openmrs.module.sharedhealthrecord.domain.MoneyReceiptDTO;
 import org.openmrs.module.sharedhealthrecord.utils.HttpUtil;
+import org.openmrs.module.sharedhealthrecord.utils.ServerAddress;
 import org.openmrs.module.sharedhealthrecord.web.controller.rest.SharedHealthRecordManageRestController;
 import org.openmrs.scheduler.tasks.AbstractTask;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +47,13 @@ import org.slf4j.LoggerFactory;
 public class SHRListener{
 	
 	
-	String localServer = "https://192.168.19.145/";
+//	String localServer = "https://192.168.19.145/";
 //	String localServer = "https://192.168.19.147/";
 //	String localServer = "http://192.168.33.10/";
-	String centralServer="https://192.168.19.147/";
+//	String centralServer="https://192.168.19.147/";
 //	String centralServer = "https://192.168.33.10/";
+	String localServer = ServerAddress.localServer();
+	String centralServer = ServerAddress.centralServer();
 	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@SuppressWarnings("rawtypes")
@@ -426,15 +429,18 @@ public class SHRListener{
 					
 					returnedResult = HttpUtil.post(patientPostUrl, "", postData);
 //					errorLogUpdate("patient post",returnedResult,patientUUid);
-					String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
-						insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+localServer;
-						
-					String get = "";
-					try{
-						get = HttpUtil.get(insertUrl, "", "admin:test");
-					}catch(Exception e){
-						errorLogInsert("Patient","Local Server Save Info Error:" + e.toString(),patientUUid,voidedStatus);
-						return false;
+					//origin table will be inserted in global server for addition only
+					if(patienResponseCheck.has("error")){
+						String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
+							insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+localServer;
+							
+						String get = "";
+						try{
+							get = HttpUtil.get(insertUrl, "", "admin:test");
+						}catch(Exception e){
+							errorLogInsert("Patient","Local Server Save Info Error:" + e.toString(),patientUUid,voidedStatus);
+							return false;
+						}
 					}
 				
 				}catch(Exception e){
