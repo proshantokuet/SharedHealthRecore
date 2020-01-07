@@ -4,7 +4,7 @@ public class ServerAddress {
 		
 	public static String localServer(){
 		
-		return "https://192.168.19.145/";
+		return "https://192.168.19.147/";
 	}
 	
 	public static String centralServer(){

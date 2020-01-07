@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.jfree.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,6 +18,8 @@ import org.openmrs.module.sharedhealthrecord.domain.Encounter;
 import org.openmrs.module.sharedhealthrecord.utils.HttpUtil;
 import org.openmrs.module.sharedhealthrecord.utils.ServerAddress;
 import org.openmrs.module.sharedhealthrecord.web.controller.rest.SharedHealthRecordManageRestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -34,14 +37,14 @@ import com.google.gson.JsonSyntaxException;
 public class SHRPatientFetchListener {
 	String localServer = ServerAddress.localServer();
 	String centralServer = ServerAddress.centralServer();
-	
+	private static final Logger log = LoggerFactory.getLogger(SHRPatientFetchListener.class);
 	public void fetchAndUpdatePatient(){
 		Context.openSession();
 //		errorLogUpdate("Patient Fetch Problem","Hitting in Patient Fetch",UUID.randomUUID().toString());
 		try{
 			patientFetchAndUpdateExecute();
 		}catch(Exception e){
-			errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
+//			errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
 		}
 		try{
 			encounterFetchAndUpdateExecute();
@@ -59,7 +62,8 @@ public class SHRPatientFetchListener {
 		try{
 			patientUuidList = getPatientUuidList();
 		}catch(Exception e){
-			errorLogUpdate("Patient Uuid Fetch", e.toString(),UUID.randomUUID().toString());
+//			errorLogUpdate("Patient Uuid Fetch", e.toString(),UUID.randomUUID().toString());
+			return;
 		}
 		//Iterating patient list
 		for(String patientUuid: patientUuidList){
@@ -92,7 +96,8 @@ public class SHRPatientFetchListener {
 		
 		String url = centralServer + 
 				"openmrs/ws/rest/v1/save-Patient/search/patientOriginByOriginName?"
-				+ "originName="+localServer+"?actionType=patient";
+				+ "originName="+localServer+"&actionType=patient";
+		log.error("patient external Check"+url);
 		String patientList = HttpUtil.get(url, "", "admin:test");
 		JSONArray getPatientList = new JSONArray(patientList);
 		
@@ -153,7 +158,8 @@ public class SHRPatientFetchListener {
 		try{
 			encounterUuidList = getEncounterUuidList();
 		}catch(Exception e){
-			errorLogUpdate("Encounter Uuid Fetch", e.toString(),UUID.randomUUID().toString());
+//			errorLogUpdate("Encounter Uuid Fetch", e.toString(),UUID.randomUUID().toString());
+			return;
 		}
 		
 		for(SHRExternalEncounter _encounter: encounterUuidList){
@@ -240,7 +246,7 @@ public class SHRPatientFetchListener {
 		
 		String url = centralServer + 
 				"openmrs/ws/rest/v1/save-Patient/search/patientOriginByOriginName?"
-				+ "originName="+localServer+"?actionType=encounter";
+				+ "originName="+localServer+"&actionType=encounter";
 		String response = HttpUtil.get(url, "", "admin:test");
 		JSONArray getEncounterList = new JSONArray(response);
 		

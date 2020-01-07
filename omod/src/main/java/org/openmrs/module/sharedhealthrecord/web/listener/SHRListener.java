@@ -208,8 +208,9 @@ public class SHRListener{
 			
 			//External Patient Table Searching using this encounterUUid
 			SHRExternalPatient encounterToSend = Context.
-					getService(SHRExternalPatientService.class).findExternalPatientByEncounterUUid(encounterUUid);
-			
+					getService(SHRExternalPatientService.class).
+						findExternalPatientByEncounterUUid(encounterUUid);
+			log.error("encounter fetch: "+encounterToSend != null ? encounterToSend.toString():"Null");
 			//If not found then Send
 			if(encounterToSend == null){
 				encounterFetchAndPost(encounterUUid,Integer.toString(rec.getId()),0);				
@@ -223,6 +224,7 @@ public class SHRListener{
 								+encounterToSend.getPatient_uuid()+
 								"&encounterUuid="+encounterToSend.getEncounter_uuid()+
 								"&actionStatus=1";
+					log.error("External Patient Encounter Url:"+externalEncounterUpdateUrl);
 					
 					String get_result = HttpUtil.get(externalEncounterUpdateUrl, "", "admin:test");
 //	
@@ -432,7 +434,7 @@ public class SHRListener{
 					//origin table will be inserted in global server for addition only
 					if(patienResponseCheck.has("error")){
 						String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
-							insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+localServer;
+							insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+localServer+"/";
 							
 						String get = "";
 						try{
