@@ -75,6 +75,7 @@ public class SHRListener{
 		
 		if(status){
 			try{
+//				PatientSendProcess process = new FailedPatientSendProcess();
 				sendFailedPatient();
 			}catch(Exception e){
 				e.printStackTrace();
@@ -179,7 +180,6 @@ public class SHRListener{
 				.get_list_by_Action_type("Patient");
 		
 		for(SHRActionErrorLog failPat : failedPatients){
-			String delResponse = "";
 			if(failPat.getVoided() < 2 && failPat.getSent_status() == 0){
 				try {
 					Boolean flag = patientFetchAndPost(failPat.getUuid(),"",failPat.getVoided()+1);
@@ -201,8 +201,7 @@ public class SHRListener{
 				.getLastEntryForEncounter();
 		List<EventRecordsDTO> records = Context.getService(SHRActionAuditInfoService.class)
 				.getEventRecords("Encounter",last_entry);
-//		errorLogInsert("Encounter Hits","Encounter Hitting","Testing",0);
-		JSONParser jsonParser = new JSONParser();
+
 		for(EventRecordsDTO rec: records){
 			String encounterUUid = rec.getObject().split("/|\\?")[7];
 			
@@ -210,7 +209,7 @@ public class SHRListener{
 			SHRExternalPatient encounterToSend = Context.
 					getService(SHRExternalPatientService.class).
 						findExternalPatientByEncounterUUid(encounterUUid);
-			log.error("encounter fetch: "+encounterToSend != null ? encounterToSend.toString():"Null");
+//			log.error("encounter fetch: "+encounterToSend != null ? encounterToSend.toString():"Null");
 			//If not found then Send
 			if(encounterToSend == null){
 				encounterFetchAndPost(encounterUUid,Integer.toString(rec.getId()),0);				
@@ -224,7 +223,7 @@ public class SHRListener{
 								+encounterToSend.getPatient_uuid()+
 								"&encounterUuid="+encounterToSend.getEncounter_uuid()+
 								"&actionStatus=1";
-					log.error("External Patient Encounter Url:"+externalEncounterUpdateUrl);
+//					log.error("External Patient Encounter Url:"+externalEncounterUpdateUrl);
 					
 					String get_result = HttpUtil.get(externalEncounterUpdateUrl, "", "admin:test");
 //	

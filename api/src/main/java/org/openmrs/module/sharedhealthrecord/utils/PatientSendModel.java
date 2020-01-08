@@ -6,6 +6,14 @@ public class PatientSendModel {
 	private String centralServer;
 	private String event_records_id;
 	private int voidedStatus;
+	private int eid;
+	
+	public int getEid() {
+		return eid;
+	}
+	public void setEid(int eid) {
+		this.eid = eid;
+	}
 	public String getPatientUuid() {
 		return patientUuid;
 	}
