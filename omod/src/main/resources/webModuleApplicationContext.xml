@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans xmlns="http://www.springframework.org/schema/beans"      
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:task="http://www.springframework.org/schema/task"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jee="http://www.springframework.org/schema/jee"
        xmlns:tx="http://www.springframework.org/schema/tx"
@@ -18,7 +19,9 @@
   		    http://www.springframework.org/schema/aop
   		    http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
   		    http://www.springframework.org/schema/util
-  		    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+  		    http://www.springframework.org/schema/util/spring-util-3.0.xsd
+  		    http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.1.xsd">
+
 
 	<!-- Add here beans related to the web context -->
 
@@ -27,6 +30,16 @@
 	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
 	
 	<context:component-scan base-package="org.openmrs.module.sharedhealthrecord.web.controller" />
+	<context:annotation-config></context:annotation-config>
+	<bean id="shrListener" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListener"></bean>
+	<bean id="shrPatientFetchListener" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRPatientFetchListener"></bean>
+	<task:scheduled-tasks scheduler="shr2Task">
+		<task:scheduled ref="shrListener" method="sendAllData" cron="*/55 * * * * *" />
+		<task:scheduled ref="shrPatientFetchListener" method="fetchAndUpdatePatient" cron="*/55 * * * * *"/>
+	</task:scheduled-tasks>
+	
+	<task:scheduler pool-size="4" id="shr2Task"/>
+	<!-- <task:annotation-driven /> -->
  
 		
 </beans>

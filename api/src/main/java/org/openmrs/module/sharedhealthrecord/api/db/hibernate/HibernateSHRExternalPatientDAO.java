@@ -1,10 +1,13 @@
 package org.openmrs.module.sharedhealthrecord.api.db.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
+import org.openmrs.module.sharedhealthrecord.SHRExternalPatient;
+import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.module.sharedhealthrecord.SHRExternalPatient;
 import org.openmrs.module.sharedhealthrecord.api.db.SHRExternalPatientDAO;
 
@@ -28,10 +31,22 @@ protected final Log log = LogFactory.getLog(this.getClass());
     }
 
 	@Override
-	public SHRExternalPatient saveExternalPatient(SHRExternalPatient externalPatient) {
+	public SHRExternalPatient saveExternalPatient(
+			SHRExternalPatient externalPatient) {
 		// TODO Auto-generated method stub
 		sessionFactory.getCurrentSession().saveOrUpdate(externalPatient);
 		return externalPatient;
+	}
+
+	@Override
+	public List<SHRExternalPatient> findByPatientUuid(String patientUuid,
+			String type) {
+		
+		List<SHRExternalPatient> ret = sessionFactory.getCurrentSession().
+				createQuery(" from SHRExternalPatient "
+				+ " where patient_uuid = '"+patientUuid+"'"
+				+ " and action_type = '"+type+"'").list();
+		return ret;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -45,6 +60,21 @@ protected final Log log = LogFactory.getLog(this.getClass());
 				.setString("patientid", patientUuid).list();
 		if (shrExternalPatient.size() != 0) {
 			return shrExternalPatient.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHRExternalPatient findExternalPatientByEncounterUUid(String encounterUuid) {
+		List<SHRExternalPatient> shrExternalPatientEncounter = sessionFactory
+				.getCurrentSession()
+				.createQuery(
+						"from SHRExternalPatient where encounter_uuid = :encounterid and action_type = 'encounter'")
+				.setString("encounterid", encounterUuid).list();
+		if (shrExternalPatientEncounter.size() != 0) {
+			return shrExternalPatientEncounter.get(0);
 		} else {
 			return null;
 		}

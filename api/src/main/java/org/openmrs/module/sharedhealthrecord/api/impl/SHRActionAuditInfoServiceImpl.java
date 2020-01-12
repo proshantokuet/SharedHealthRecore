@@ -9,6 +9,7 @@ import org.openmrs.module.sharedhealthrecord.api.SHRActionAuditInfoService;
 import org.openmrs.module.sharedhealthrecord.api.db.SHRActionAuditInfoDAO;
 import org.openmrs.module.sharedhealthrecord.api.db.SharedHealthRecordDAO;
 import org.openmrs.module.sharedhealthrecord.domain.EventRecordsDTO;
+import org.openmrs.module.sharedhealthrecord.domain.MoneyReceiptDTO;
 
 public class SHRActionAuditInfoServiceImpl extends BaseOpenmrsService  implements SHRActionAuditInfoService {
 protected final Log log = LogFactory.getLog(this.getClass());
@@ -32,7 +33,71 @@ protected final Log log = LogFactory.getLog(this.getClass());
 	@Override
 	public List<EventRecordsDTO> getEventRecords(String type) {
 		// TODO Auto-generated method stub
-		String sql;
-		return null;
+		
+		return dao.getEventRecords(type);
 	}
+
+	@Override
+	public List<MoneyReceiptDTO> getMoneyReceipt() {
+		// TODO Auto-generated method stub
+		return dao.getMoneyReceipt();
+	}
+
+	@Override
+	public List<MoneyReceiptDTO> getMoneyReceipt(String timestamp) {
+		// TODO Auto-generated method stub
+		return dao.getMoneyReceipt(timestamp);
+	}
+
+	@Override
+	public String getLastEntryForPatient() {
+		// TODO Auto-generated method stub
+		return dao.getLastEntryForPatient();
+	}
+
+	@Override
+	public String getLastEntryForEncounter() {
+		// TODO Auto-generated method stub
+		return dao.getLastEntryForEncounter();
+	}
+
+	@Override
+	public String getLastEntryForMoneyReceipt() {
+		// TODO Auto-generated method stub
+		return dao.getLastEntryForMoneyReceipt();
+	}
+
+	
+
+	@Override
+	public String getTimeStampForMoneyReceipt(String mid) {
+		// TODO Auto-generated method stub
+		return dao.getTimeStampForMoneyReceipt(mid);
+	}
+
+	@Override
+	public String updateAuditPatient(String last_id) {
+		// TODO Auto-generated method stub
+		return dao.updateAuditPatient(last_id);
+	}
+
+	@Override
+	public String updateAuditEncounter(String last_id) {
+		// TODO Auto-generated method stub
+		return dao.updateAuditEncounter(last_id);
+	}
+
+	@Override
+	public String updateAuditMoneyReceipt(String last_timestamp) {
+		// TODO Auto-generated method stub
+		return dao.updateAuditMoneyReceipt(last_timestamp);
+	}
+
+	@Override
+	public List<EventRecordsDTO> getEventRecords(String type, String last_entry) {
+		// TODO Auto-generated method stub
+		return dao.getEventRecords(type, last_entry);
+	}
+
+	
 }

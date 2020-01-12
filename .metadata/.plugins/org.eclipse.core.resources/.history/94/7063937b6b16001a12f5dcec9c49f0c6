@@ -1,0 +1,39 @@
+package org.openmrs.module.sharedhealthrecord.api.db.hibernate;
+
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.SessionFactory;
+import org.openmrs.module.sharedhealthrecord.api.db.SHRActionAuditInfoDAO;
+import org.openmrs.module.sharedhealthrecord.domain.EventRecordsDTO;
+
+public class HibernateSHRActionAuditInfoDAO implements SHRActionAuditInfoDAO{
+protected final Log log = LogFactory.getLog(this.getClass());
+	
+	private SessionFactory sessionFactory;
+	
+	/**
+     * @param sessionFactory the sessionFactory to set
+     */
+    public void setSessionFactory(SessionFactory sessionFactory) {
+	    this.sessionFactory = sessionFactory;
+    }
+    
+	/**
+     * @return the sessionFactory
+     */
+    public SessionFactory getSessionFactory() {
+	    return sessionFactory;
+    }
+
+	@Override
+	public List<EventRecordsDTO> getEventRecords(String type) {
+		// TODO Auto-generated method stub
+		String sql = ""
+				+ "SELECT id, uuid, title, `timestamp`, uri, `object`, category, date_created, tags "
+				+ "FROM openmrs.event_records "
+				+ "WHERE title='Encounter'";
+		return null;
+	}
+}

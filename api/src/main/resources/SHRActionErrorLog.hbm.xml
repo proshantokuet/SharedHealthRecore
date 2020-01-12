@@ -5,8 +5,12 @@
 		  <id column="eid" name="eid" type="int">
             <generator class="native"/>
        	  </id>
-       	  <property name="type" column="type" type="java.lang.String"/>
+       	  <property name="action_type" column="action_type" type="java.lang.String"/>
        	  <property name="error_message" column="error_message" type="java.lang.String"/>
-       	  <property name="uuid" column="uuid" type="java.lang.String" not-null="true" /> 
+       	  <property name="uuid" column="uuid" type="java.lang.String"/> 
+       	  <property name="id" column="id" type="java.lang.Integer"/>
+       	  <property name="mid" column="mid" type="java.lang.String"/>
+       	  <property name="voided" column="voided" type="java.lang.Integer"/>
+       	  <property name="sent_status" column="sent_status" type="java.lang.Integer"/>
 	</class>
 </hibernate-mapping>
