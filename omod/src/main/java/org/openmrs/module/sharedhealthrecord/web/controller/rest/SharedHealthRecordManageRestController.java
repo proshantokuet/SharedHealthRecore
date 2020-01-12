@@ -509,9 +509,9 @@ public class SharedHealthRecordManageRestController {
 			String visitSavingUrl = baseOpenmrsUrl + "/openmrs/ws/rest/v1/save-Patient/insert/patientVisitDetails";
 			String visitSavingResponseString = HttpUtil.post(visitSavingUrl, "", visitObject.toString());
 			JSONObject visitSavingObject = (JSONObject) jsonParser.parse(visitSavingResponseString);
-			if(visitSavingObject.containsKey("isFound")) {
-				Boolean isFound =  (Boolean)visitSavingObject.get("isFound");
-				if(isFound) {
+			if(visitSavingObject.containsKey("isSuccessfull")) {
+				Boolean isSuccessfull =  (Boolean)visitSavingObject.get("isSuccessfull");
+				if(isSuccessfull) {
 					visitSavingResponse = true;
 				}
 			}
