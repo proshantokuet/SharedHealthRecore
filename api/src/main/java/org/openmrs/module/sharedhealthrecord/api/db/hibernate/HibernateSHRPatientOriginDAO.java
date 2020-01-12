@@ -53,8 +53,9 @@ protected final Log log = LogFactory.getLog(this.getClass());
 				+ "         ON ep.patient_uuid = po.patient_uuid "
 				+ "WHERE  ep.action_type = '"+actionType+"' "
 				+ "       AND po.patient_origin = '"+originName+"' AND ep.is_send_to_central = '1'";
-
+		
 		List<SHRPatientOrigin> shrPatientOrigins = new ArrayList<SHRPatientOrigin>();
+		
 		try {
 			shrPatientOrigins = sessionFactory
 					.getCurrentSession()

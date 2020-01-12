@@ -74,9 +74,10 @@ public class SHRPatientFetchListener {
 			} catch (JSONException | ParseException e) {
 				errorLogUpdate("Patient Uuid Fetch",e.toString(),patientUuid);
 				e.printStackTrace();
-				return;
+				break;
 			}
-			
+			//If Json error loop will be incremented
+			if(patient.contains("error")) continue;
 			try{
 				postPatientResponse = postPatientToLocalServer(patient,patientUuid);
 				JSONObject response = new JSONObject(postPatientResponse);
@@ -168,10 +169,13 @@ public class SHRPatientFetchListener {
 			String encounterUuid = _encounter.getEncounterUuid();
 			try{
 				encounter = getEncounterInfo(encounterUuid);
+				
 			}catch(Exception e){
 				errorLogUpdate("Encounter Fetch Uuid",e.toString(),encounterUuid);
 				return;
 			}
+			//If encounter has error loop will be incremented
+			if(encounter.contains("error")) continue;
 			JSONParser jsonParser = new JSONParser();
 			//Encounter Response Parsing
 			org.json.simple.JSONObject enc_response = new org.json.simple.JSONObject();
@@ -184,7 +188,7 @@ public class SHRPatientFetchListener {
 			}
 			
 			Boolean visitCreate = createVisit(enc_response.get("visitUuid").toString(),encounterUuid,enc_response.get("patientUuid").toString());
-			
+			log.error("Visit Create Status: "+visitCreate.toString());
 			if(visitCreate == false) return;
 			
 			// Encounter Post JSON Format Preparation
@@ -206,6 +210,7 @@ public class SHRPatientFetchListener {
 			String globalEncounterResponse = "";
 			try{
 				globalEncounterResponse = HttpUtil.get(searchEncounterUrl, "", "admin:test");
+				log.error("Global Search Encounter: "+globalEncounterResponse);
 			}catch(Exception e){
 				errorLogUpdate("Encounter Fetch Uuid","Encounter Global Search error:"+e.toString(),
 						encounterUuid);
@@ -231,6 +236,7 @@ public class SHRPatientFetchListener {
 			try{
 				String postResponse = HttpUtil.post(postUrl, "", encounter_.toJSONString());
 //				errorLogUpdate("Encounter Post Final",postResponse,encounterUuid);
+				log.error("Encounter Post Response:"+postResponse);
 				updateExternalEncounter(patientUuid,encounterUuid);
 			}catch(Exception e){
 				errorLogUpdate("Encounter","Encounter post error:"+e.toString(),
@@ -250,6 +256,7 @@ public class SHRPatientFetchListener {
 		String response = HttpUtil.get(url, "", "admin:test");
 		JSONArray getEncounterList = new JSONArray(response);
 		
+		log.error("JSON Encounter List:"+response);
 		for(int i = 0; i < getEncounterList.length();i++){
 			JSONObject encounterObject = getEncounterList.getJSONObject(i);
 //			patientUuidList.add(patientObject.get("patient_uuid").toString());
@@ -265,6 +272,7 @@ public class SHRPatientFetchListener {
 		
 		String url = centralServer+"openmrs/ws/rest/v1/bahmnicore/bahmniencounter/"
 				+ encounterUuid + "?includeAll=true";
+		log.error("Encounter Get Url: "+url);
 		String response = "";
 		try{
 			response = HttpUtil.get(url, "", "admin:test");
@@ -272,6 +280,7 @@ public class SHRPatientFetchListener {
 			
 			return "";
 		}
+		log.error("Get Encounter Info: "+response);
 		JSONObject encounterResponse = new JSONObject(response);
 		return encounterResponse.toString();
 	}
@@ -281,6 +290,7 @@ public class SHRPatientFetchListener {
 				+ "externalPatientEncounter?patient_uuid="+patientUuid+"&encounterUuid="
 					+encounterUuid+"&actionStatus=0";
 		String get_result = HttpUtil.get(externalPatientEncounterUpdateUrl, "", "admin:test");
+		log.error("Update External Encounter: "+get_result);
 	}
 	private String postEncounterToLocalServer(String postEncounter,String encounterUuid){
 		String ret = "";
@@ -395,5 +405,6 @@ public class SHRPatientFetchListener {
 					localServer+"openmrs/ws/rest/v1/encounter/"+encounterUuid
 			+"?purge=true";
 			String result = HttpUtil.delete(deleteUrlString, "", "admin:test");
+			log.error("Delete Encounter: "+result);
 		}
 }
