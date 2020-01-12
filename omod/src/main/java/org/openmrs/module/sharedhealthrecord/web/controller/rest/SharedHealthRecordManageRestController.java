@@ -577,7 +577,7 @@ public class SharedHealthRecordManageRestController {
 	@RequestMapping(value = "/insert/externalPatientEncounter", method = RequestMethod.GET)
 	public ResponseEntity<String> saveExternalPatientEncounter(@RequestParam(required = true) String patient_uuid, @RequestParam(required = true) String encounterUuid, @RequestParam(required = true) String actionStatus) throws Exception {
 		SHRExternalPatient shrExternalPatientEncounter = Context.getService(SHRExternalPatientService.class).findExternalPatientByEncounterUUid(encounterUuid);
-		// SHRExternalPatient shrExternalPatient = Context.getService(SHRExternalPatientService.class).findExternalPatientByPatientUUid(patient_uuid);
+//		 SHRExternalPatient shrExternalPatient = Context.getService(SHRExternalPatientService.class).findExternalPatientByPatientUUid(patient_uuid);
 		//For Global Server need to skip the patient check
 		String shrExternalPatient = "ok";
 		if(shrExternalPatientEncounter != null) {
