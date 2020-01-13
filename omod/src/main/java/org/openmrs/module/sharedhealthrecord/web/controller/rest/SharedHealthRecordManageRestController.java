@@ -39,7 +39,7 @@ import com.google.gson.Gson;
 @RestController
 public class SharedHealthRecordManageRestController {
 	
-	private final static String baseOpenmrsUrl = "https://192.168.19.147";
+	private final static String baseOpenmrsUrl = "https://192.168.33.10";
 	
 	private final static String globalServerUrl = "https://192.168.19.158";
 	
@@ -171,13 +171,25 @@ public class SharedHealthRecordManageRestController {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/search/fromGlobalServer", method = RequestMethod.GET)
 	public ResponseEntity<String> searchPatientFromGlobalServer(@RequestParam(required = true) String patientInformation) throws Exception {
+
 		JSONParser jsonParser = new JSONParser();
 		String patientUrl = globalServerUrl + patientInformation;
 		String patientSearchResponse = HttpUtil.get(patientUrl, "", "admin:test");
 		JSONObject getPatient = (JSONObject) jsonParser.parse(patientSearchResponse);
-		return new ResponseEntity<>(getPatient.toString(), HttpStatus.OK);
+
+		
+		String patientUrlForLocal = baseOpenmrsUrl + patientInformation;
+		String patientSearchResponseInLocal = HttpUtil.get(patientUrlForLocal, "", "admin:test");
+		JSONObject getPatientInLocal = (JSONObject) jsonParser.parse(patientSearchResponseInLocal);
+		
+		JSONObject patientList = new JSONObject();
+		patientList.put("globalServerPatients", getPatient);
+		patientList.put("localServerPatients", getPatientInLocal);
+
+		return new ResponseEntity<>(patientList.toString(), HttpStatus.OK);
 	}
 	
 	@SuppressWarnings("unchecked")
