@@ -630,4 +630,41 @@ public class SharedHealthRecordManageRestController {
 			}
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/insert/globalExternalPatientEncounter", method = RequestMethod.GET)
+	public ResponseEntity<String> saveExternalPatientEncounterInGLobal(@RequestParam(required = true) String patient_uuid, @RequestParam(required = true) String encounterUuid, @RequestParam(required = true) String actionStatus) throws Exception {
+		SHRExternalPatient shrExternalPatientEncounter = Context.getService(SHRExternalPatientService.class).findExternalPatientByEncounterUUid(encounterUuid);
+		if(shrExternalPatientEncounter != null) {
+			shrExternalPatientEncounter.setIs_send_to_central(actionStatus);
+			Context.getService(SHRExternalPatientService.class).saveExternalPatient(shrExternalPatientEncounter);
+			JSONObject responseoJsonObject = new JSONObject();
+			responseoJsonObject.put("patientUuid", shrExternalPatientEncounter.getPatient_uuid());
+			responseoJsonObject.put("encounterUuid", shrExternalPatientEncounter.getEncounter_uuid());
+			responseoJsonObject.put("isSuccessfull", true);
+			return new ResponseEntity<>(responseoJsonObject.toJSONString(), HttpStatus.OK);
+		}
+		else {
+				SHRExternalPatient externalPatient = new SHRExternalPatient();
+				externalPatient.setAction_type("encounter");
+				externalPatient.setPatient_uuid(patient_uuid);
+				externalPatient.setIs_send_to_central(actionStatus);
+				externalPatient.setEncounter_uuid(encounterUuid);
+				externalPatient.setUuid(UUID.randomUUID().toString());
+				SHRExternalPatient responseExternalPatient =  Context.getService(SHRExternalPatientService.class).saveExternalPatient(externalPatient);
+				if(StringUtils.isBlank(responseExternalPatient.getPatient_uuid())) {
+					JSONObject externalPatientObject = new JSONObject();
+					externalPatientObject.put("isSuccessfull", false);
+					externalPatientObject.put("message", "Error Occured");
+					return new ResponseEntity<>(externalPatientObject.toJSONString(), HttpStatus.OK);
+				}
+				else {
+					JSONObject externalPatientObject = new JSONObject();
+					externalPatientObject.put("isSuccessfull", true);
+					externalPatientObject.put("patientUuid", responseExternalPatient.getPatient_uuid());
+					externalPatientObject.put("encounterUuid", responseExternalPatient.getEncounter_uuid());
+					return new ResponseEntity<>(externalPatientObject.toJSONString(), HttpStatus.OK);
+				}
+		}
+	}
 }
