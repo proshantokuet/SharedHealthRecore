@@ -195,47 +195,47 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 		return observations;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static Boolean createVisit (JSONObject obj, String patientUuid) throws Exception {
-		
-		Boolean visitSavingResponse = false;
-		JSONParser jsonParser = new JSONParser();
-		
-		try {
-			
-			String visitUUIdString = (String)obj.get("visitUuid");
-			String visitDetailsByVIsitUuidURL = globalServerUrl + "/openmrs/ws/rest/v1/save-Patient/search/patientVisitByUuid?visit_uuid=" + visitUUIdString;
-			String visitDetailsByVIsitUuid = HttpUtil.get(visitDetailsByVIsitUuidURL, "", "admin:test");
-			JSONObject visitObject = (JSONObject) jsonParser.parse(visitDetailsByVIsitUuid);
-//			JSONObject visitStartJsonObject = new JSONObject();
-//			visitStartJsonObject.put("visitType", visitObject.get("visitType"));
-//			visitStartJsonObject.put("patient", visitObject.get("patient"));
-//			visitStartJsonObject.put("startDatetime", visitObject.get("startDatetime"));
-//			visitStartJsonObject.put("stopDatetime", visitObject.get("stopDatetime"));
-			visitObject.put("patient_uuid", patientUuid);
-			visitObject.remove("isFound");
-			String visitSavingUrl = baseOpenmrsUrl + "/openmrs/ws/rest/v1/save-Patient/insert/patientVisitDetails";
-			String visitSavingResponseString = HttpUtil.post(visitSavingUrl, "", visitObject.toString());
-			JSONObject visitSavingObject = (JSONObject) jsonParser.parse(visitSavingResponseString);
-			if(visitSavingObject.containsKey("isSuccessfull")) {
-				Boolean isSuccessfull =  (Boolean)visitSavingObject.get("isSuccessfull");
-				if(isSuccessfull) {
-					visitSavingResponse = true;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			visitSavingResponse = false;
-		}
-		return visitSavingResponse;
-	}
-	
-	public static final Map<String, String> visitTypeMapping = new HashMap<String, String>();
-	static {
-        visitTypeMapping.put("c228eab1-3f10-11e4-adec-0800271c1b75", "IPD");
-        visitTypeMapping.put("c22a5000-3f10-11e4-adec-0800271c1b75", "OPD");
-        visitTypeMapping.put("bef32e14-3f12-11e4-adec-0800271c1b75", "LAB VISIT");
-	}
+//	@SuppressWarnings("unchecked")
+//	public static Boolean createVisit (JSONObject obj, String patientUuid) throws Exception {
+//		
+//		Boolean visitSavingResponse = false;
+//		JSONParser jsonParser = new JSONParser();
+//		
+//		try {
+//			
+//			String visitUUIdString = (String)obj.get("visitUuid");
+//			String visitDetailsByVIsitUuidURL = globalServerUrl + "/openmrs/ws/rest/v1/save-Patient/search/patientVisitByUuid?visit_uuid=" + visitUUIdString;
+//			String visitDetailsByVIsitUuid = HttpUtil.get(visitDetailsByVIsitUuidURL, "", "admin:test");
+//			JSONObject visitObject = (JSONObject) jsonParser.parse(visitDetailsByVIsitUuid);
+////			JSONObject visitStartJsonObject = new JSONObject();
+////			visitStartJsonObject.put("visitType", visitObject.get("visitType"));
+////			visitStartJsonObject.put("patient", visitObject.get("patient"));
+////			visitStartJsonObject.put("startDatetime", visitObject.get("startDatetime"));
+////			visitStartJsonObject.put("stopDatetime", visitObject.get("stopDatetime"));
+//			visitObject.put("patient_uuid", patientUuid);
+//			visitObject.remove("isFound");
+//			String visitSavingUrl = baseOpenmrsUrl + "/openmrs/ws/rest/v1/save-Patient/insert/patientVisitDetails";
+//			String visitSavingResponseString = HttpUtil.post(visitSavingUrl, "", visitObject.toString());
+//			JSONObject visitSavingObject = (JSONObject) jsonParser.parse(visitSavingResponseString);
+//			if(visitSavingObject.containsKey("isSuccessfull")) {
+//				Boolean isSuccessfull =  (Boolean)visitSavingObject.get("isSuccessfull");
+//				if(isSuccessfull) {
+//					visitSavingResponse = true;
+//				}
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			visitSavingResponse = false;
+//		}
+//		return visitSavingResponse;
+//	}
+//	
+//	public static final Map<String, String> visitTypeMapping = new HashMap<String, String>();
+//	static {
+//        visitTypeMapping.put("c228eab1-3f10-11e4-adec-0800271c1b75", "IPD");
+//        visitTypeMapping.put("c22a5000-3f10-11e4-adec-0800271c1b75", "OPD");
+//        visitTypeMapping.put("bef32e14-3f12-11e4-adec-0800271c1b75", "LAB VISIT");
+//	}
 	
 	public static final Map<String, String> ObserVationDHISMapping = new HashMap<String, String>();
 	static {
