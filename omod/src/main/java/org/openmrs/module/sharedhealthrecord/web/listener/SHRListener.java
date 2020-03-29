@@ -60,55 +60,55 @@ public class SHRListener{
 //	@Scheduled(fixedRate=10000)
 	private static final Logger log = LoggerFactory.getLogger(SHRListener.class);
 	public void sendAllData() throws Exception {
-		
-		Context.openSession();
-		
-		JSONObject getResponse = null;
-		boolean status = true;
-	
-		try{
-			
-		}catch(Exception e){
-			e.printStackTrace();
-			status = false;
-		}
-		
-		if(status){
-			try{
-//				PatientSendProcess process = new FailedPatientSendProcess();
-				sendFailedPatient();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			try{
-				sendPatient();
-
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			try{
-				sendFailedEncounter();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			try{
-				sendEncounter();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			try{
-				sendFailedMoneyReceipt();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			try{
-				sendMoneyReceipt();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-		}
-		
-		Context.closeSession();
+//		
+//		Context.openSession();
+//		
+//		JSONObject getResponse = null;
+//		boolean status = true;
+//	
+//		try{
+//			
+//		}catch(Exception e){
+//			e.printStackTrace();
+//			status = false;
+//		}
+//		
+//		if(status){
+//			try{
+////				PatientSendProcess process = new FailedPatientSendProcess();
+//				sendFailedPatient();
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//			try{
+//				sendPatient();
+//
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//			try{
+//				sendFailedEncounter();
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//			try{
+//				sendEncounter();
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//			try{
+//				sendFailedMoneyReceipt();
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//			try{
+//				sendMoneyReceipt();
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//		}
+//		
+//		Context.closeSession();
 		
 	}
 	
@@ -219,7 +219,7 @@ public class SHRListener{
 				if(encounterToSend != null){
 					String externalEncounterUpdateUrl = centralServer + 
 							"openmrs/ws/rest/v1/save-Patient/insert/"
-							+ "externalPatientEncounter?patient_uuid="
+							+ "globalExternalPatientEncounter?patient_uuid="
 								+encounterToSend.getPatient_uuid()+
 								"&encounterUuid="+encounterToSend.getEncounter_uuid()+
 								"&actionStatus=1";

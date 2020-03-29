@@ -39,19 +39,19 @@ public class SHRPatientFetchListener {
 	String centralServer = ServerAddress.centralServer();
 	private static final Logger log = LoggerFactory.getLogger(SHRPatientFetchListener.class);
 	public void fetchAndUpdatePatient(){
-		Context.openSession();
-		errorLogUpdate("Patient Fetch Problem","Hitting in Patient Fetch",UUID.randomUUID().toString());
-		try{
-			patientFetchAndUpdateExecute();
-		}catch(Exception e){
-//			errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
-		}
-		try{
-			encounterFetchAndUpdateExecute();
-		}catch(Exception e){
-			
-		}
-		Context.closeSession();
+//		Context.openSession();
+//		errorLogUpdate("Patient Fetch Problem","Hitting in Patient Fetch",UUID.randomUUID().toString());
+//		try{
+//			patientFetchAndUpdateExecute();
+//		}catch(Exception e){
+////			errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
+//		}
+//		try{
+//			encounterFetchAndUpdateExecute();
+//		}catch(Exception e){
+//			
+//		}
+//		Context.closeSession();
 	}
 	
 	public void patientFetchAndUpdateExecute(){
@@ -287,7 +287,7 @@ public class SHRPatientFetchListener {
 	private void updateExternalEncounter(String patientUuid,String encounterUuid){
 		String externalPatientEncounterUpdateUrl = centralServer + 
 				"openmrs/ws/rest/v1/save-Patient/insert/"
-				+ "externalPatientEncounter?patient_uuid="+patientUuid+"&encounterUuid="
+				+ "globalExternalPatientEncounter?patient_uuid="+patientUuid+"&encounterUuid="
 					+encounterUuid+"&actionStatus=0";
 		String get_result = HttpUtil.get(externalPatientEncounterUpdateUrl, "", "admin:test");
 		log.error("Update External Encounter: "+get_result);

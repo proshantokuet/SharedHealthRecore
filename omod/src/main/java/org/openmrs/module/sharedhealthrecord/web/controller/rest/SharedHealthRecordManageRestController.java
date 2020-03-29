@@ -40,7 +40,7 @@ import com.google.gson.Gson;
 @RestController
 public class SharedHealthRecordManageRestController {
 	
-	private final static String baseOpenmrsUrl = "https://192.168.33.10";
+	private final static String baseOpenmrsUrl = "https://192.168.19.145";
 	
 	private final static String globalServerUrl = "https://192.168.19.158";
 	
@@ -589,9 +589,9 @@ public class SharedHealthRecordManageRestController {
 	@RequestMapping(value = "/insert/externalPatientEncounter", method = RequestMethod.GET)
 	public ResponseEntity<String> saveExternalPatientEncounter(@RequestParam(required = true) String patient_uuid, @RequestParam(required = true) String encounterUuid, @RequestParam(required = true) String actionStatus) throws Exception {
 		SHRExternalPatient shrExternalPatientEncounter = Context.getService(SHRExternalPatientService.class).findExternalPatientByEncounterUUid(encounterUuid);
-//		 SHRExternalPatient shrExternalPatient = Context.getService(SHRExternalPatientService.class).findExternalPatientByPatientUUid(patient_uuid);
+		 SHRExternalPatient shrExternalPatient = Context.getService(SHRExternalPatientService.class).findExternalPatientByPatientUUid(patient_uuid);
 		//For Global Server need to skip the patient check
-		String shrExternalPatient = "ok";
+		//String shrExternalPatient = "ok";
 		if(shrExternalPatientEncounter != null) {
 			shrExternalPatientEncounter.setIs_send_to_central(actionStatus);
 			Context.getService(SHRExternalPatientService.class).saveExternalPatient(shrExternalPatientEncounter);
