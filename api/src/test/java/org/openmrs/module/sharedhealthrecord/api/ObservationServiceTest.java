@@ -74,7 +74,7 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 		JSONParser jsonParser = new JSONParser();
 		Boolean postResponseOfService = true ;
 		try {
-				String getEncounterUrl = globalServerUrl +"/openmrs/ws/rest/v1/bahmnicore/bahmniencounter/4ff2410b-7552-464d-9db2-e3d291754c29?includeAll=true";
+				String getEncounterUrl = baseOpenmrsUrl +"/openmrs/ws/rest/v1/bahmnicore/bahmniencounter/4ff2410b-7552-464d-9db2-e3d291754c29?includeAll=true";
 				String patientencounterResponse = HttpUtil.get(getEncounterUrl, "", "admin:test");
 				JSONObject EncounterObj;
 				try {
@@ -91,12 +91,29 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 					      String jsonStr = JSONArray.toJSONString(extractServiceJSON);
 							try {
 								JSONArray extractServiceArray = (JSONArray) jsonParser.parse(jsonStr);
-								extractServiceArray.forEach(service -> {
+								/*extractServiceArray.forEach(service -> {
 									JSONObject serviceObject = (JSONObject) service;
 									String elementId = ObserVationDHISMapping.get(serviceObject.get("question"));
 									serviceObject.put("elementId", elementId);
-								});
-								servicesToPost.put(uniqueSetOfService, extractServiceArray);
+								});*/
+								JSONObject event = (JSONObject) getEvent().get(uniqueSetOfService);
+								
+								JSONArray dataValues = new JSONArray();
+								for (int i = 0; i < extractServiceArray.size(); i++) {
+									JSONObject serviceObject = (JSONObject) extractServiceArray.get(i);
+									String field = (String) serviceObject.get("question");
+									Object value =  serviceObject.get("answer");
+									
+									String elementId = ObserVationDHISMapping.get(field);
+									JSONObject dataValue = new JSONObject();
+									dataValue.put("dataElement", elementId);
+									dataValue.put("value", value);
+									dataValues.add(dataValue);								
+									
+								}
+								event.put("dataValues", dataValues);
+								
+								servicesToPost.put(uniqueSetOfService, event);
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -113,6 +130,31 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 			postResponseOfService = false;
 		}
 
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static JSONObject getEvent(){
+		JSONObject serviceEvents = new JSONObject();
+		JSONObject clientHistory = new JSONObject();
+		clientHistory.put("trackedEntityInstance", "trackedEntityInstance clientHistory");
+		clientHistory.put("orgUnit", "orgUnit clientHistory");
+		clientHistory.put("program", "program clientHistory");
+		clientHistory.put("programStage", "programStage clientHistory");
+		clientHistory.put("status", "COMPLETED");
+		serviceEvents.put("Client History", clientHistory);
+		
+		JSONObject inwardReferral = new JSONObject();
+		inwardReferral.put("trackedEntityInstance", "inwardReferral");
+		inwardReferral.put("orgUnit", "orgUnitinwardReferral");
+		inwardReferral.put("program", "programinwardReferral");
+		inwardReferral.put("programStage", "programStage inwardReferral");
+		inwardReferral.put("status", "COMPLETED");
+		serviceEvents.put("Inward Referral", inwardReferral);
+		
+		
+		return serviceEvents;
+		
+		
 	}
 	
 	@SuppressWarnings("unchecked")
