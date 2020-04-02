@@ -19,6 +19,7 @@ import groovy.ui.Console;
 import java.io.FileReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.junit.Test;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
@@ -54,11 +56,15 @@ import com.jayway.jsonpath.JsonPath;
  */
 public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 	
-	private final static String baseOpenmrsUrl = "https://192.168.19.145";
+	//private final static String baseOpenmrsUrl = "https://192.168.19.145";
 	
-	private final static String globalServerUrl = "https://bahmni.mpower-social.com";
+	private final static String globalServerUrl = "https://192.168.19.145";
 	
-	private static String formsToFilter = "";
+	private final static String trackInstanceUrl = "http://192.168.19.149" + "/api/trackedEntityInstances.json?";
+	
+	private static String orgUnitString = "";
+	
+	private static String trackeEntityInstanceIDString = "";
 	
 	
 	@Test
@@ -68,18 +74,22 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 	
 	JSONParser jsonParser = new JSONParser();
 	
-	@SuppressWarnings({ "unchecked", "unused", "unused" })
+	@SuppressWarnings({ "unchecked", "unused" })
 	@Test
 	public void encounter() {
 		JSONParser jsonParser = new JSONParser();
 		Boolean postResponseOfService = true ;
-		try {
-				String getEncounterUrl = baseOpenmrsUrl +"/openmrs/ws/rest/v1/bahmnicore/bahmniencounter/4ff2410b-7552-464d-9db2-e3d291754c29?includeAll=true";
+		try {  
+				String getEncounterUrl = globalServerUrl +"/openmrs/ws/rest/v1/bahmnicore/bahmniencounter/4ff2410b-7552-464d-9db2-e3d291754c29?includeAll=true";
 				String patientencounterResponse = HttpUtil.get(getEncounterUrl, "", "admin:test");
 				JSONObject EncounterObj;
+				
 				try {
 					JSONObject servicesToPost = new JSONObject();
 					EncounterObj = (JSONObject) jsonParser.parse(patientencounterResponse);
+					System.out.println(EncounterObj.toString());
+					String patientUuid = (String)EncounterObj.get("patientUuid");
+					getDhisEventInformation(patientUuid);
 					JSONArray obs = (JSONArray) EncounterObj.get("observations");
 					JSONArray IntialJsonDHISArray =  getObservations(obs);
 					Object document = Configuration.defaultConfiguration().jsonProvider().parse(IntialJsonDHISArray.toString());
@@ -87,7 +97,8 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 					Set<String> uniqueSetOfServices = new HashSet<>(servicesInObservation);
 					System.out.println(uniqueSetOfServices.toString());
 					uniqueSetOfServices.forEach(uniqueSetOfService ->{
-						List<String> extractServiceJSON = JsonPath.read(document, "$.[?(@.service == '"+uniqueSetOfService+ "')]");
+						List<String> extractServiceJSON = JsonPath.read(document, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.voidReason == null)]");
+						List<Object> testObjects = new ArrayList<Object>(extractServiceJSON);
 					      String jsonStr = JSONArray.toJSONString(extractServiceJSON);
 							try {
 								JSONArray extractServiceArray = (JSONArray) jsonParser.parse(jsonStr);
@@ -96,7 +107,7 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 									String elementId = ObserVationDHISMapping.get(serviceObject.get("question"));
 									serviceObject.put("elementId", elementId);
 								});*/
-								JSONObject event = (JSONObject) getEvent().get(uniqueSetOfService);
+								JSONObject event = (JSONObject) getEvent(patientUuid).get(uniqueSetOfService);
 								
 								JSONArray dataValues = new JSONArray();
 								for (int i = 0; i < extractServiceArray.size(); i++) {
@@ -105,10 +116,12 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 									Object value =  serviceObject.get("answer");
 									
 									String elementId = ObserVationDHISMapping.get(field);
+									if (!StringUtils.isEmpty(elementId)){
 									JSONObject dataValue = new JSONObject();
 									dataValue.put("dataElement", elementId);
 									dataValue.put("value", value);
-									dataValues.add(dataValue);								
+									dataValues.add(dataValue);			
+									}
 									
 								}
 								event.put("dataValues", dataValues);
@@ -119,6 +132,8 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 							}
 						
 					});
+					
+					
 					System.out.println(servicesToPost.toString());
 					//System.out.println(servicesToPost.size());
 				} catch (Exception e) {
@@ -133,13 +148,14 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static JSONObject getEvent(){
+	public static JSONObject getEvent(String patientUuid){
+		
 		JSONObject serviceEvents = new JSONObject();
 		JSONObject clientHistory = new JSONObject();
-		clientHistory.put("trackedEntityInstance", "trackedEntityInstance clientHistory");
-		clientHistory.put("orgUnit", "orgUnit clientHistory");
-		clientHistory.put("program", "program clientHistory");
-		clientHistory.put("programStage", "programStage clientHistory");
+		clientHistory.put("trackedEntityInstance", trackeEntityInstanceIDString);
+		clientHistory.put("orgUnit", orgUnitString);
+		clientHistory.put("program", "q2uZRqRc0UD");
+		clientHistory.put("programStage", "qfKF04HR0lU");
 		clientHistory.put("status", "COMPLETED");
 		serviceEvents.put("Client History", clientHistory);
 		
@@ -176,7 +192,9 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 					JSONObject conceptJsonObject = (JSONObject) ob.get("concept");
 					String questionName = (String) conceptJsonObject.get("name");
 					String answerValue = (String) ob.get("valueAsString");
+					String voidreason = (String) ob.get("voidReason");
 					codedConceptJsonObject.put("question", questionName);
+					codedConceptJsonObject.put("voidReason", voidreason);
 					if(isNumeric(answerValue)) {
 						codedConceptJsonObject.put("answer", Double.parseDouble(answerValue));
 					}
@@ -196,7 +214,9 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 						JSONObject conceptJsonObject = (JSONObject) groupMember.get("concept");
 						String questionName = (String) conceptJsonObject.get("name");
 						String answerValue = (String) groupMember.get("valueAsString");
+						String voidreason = (String) ob.get("voidReason");
 						codedConceptJsonObject.put("question", questionName);
+						codedConceptJsonObject.put("voidReason", voidreason);
 						if(isNumeric(answerValue)) {
 							codedConceptJsonObject.put("answer", Double.parseDouble(answerValue));
 						}
@@ -215,7 +235,9 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 					JSONObject conceptJsonObject = (JSONObject) ob.get("concept");
 					String questionName = (String) conceptJsonObject.get("name");
 					String answerValue = (String) ob.get("valueAsString");
+					String voidreason = (String) ob.get("voidReason");
 					codedConceptJsonObject.put("question", questionName);
+					codedConceptJsonObject.put("voidReason", voidreason);
 					if(isNumeric(answerValue)) {
 						codedConceptJsonObject.put("answer", Double.parseDouble(answerValue));
 					}
@@ -233,7 +255,7 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 				e.printStackTrace();
 			}
 		});
-		//System.out.println(observations.toJSONString());
+		System.out.println(observations.toJSONString());
 		return observations;
 	}
 	
@@ -281,13 +303,64 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 	
 	public static final Map<String, String> ObserVationDHISMapping = new HashMap<String, String>();
 	static {
-		ObserVationDHISMapping.put("History of Past Illness", "UXgONLVlRlA");
-		ObserVationDHISMapping.put("Family History", "NOOR11jHbxK");
-		ObserVationDHISMapping.put("Chief Complaint", "d49IcANqJh9");
+
+		ObserVationDHISMapping.put("Chief Complaint", "PV0CvNB9vV3");
+		ObserVationDHISMapping.put("Duration (Days)", "p8s08fLaaDF");
+		ObserVationDHISMapping.put("History of Past Illness", "POAuU2vktvD");
+		ObserVationDHISMapping.put("Others (Please specify)", "EpfZFHi0OMz");
+		ObserVationDHISMapping.put("Family History", "bZWuZ4IlqDU");
+		ObserVationDHISMapping.put("Personal History", "LqKfg3PqKDo");
+		ObserVationDHISMapping.put("Self Blood Group", "PWyWxiWu6Kj");
+		ObserVationDHISMapping.put("Spouse Blood Group", "l7ow9Y8Bv4X");
+		ObserVationDHISMapping.put("Drug History", "KlLvwN3Pvcm");
 	}
 	
 	public static boolean isNumeric(String str) {
 		return str.matches("[0-9.]*");
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void getDhisEventInformation(String patientUuid) {
+		JSONParser jsonParser = new JSONParser();
+		try {
+			String patientUrl = globalServerUrl + "/openmrs/ws/rest/v1/patient/"+patientUuid+"?v=full";
+			String patientResponse = HttpUtil.get(patientUrl, "", "admin:test");
+			JSONObject patient = (JSONObject) jsonParser.parse(patientResponse);
+			System.out.println(patient.toJSONString());
+			JSONObject person = (JSONObject) patient.get("person");
+			JSONArray patientAttributes = (JSONArray) person.get("attributes");
+			patientAttributes.forEach(_patientAttribute -> {
+				JSONObject patientAttribute = (JSONObject) _patientAttribute;
+				JSONObject attributeType = (JSONObject) patientAttribute.get("attributeType");
+				String attributeTypeName = (String) attributeType.get("display");
+				if ("orgUnit".equalsIgnoreCase(attributeTypeName)) {
+					orgUnitString = (String) patientAttribute.get("value");
+				}
+			});
+		} 
+
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		String URL = trackInstanceUrl + "filter=" + "oW51s5NUIqo" + ":EQ:" + patientUuid + "&ou=" + orgUnitString;
+		String trackentityIsntances = HttpUtil.get(URL, "", "apiadmin:Apiadmin@123");
+		JSONObject getResponse;
+		try {
+			getResponse = (JSONObject) jsonParser.parse(trackentityIsntances);
+			JSONArray trackedEntityInstances = new JSONArray();
+			if (getResponse.containsKey("trackedEntityInstances")) {
+				trackedEntityInstances = (JSONArray) getResponse.get("trackedEntityInstances");
+			}
+
+			if (trackedEntityInstances.size() != 0) {
+				JSONObject trackedEntityInstance = (JSONObject) trackedEntityInstances.get(0);
+				trackeEntityInstanceIDString = (String) trackedEntityInstance.get("trackedEntityInstance");
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 }
