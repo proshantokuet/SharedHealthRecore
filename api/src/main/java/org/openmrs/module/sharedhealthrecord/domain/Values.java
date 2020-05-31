@@ -4,6 +4,8 @@ public class Values {
 	
 	private String uuid;
 	
+	private String name;
+	
 	private String displayString;
 	
 	public String getUuid() {
@@ -14,6 +16,14 @@ public class Values {
 		this.uuid = uuid;
 	}
 	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getDisplayString() {
 		return displayString;
 	}

@@ -4,6 +4,7 @@ public class MoneyReceiptDTO {
 	private int mid;
 	private String patient_uuid;
 	private String timestamp;
+	private String eslipNo;
 	public int getMid() {
 		return mid;
 	}
@@ -21,6 +22,12 @@ public class MoneyReceiptDTO {
 	}
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
+	}
+	public String getEslipNo() {
+		return eslipNo;
+	}
+	public void setEslipNo(String eslipNo) {
+		this.eslipNo = eslipNo;
 	}
 	
 	

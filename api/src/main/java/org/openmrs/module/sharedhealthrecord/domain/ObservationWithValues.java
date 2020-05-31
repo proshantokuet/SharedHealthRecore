@@ -18,6 +18,8 @@ public class ObservationWithValues {
 	
 	private String encounterDateTime;
 	
+	private boolean voided;
+	
 	public Concept getConcept() {
 		return concept;
 	}
@@ -80,6 +82,14 @@ public class ObservationWithValues {
 	
 	public void setEncounterDateTime(String encounterDateTime) {
 		this.encounterDateTime = encounterDateTime;
+	}
+
+	public boolean isVoided() {
+		return voided;
+	}
+
+	public void setVoided(boolean voided) {
+		this.voided = voided;
 	}
 	
 }

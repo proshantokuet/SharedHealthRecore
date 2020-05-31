@@ -83,19 +83,21 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<MoneyReceiptDTO> getMoneyReceipt(String timestamp) {
 		// TODO Auto-generated method stub
 		String sql = ""
-				+ "SELECT mid as mid, patient_uuid as patient_uuid, "
+				+ "SELECT mid as mid, eslip_no as eslipNo, patient_uuid as patient_uuid, "
 				+ " `timestamp` as timestamp "
 				+ " FROM openmrs.psi_money_receipt "
-				+ " WHERE timestamp > '"+timestamp+"' "
+				+ " WHERE timestamp > '"+timestamp+"' and is_complete = 1 "
 				+ " LIMIT 500 ";
 		try{
 			List<MoneyReceiptDTO> receipts = sessionFactory.getCurrentSession()
 					.createSQLQuery(sql)
 					.addScalar("mid",StandardBasicTypes.INTEGER)
+					.addScalar("eslipNo",StandardBasicTypes.STRING)
 					.addScalar("patient_uuid",StandardBasicTypes.STRING)
 					.addScalar("timestamp",StandardBasicTypes.STRING)
 					.setResultTransformer(new AliasToBeanResultTransformer(MoneyReceiptDTO.class))

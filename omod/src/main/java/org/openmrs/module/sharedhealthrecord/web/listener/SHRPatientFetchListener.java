@@ -40,11 +40,11 @@ public class SHRPatientFetchListener {
 	private static final Logger log = LoggerFactory.getLogger(SHRPatientFetchListener.class);
 	public void fetchAndUpdatePatient(){
 //		Context.openSession();
-//		errorLogUpdate("Patient Fetch Problem","Hitting in Patient Fetch",UUID.randomUUID().toString());
+//		// errorLogUpdate("Patient Fetch Problem","Hitting in Patient Fetch",UUID.randomUUID().toString());
 //		try{
 //			patientFetchAndUpdateExecute();
 //		}catch(Exception e){
-////			errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
+//			errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
 //		}
 //		try{
 //			encounterFetchAndUpdateExecute();

@@ -19,6 +19,8 @@ import org.openmrs.module.sharedhealthrecord.api.SHRExternalPatientService;
 import org.openmrs.module.sharedhealthrecord.api.SHRPatientOriginService;
 import org.openmrs.module.sharedhealthrecord.api.SHRPatientVisitService;
 import org.openmrs.module.sharedhealthrecord.domain.Encounter;
+import org.openmrs.module.sharedhealthrecord.domain.GroupMember;
+import org.openmrs.module.sharedhealthrecord.domain.GroupMemberWithValue;
 import org.openmrs.module.sharedhealthrecord.domain.Observation;
 import org.openmrs.module.sharedhealthrecord.domain.ObservationWithGroupMemebrs;
 import org.openmrs.module.sharedhealthrecord.domain.ObservationWithValues;
@@ -40,9 +42,9 @@ import com.google.gson.Gson;
 @RestController
 public class SharedHealthRecordManageRestController {
 	
-	private final static String baseOpenmrsUrl = "https://192.168.19.145";
+	private final static String baseOpenmrsUrl = "https://localhost";
 	
-	private final static String globalServerUrl = "https://192.168.19.158";
+	private final static String globalServerUrl = "https://182.160.99.132";
 	
 	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
@@ -280,7 +282,8 @@ public class SharedHealthRecordManageRestController {
 			}
 		}
 		if (patientVisitJsonObject.containsKey("location_id")) {
-			shrPatientVisit.setLocation_id(1);
+			String localtionId = (String)patientVisitJsonObject.get("location_id");
+			shrPatientVisit.setLocation_id(Integer.parseInt(localtionId));
 		}
 		SHRPatientVisit shrpatientoriginresponse = Context.getService(SHRPatientVisitService.class).savePatientVisit(shrPatientVisit);
 		JSONObject patientVisitObject = new JSONObject();
@@ -486,6 +489,29 @@ public class SharedHealthRecordManageRestController {
 					
 					JSONObject obs = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(ob.toString(),
 					    ObservationWithGroupMemebrs.class)));
+					JSONArray groupMembersArray = new JSONArray();
+					for (int i = 0; i < groupMembers.size(); i++) {
+						
+						JSONObject groupMemberCustom = (JSONObject) groupMembers.get(i);
+						JSONObject mappedGroupmemberObject = new JSONObject();
+						try {
+							String typeGroupMember = (String) groupMemberCustom.get("type");
+							if(typeGroupMember.equalsIgnoreCase("Coded")) {
+							 mappedGroupmemberObject = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(groupMemberCustom.toString(),
+									 GroupMemberWithValue.class)));
+							}
+							else
+							{
+							 mappedGroupmemberObject = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(groupMemberCustom.toString(),
+									 GroupMember.class)));
+							}
+							groupMembersArray.add(mappedGroupmemberObject);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					obs.put("groupMembers", groupMembersArray);
 					observations.add(obs);
 				} else {
 					
