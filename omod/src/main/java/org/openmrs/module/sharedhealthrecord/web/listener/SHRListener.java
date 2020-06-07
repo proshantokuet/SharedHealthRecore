@@ -712,6 +712,16 @@ public class SHRListener{
 
 				enc_response.put("location", "8d6c993e-c2cc-11de-8d13-0010c6dffd0f");
 				
+				if(enc_response.containsKey("providers")) {
+					org.json.simple.JSONArray  providerArray = (org.json.simple.JSONArray) enc_response.get("providers");
+					for (int i = 0; i < providerArray.size(); i++) {
+						org.json.simple.JSONObject providerObject = (org.json.simple.JSONObject) providerArray.get(i);
+						String providerUuid = "c1c26908-3f10-11e4-adec-0800271c1b75";
+						providerObject.remove("uuid");
+						providerObject.put("uuid", providerUuid);
+					}
+				}
+				
 				//Encounter Post
 				String postUrl = centralServer + "openmrs/ws/rest/v1/bahmnicore/bahmniencounter";
 				
@@ -775,10 +785,10 @@ public class SHRListener{
 			}catch(Exception e){
 				String errorMessage = e.getMessage().toString();
 				if("java.net.ConnectException: Network is unreachable (connect failed)".equalsIgnoreCase(errorMessage)) {
-					errorLogInsert("Encouner","Encounter Error:"+e.toString(),encounterUuid,voidedStatus == 2 ? 1 : voidedStatus);
+					errorLogInsert("Encounter","Encounter Error:"+e.toString(),encounterUuid,voidedStatus == 2 ? 1 : voidedStatus);
 				}
 				else {
-					errorLogInsert("Encouner","Encounter Error:"+e.toString(),encounterUuid,voidedStatus);
+					errorLogInsert("Encounter","Encounter Error:"+e.toString(),encounterUuid,voidedStatus);
 				}
 				return false;
 			}
@@ -886,10 +896,10 @@ public class SHRListener{
 		
 		jsonNestedPostMoneyReceipt.put("session",
 				jsonNestedGetMoneyReceipt.get("session"));
-		
-		jsonNestedPostMoneyReceipt.put("other",
-				jsonNestedGetMoneyReceipt.get("other"));
-		
+		if(jsonNestedGetMoneyReceipt.has("other")) {
+			jsonNestedPostMoneyReceipt.put("other",
+					jsonNestedGetMoneyReceipt.get("other"));
+		}
 		jsonNestedPostMoneyReceipt.put("sateliteClinicId",
 				jsonNestedGetMoneyReceipt.get("sateliteClinicId"));
 		
