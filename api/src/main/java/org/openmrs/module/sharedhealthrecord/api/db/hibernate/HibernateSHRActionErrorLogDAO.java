@@ -38,6 +38,7 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		sessionFactory.getCurrentSession().saveOrUpdate(log);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<SHRActionErrorLog> get_list_by_Action_type(String action_type) {
 		// TODO Auto-generated method stub
@@ -48,7 +49,7 @@ protected final Log log = LogFactory.getLog(this.getClass());
 				+ "error_message as error_message, uuid as uuid, "
 				+" voided as voided, sent_status as sent_status "
 				+ "FROM openmrs.shr_action_error_log "
-				+ "WHERE action_type = '"+action_type+"'";
+				+ "WHERE action_type = '"+action_type+"' AND sent_status = 0";
 		
 		ret = sessionFactory.getCurrentSession().
 				createSQLQuery(sql)
@@ -100,7 +101,7 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		String sql = ""
 				+ " DELETE FROM openmrs.shr_action_error_log "
 				+ " WHERE action_type = '"+action_type+"' "
-				+ " AND uuid='"+uuid+"' ";
+				+ " AND uuid='"+uuid+"' AND sent_status <> 1 ";
 		
 		try{
 			return Integer.toString(sessionFactory.getCurrentSession().

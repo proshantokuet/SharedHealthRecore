@@ -39,19 +39,19 @@ public class SHRPatientFetchListener {
 	String centralServer = ServerAddress.centralServer();
 	private static final Logger log = LoggerFactory.getLogger(SHRPatientFetchListener.class);
 	public void fetchAndUpdatePatient(){
-		Context.openSession();
-		// errorLogUpdate("Patient Fetch Problem","Hitting in Patient Fetch",UUID.randomUUID().toString());
-		try{
-			patientFetchAndUpdateExecute();
-		}catch(Exception e){
-			errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
-		}
-		try{
-			encounterFetchAndUpdateExecute();
-		}catch(Exception e){
-			
-		}
-		Context.closeSession();
+//		Context.openSession();
+//		// errorLogUpdate("Patient Fetch Problem","Hitting in Patient Fetch",UUID.randomUUID().toString());
+//		try{
+//			patientFetchAndUpdateExecute();
+//		}catch(Exception e){
+//			errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
+//		}
+//		try{
+//			encounterFetchAndUpdateExecute();
+//		}catch(Exception e){
+//			
+//		}
+//		Context.closeSession();
 	}
 	
 	public void patientFetchAndUpdateExecute(){
@@ -239,7 +239,7 @@ public class SHRPatientFetchListener {
 				log.error("Encounter Post Response:"+postResponse);
 				updateExternalEncounter(patientUuid,encounterUuid);
 			}catch(Exception e){
-				errorLogUpdate("Encounter","Encounter post error:"+e.toString(),
+				errorLogUpdate("Encounter Fetch Uuid","Encounter post error:"+e.toString(),
 						encounterUuid);
 				return;
 			}

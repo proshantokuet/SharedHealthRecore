@@ -44,7 +44,7 @@ public class SharedHealthRecordManageRestController {
 	
 	private final static String baseOpenmrsUrl = "https://localhost";
 	
-	private final static String globalServerUrl = "https://182.160.99.132";
+	private final static String globalServerUrl = "https://192.168.19.147";
 	
 	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
@@ -694,6 +694,65 @@ public class SharedHealthRecordManageRestController {
 					externalPatientObject.put("encounterUuid", responseExternalPatient.getEncounter_uuid());
 					return new ResponseEntity<>(externalPatientObject.toJSONString(), HttpStatus.OK);
 				}
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/close/visitInGlobal", method = RequestMethod.GET)
+	public ResponseEntity<String> closeVisitInGlobal(@RequestParam(required = true) String visitUuid) throws Exception {
+		JSONParser jsonParser = new JSONParser();
+		try {
+			JSONObject patientVisit = new JSONObject();
+			String visitUrl = globalServerUrl + "/openmrs/ws/rest/v1/visit/" + visitUuid;
+			String visitResponse = HttpUtil.get(visitUrl, "", "admin:test");
+			//Read JSON file
+			JSONObject visitObject = (JSONObject) jsonParser.parse(visitResponse);
+			if(visitObject.containsKey("error")) {
+					patientVisit.put("isSuccessfull", true);
+					patientVisit.put("Message", "Success");
+					patientVisit.put("visitUuid", visitUuid);
+				}
+			else if (visitObject.containsKey("uuid")) {
+					String visitPostUrl = globalServerUrl + "/openmrs/ws/rest/v1/bahmnicore/visit/endVisit" + "?visitUuid=" + visitUuid;
+					String returnedResult = HttpUtil.post(visitPostUrl, "", "");
+					JSONObject returnedResultObject = (JSONObject) jsonParser.parse(returnedResult);
+					if(!returnedResultObject.containsKey("error")) {
+						patientVisit.put("isSuccessfull", true);
+						patientVisit.put("Message", "Success");
+						patientVisit.put("visitUuid", visitUuid);
+					}
+					else {
+						patientVisit.put("isSuccessfull", false);
+						patientVisit.put("Message", "Vist Close in GLobal Server Failed");
+						patientVisit.put("visitUuid", visitUuid);
+					}					
+			}
+			return new ResponseEntity<>(patientVisit.toJSONString(), HttpStatus.OK);
+		}
+		catch (Exception e) {
+			//e.printStackTrace();
+			String errorMessage = e.getMessage().toString();
+			if("java.net.ConnectException: Network is unreachable (connect failed)".equalsIgnoreCase(errorMessage)) {
+				JSONObject patientVisit = new JSONObject();
+				patientVisit.put("isSuccessfull", false);
+				patientVisit.put("Message", "Please Connect to Internet Before closing Visit");
+				patientVisit.put("visitUuid", visitUuid);
+				return new ResponseEntity<>(patientVisit.toJSONString(), HttpStatus.OK);
+			}
+			else if ("java.net.SocketException: Network is unreachable (connect failed)".equalsIgnoreCase(errorMessage)) {
+				JSONObject patientVisit = new JSONObject();
+				patientVisit.put("isSuccessfull", false);
+				patientVisit.put("Message", "Please Connect to Internet Before closing Visit");
+				patientVisit.put("visitUuid", visitUuid);
+				return new ResponseEntity<>(patientVisit.toJSONString(), HttpStatus.OK);
+			}
+			else {
+				JSONObject patientVisit = new JSONObject();
+				patientVisit.put("isSuccessfull", false);
+				patientVisit.put("Message", errorMessage);
+				patientVisit.put("visitUuid", visitUuid);
+				return new ResponseEntity<>(patientVisit.toJSONString(), HttpStatus.OK);
+			}
 		}
 	}
 }
