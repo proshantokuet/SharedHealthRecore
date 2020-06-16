@@ -3,7 +3,9 @@ package org.openmrs.module.sharedhealthrecord.web.listener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.json.JSONArray;
@@ -748,6 +750,46 @@ public class SHRListener{
 				org.json.simple.JSONArray obs = SharedHealthRecordManageRestController.getObservations((org.json.simple.JSONArray)enc_response.get("observations"));
 //				enc_response.remove("observations");
 				org.json.simple.JSONObject encounter = (org.json.simple.JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(enc_response.toString(),Encounter.class)));
+				
+				//for removing duplicity of lab order 
+				Set<String> disContinueConceptUuid = new HashSet<String>();
+				org.json.simple.JSONArray labOrders = (org.json.simple.JSONArray) encounter.get("orders");
+				org.json.simple.JSONArray customLabOrder = new org.json.simple.JSONArray();
+				org.json.simple.JSONArray finalFilteredLabOrder = new org.json.simple.JSONArray();
+				for (int i = 0; i < labOrders.size(); i++) {
+					org.json.simple.JSONObject labOrderObject = (org.json.simple.JSONObject) labOrders.get(i);
+					org.json.simple.JSONObject conceptObject = (org.json.simple.JSONObject) labOrderObject.get("concept");
+					String uuidConcept = (String) conceptObject.get("uuid");
+					String action = (String) labOrderObject.get("action");
+					if(action.equalsIgnoreCase("NEW")) {
+						customLabOrder.add(labOrders.get(i));
+					}
+					else if (action.equalsIgnoreCase("DISCONTINUE")) {
+						disContinueConceptUuid.add(uuidConcept);
+					}
+				}
+				List<String> list = new ArrayList<String>(disContinueConceptUuid);
+				for (int i = 0; i < customLabOrder.size(); i++) {
+					for (int j = 0; j < list.size(); j++) {
+						org.json.simple.JSONObject labOrderObject = (org.json.simple.JSONObject) customLabOrder.get(i);
+						org.json.simple.JSONObject conceptObject = (org.json.simple.JSONObject) labOrderObject.get("concept");
+						String uuidConcept = (String) conceptObject.get("uuid");
+						String discontinueUuid = list.get(j);
+						if(uuidConcept.equalsIgnoreCase(discontinueUuid)) {
+							org.json.simple.JSONObject laborderNested = (org.json.simple.JSONObject) customLabOrder.get(i);
+							laborderNested.put("voided", true);
+						}
+					}
+				}
+				for (int i = 0; i < customLabOrder.size(); i++) {
+					org.json.simple.JSONObject labOrderObject = (org.json.simple.JSONObject) customLabOrder.get(i);
+					if(!labOrderObject.containsKey("voided")) {
+						finalFilteredLabOrder.add(labOrderObject);
+					}
+				}
+				encounter.remove("orders");
+				encounter.put("orders", finalFilteredLabOrder);
+				//end
 				encounter.put("observations", obs);
 
 				//Encounter  Existence Check in Global Server
@@ -790,7 +832,7 @@ public class SHRListener{
 								encounterUuid,voidedStatus);
 						postStatus = false;
 					}
-					if(postStatus) {
+					if(!postStatus) {
 						return false;
 					}
 				}catch(Exception e){

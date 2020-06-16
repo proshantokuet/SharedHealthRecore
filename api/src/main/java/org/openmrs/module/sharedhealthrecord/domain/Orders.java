@@ -6,6 +6,8 @@ public class Orders {
 	
 	private Concept concept;
 	
+	private String action;
+	
 	public Concept getConcept() {
 		return concept;
 	}
@@ -13,5 +15,15 @@ public class Orders {
 	public void setConcept(Concept concept) {
 		this.concept = concept;
 	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+
 	
 }

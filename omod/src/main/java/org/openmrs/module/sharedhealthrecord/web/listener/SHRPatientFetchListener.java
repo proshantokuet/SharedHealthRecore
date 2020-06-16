@@ -1,7 +1,9 @@
 package org.openmrs.module.sharedhealthrecord.web.listener;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.jfree.util.Log;
@@ -39,19 +41,19 @@ public class SHRPatientFetchListener {
 	String centralServer = ServerAddress.centralServer();
 	private static final Logger log = LoggerFactory.getLogger(SHRPatientFetchListener.class);
 	public void fetchAndUpdatePatient(){
-//		Context.openSession();
-//		// errorLogUpdate("Patient Fetch Problem","Hitting in Patient Fetch",UUID.randomUUID().toString());
-//		try{
-//			patientFetchAndUpdateExecute();
-//		}catch(Exception e){
-//			errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
-//		}
-//		try{
-//			encounterFetchAndUpdateExecute();
-//		}catch(Exception e){
-//			
-//		}
-//		Context.closeSession();
+		Context.openSession();
+		// errorLogUpdate("Patient Fetch Problem","Hitting in Patient Fetch",UUID.randomUUID().toString());
+		try{
+			patientFetchAndUpdateExecute();
+		}catch(Exception e){
+			errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
+		}
+		try{
+			encounterFetchAndUpdateExecute();
+		}catch(Exception e){
+			
+		}
+		Context.closeSession();
 	}
 	
 	public void patientFetchAndUpdateExecute(){
@@ -235,9 +237,16 @@ public class SHRPatientFetchListener {
 			
 			try{
 				String postResponse = HttpUtil.post(postUrl, "", encounter_.toJSONString());
-//				errorLogUpdate("Encounter Post Final",postResponse,encounterUuid);
-				log.error("Encounter Post Response:"+postResponse);
-				updateExternalEncounter(patientUuid,encounterUuid);
+				JSONObject postResponseObject = new JSONObject(postResponse);
+				if(postResponseObject.has("error")) {
+					JSONObject errorMessageObject = (JSONObject) postResponseObject.get("error");
+					String errorMessage = errorMessageObject.getString("message");
+					errorLogUpdate("Encounter Fetch Uuid","Encounter post error:"+ errorMessage,
+							encounterUuid);
+				}
+				else {
+					updateExternalEncounter(patientUuid,encounterUuid);
+				}
 			}catch(Exception e){
 				errorLogUpdate("Encounter Fetch Uuid","Encounter post error:"+e.toString(),
 						encounterUuid);
