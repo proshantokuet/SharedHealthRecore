@@ -205,7 +205,7 @@ public class SHRPatientFetchListener {
 			if(enc_response.containsKey("location"))
 				enc_response.remove("location");
 
-			enc_response.put("location", "8d6c993e-c2cc-11de-8d13-0010c6dffd0f");
+			enc_response.put("locationUuid", "8d6c993e-c2cc-11de-8d13-0010c6dffd0f");
 			//Encounter  Existence Check in Global Server
 			String searchEncounterUrl = localServer + "openmrs/ws/rest/v1/bahmnicore/bahmniencounter/"
 					+ encounterUuid + "?includeAll=true";

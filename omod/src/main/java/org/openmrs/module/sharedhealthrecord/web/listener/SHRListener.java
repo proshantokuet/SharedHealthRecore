@@ -16,7 +16,6 @@ import org.json.simple.parser.ParseException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sharedhealthrecord.SHRActionErrorLog;
 import org.openmrs.module.sharedhealthrecord.SHRExternalPatient;
-import org.openmrs.module.sharedhealthrecord.api.ObservationServiceTest;
 import org.openmrs.module.sharedhealthrecord.api.SHRActionAuditInfoService;
 import org.openmrs.module.sharedhealthrecord.api.SHRActionErrorLogService;
 import org.openmrs.module.sharedhealthrecord.api.SHRExternalPatientService;
@@ -26,13 +25,9 @@ import org.openmrs.module.sharedhealthrecord.domain.MoneyReceiptDTO;
 import org.openmrs.module.sharedhealthrecord.utils.HttpUtil;
 import org.openmrs.module.sharedhealthrecord.utils.ServerAddress;
 import org.openmrs.module.sharedhealthrecord.web.controller.rest.SharedHealthRecordManageRestController;
-import org.openmrs.scheduler.tasks.AbstractTask;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
@@ -223,6 +218,7 @@ public class SHRListener{
 		}
 	}
 	public void sendEncounter() throws ParseException{
+		JSONParser jsonParser = new JSONParser();
 		String last_entry = Context.getService(SHRActionAuditInfoService.class)
 				.getLastEntryForEncounter();
 		List<EventRecordsDTO> records = Context.getService(SHRActionAuditInfoService.class)
@@ -231,13 +227,18 @@ public class SHRListener{
 			for(EventRecordsDTO rec: records){
 				try {
 					String encounterUUid = rec.getObject().split("/|\\?")[7];
-					//External Patient Table Searching using this encounterUUid
+					String getEncounterUrl = localServer +"openmrs/ws/rest/v1/bahmnicore/bahmniencounter/"+ encounterUUid +"?includeAll=false";
+					String patientencounterResponse = HttpUtil.get(getEncounterUrl, "", "admin:test");
+					org.json.simple.JSONObject obj = (org.json.simple.JSONObject) jsonParser.parse(patientencounterResponse);
+					String patientUuid = (String) obj.get("patientUuid");
+					List<SHRExternalPatient> patientsToSend = Context.getService(SHRExternalPatientService.class).
+								findByPatientUuid(patientUuid,"patient");
 					SHRExternalPatient encounterToSend = Context.
 							getService(SHRExternalPatientService.class).
 								findExternalPatientByEncounterUUid(encounterUUid);
 //					log.error("encounter fetch: "+encounterToSend != null ? encounterToSend.toString():"Null");
 					//If not found then Send
-					if(encounterToSend == null){
+					if(encounterToSend == null && patientsToSend.size() == 0){
 						Boolean EncounterSaveFlag = encounterFetchAndPost(encounterUUid,Integer.toString(rec.getId()),0);
 						if(EncounterSaveFlag) {
 							SaveStatusOfEachOnSync("Encounter", "success", encounterUUid);
@@ -730,7 +731,7 @@ public class SHRListener{
 				if(enc_response.containsKey("location"))
 					enc_response.remove("location");
 
-				enc_response.put("location", "8d6c993e-c2cc-11de-8d13-0010c6dffd0f");
+				enc_response.put("locationUuid", "8d6c993e-c2cc-11de-8d13-0010c6dffd0f");
 				
 				if(enc_response.containsKey("providers")) {
 					org.json.simple.JSONArray  providerArray = (org.json.simple.JSONArray) enc_response.get("providers");

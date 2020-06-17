@@ -44,7 +44,7 @@ public class SharedHealthRecordManageRestController {
 	
 	private final static String baseOpenmrsUrl = "https://localhost";
 	
-	private final static String globalServerUrl = "https://192.168.19.147";
+	private final static String globalServerUrl = "https://192.168.19.158";
 	
 	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
@@ -282,9 +282,11 @@ public class SharedHealthRecordManageRestController {
 			}
 		}
 		if (patientVisitJsonObject.containsKey("location_id")) {
-			String localtionId = (String)patientVisitJsonObject.get("location_id");
-			shrPatientVisit.setLocation_id(Integer.parseInt(localtionId));
+			//String localtionId = (String)patientVisitJsonObject.get("location_id");
+			//shrPatientVisit.setLocation_id(Integer.parseInt(localtionId));
+			shrPatientVisit.setLocation_id(1);
 		}
+		
 		SHRPatientVisit shrpatientoriginresponse = Context.getService(SHRPatientVisitService.class).savePatientVisit(shrPatientVisit);
 		JSONObject patientVisitObject = new JSONObject();
 		patientVisitObject.put("visit_type_id", Integer.toString(shrpatientoriginresponse.getVisit_type_id()));
@@ -447,6 +449,11 @@ public class SharedHealthRecordManageRestController {
 					String visitTypeUuidString = (String)obj.get("visitTypeUuid");
 					String visitTypeValue = visitTypeMapping.get(visitTypeUuidString);
 					obj.put("visitType", visitTypeValue);
+					if(obj.containsKey("locationUuid"))
+					{
+						obj.remove("locationUuid");
+					}
+					obj.put("locationUuid", "8d6c993e-c2cc-11de-8d13-0010c6dffd0f");
 					JSONArray obs = (JSONArray) obj.get("observations");
 					JSONArray obervations = getObservations(obs);
 					JSONObject encounter = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(obj.toString(),Encounter.class)));
