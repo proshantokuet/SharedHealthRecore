@@ -56,11 +56,10 @@ public class SHRListener{
 		
 		JSONObject getResponse = null;
 		boolean status = true;
-	
 		try{
 			String globalServerUrl = centralServer + "openmrs/ws/rest/v1/visittype";
-			String get_result = HttpUtil.get(globalServerUrl, "", "admin:test"); 
-			
+			String get_result = HttpUtil.get(globalServerUrl, "", "admin:test");
+			JSONObject patienResponseCheck = new JSONObject(get_result);			
 		}catch(Exception e){
 			e.printStackTrace();
 			status = false;
@@ -167,7 +166,8 @@ public class SHRListener{
 					// do nothing
 				}
 			}
-			
+			String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
+					.updateAuditPatient(Integer.toString(rec.getId()));
 		}
 		}catch(Exception e){
 			errorLogInsert("Patient",e.toString(),patUuid,0);
@@ -261,6 +261,8 @@ public class SHRListener{
 							}			
 						}
 					}
+					String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
+					.updateAuditEncounter(Integer.toString(rec.getId()));	
 				} catch (Exception e) {
 					String encounterUUidEx = rec.getObject().split("/|\\?")[7];
 					errorLogInsert("Encounter",e.toString(),encounterUUidEx,0);
@@ -341,7 +343,10 @@ public class SHRListener{
 						if(saveFlagMoneyReceipt) {
 							SaveStatusOfEachOnSync("Money Receipt", "success", mid);					
 						}
-						//mid_ = mid.toString();
+						String timestampOfMoneyreceipt = Context.getService(SHRActionAuditInfoService.class)
+								.getTimeStampForMoneyReceipt(mid);
+						String timestampUpdate = Context.getService(SHRActionAuditInfoService.class)
+						.updateAuditMoneyReceipt(timestampOfMoneyreceipt);
 					}
 				}catch(Exception e){
 					String midEx = Integer.toString(receipt.getMid());
@@ -422,6 +427,10 @@ public class SHRListener{
 			String postAction = "";
 			try{
 			 postAction = HttpUtil.post(centralPostUrl, "", postMoneyReceipt);
+				if("".equalsIgnoreCase(postAction)){
+				   errorLogInsert("Money Receipt","Money Receipt failed while posting:"+ postAction,mid,voidedStatus);
+				   return false;
+				}
 			}catch(Exception e){
 				if("java.lang.RuntimeException: java.net.ConnectException: Network is unreachable (connect failed)".equalsIgnoreCase(e.toString())) {
 					errorLogInsert("Money Receipt","Money Receipt Post:"+e.toString(),mid,voidedStatus == 2 ? 1 : voidedStatus);
@@ -432,19 +441,19 @@ public class SHRListener{
 				return false;
 			}
 			
-			if(!"".equalsIgnoreCase(postAction)){
-				if(voidedStatus == 0){
-				String timestamp=Context.getService(SHRActionAuditInfoService.class)
-						.getTimeStampForMoneyReceipt(mid);
-//				if(!"".equalsIgnoreCase(timestamp))
-					String timestampUpdate = 	Context.getService(SHRActionAuditInfoService.class)
-				.updateAuditMoneyReceipt(timestamp);
-				}
-			}
-			else {
-				errorLogInsert("Money Receipt","Money Receipt Post:"+postAction,mid,voidedStatus);
-				return false;
-			}
+//			if(!"".equalsIgnoreCase(postAction)){
+//				if(voidedStatus == 0){
+//				String timestamp=Context.getService(SHRActionAuditInfoService.class)
+//						.getTimeStampForMoneyReceipt(mid);
+////				if(!"".equalsIgnoreCase(timestamp))
+//					String timestampUpdate = Context.getService(SHRActionAuditInfoService.class)
+//				.updateAuditMoneyReceipt(timestamp);
+//				}
+//			}
+//			else {
+//				errorLogInsert("Money Receipt","Money Receipt Post:"+postAction,mid,voidedStatus);
+//				return false;
+//			}
 		}catch(Exception e){
 			if("java.lang.RuntimeException: java.net.ConnectException: Network is unreachable (connect failed)".equalsIgnoreCase(e.toString())) {
 				errorLogInsert("Money Receipt",e.toString(),mid,voidedStatus == 2 ? 1 : voidedStatus);
@@ -534,24 +543,33 @@ public class SHRListener{
 				try{ 
 					
 					returnedResult = HttpUtil.post(patientPostUrl, "", postData);
+					JSONObject returnedResultOfPatient = new JSONObject(returnedResult);
+					if(returnedResultOfPatient.has("error")) {
+						JSONObject errorMessageObject = (JSONObject) returnedResultOfPatient.get("error");
+						String errorMessage = errorMessageObject.getString("message");
+						errorLogInsert("Patient","Global Server Patient Save Error:" + errorMessage,patientUUid,voidedStatus);
+						return false;
+					}
+					else {
 //					errorLogUpdate("patient post",returnedResult,patientUUid);
 					//origin table will be inserted in global server for addition only
-					if(patienResponseCheck.has("error")){
-						String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
-							insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+localServer+"/";
-							
-						String get = "";
-						try{
-							get = HttpUtil.get(insertUrl, "", "admin:test");
-						}catch(Exception e){
-							if("java.lang.RuntimeException: java.net.ConnectException: Network is unreachable (connect failed)".equalsIgnoreCase(e.toString())) {
-								errorLogInsert("Patient","Local Server Save Info Error:" + e.toString(),patientUUid,voidedStatus == 2 ? 1 : voidedStatus);
+						if(patienResponseCheck.has("error")){
+							String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
+								insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+localServer+"/";
+								
+							String get = "";
+							try{
+								get = HttpUtil.get(insertUrl, "", "admin:test");
+							}catch(Exception e){
+								if("java.lang.RuntimeException: java.net.ConnectException: Network is unreachable (connect failed)".equalsIgnoreCase(e.toString())) {
+									errorLogInsert("Patient","Network is unreachable (connect failed):" + e.toString(),patientUUid,voidedStatus == 2 ? 1 : voidedStatus);
+								}
+								else {
+									errorLogInsert("Patient","Global Server Origin Save Error:" + e.toString(),patientUUid,voidedStatus);
+								}
+								
+								return false;
 							}
-							else {
-								errorLogInsert("Patient","Local Server Save Info Error:" + e.toString(),patientUUid,voidedStatus);
-							}
-							
-							return false;
 						}
 					}
 				
@@ -565,10 +583,10 @@ public class SHRListener{
 					return false;
 				}
 				// Save last entry in Audit Table
-				if(voidedStatus == 0){
-					String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
-						.updateAuditPatient(id);
-				}
+//				if(voidedStatus == 0){
+//					String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
+//						.updateAuditPatient(id);
+//				}
 				
 			}catch(Exception e){
 				if("java.lang.RuntimeException: java.net.ConnectException: Network is unreachable (connect failed)".equalsIgnoreCase(e.toString())) {
@@ -577,7 +595,7 @@ public class SHRListener{
 				else {
 					errorLogInsert("Patient",e.toString(),patientUUid,voidedStatus);
 				}
-				// Error Log Generation on Exception
+				return false;
 			}
 			
 			return true;
@@ -848,10 +866,10 @@ public class SHRListener{
 					return false;
 				}
 				//voided Status Increment
-				if(voidedStatus == 0){					
-					String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
-					.updateAuditEncounter(id);					
-				}
+//				if(voidedStatus == 0){					
+//					String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
+//					.updateAuditEncounter(id);					
+//				}
 			}catch(Exception e){
 				if("java.lang.RuntimeException: java.net.ConnectException: Network is unreachable (connect failed)".equalsIgnoreCase(e.toString())) {
 						errorLogInsert("Encounter","Encounter Error:"+e.toString(),encounterUuid,voidedStatus == 2 ? 1 : voidedStatus);

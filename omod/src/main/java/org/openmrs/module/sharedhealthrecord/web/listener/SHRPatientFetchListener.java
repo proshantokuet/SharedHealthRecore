@@ -1,12 +1,9 @@
 package org.openmrs.module.sharedhealthrecord.web.listener;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
-import org.jfree.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,17 +39,29 @@ public class SHRPatientFetchListener {
 	private static final Logger log = LoggerFactory.getLogger(SHRPatientFetchListener.class);
 	public void fetchAndUpdatePatient(){
 		Context.openSession();
-		// errorLogUpdate("Patient Fetch Problem","Hitting in Patient Fetch",UUID.randomUUID().toString());
+		boolean status = true;
 		try{
-			patientFetchAndUpdateExecute();
-		}catch(Exception e){
-			errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
-		}
-		try{
-			encounterFetchAndUpdateExecute();
-		}catch(Exception e){
+			String globalServerUrl = centralServer + "openmrs/ws/rest/v1/visittype";
+			String get_result = HttpUtil.get(globalServerUrl, "", "admin:test");
+			JSONObject patienResponseCheck = new JSONObject(get_result);
 			
+		}catch(Exception e){
+			e.printStackTrace();
+			status = false;
 		}
+		if(status) {
+			try{
+				patientFetchAndUpdateExecute();
+			}catch(Exception e){
+				errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
+			}
+			try{
+				encounterFetchAndUpdateExecute();
+			}catch(Exception e){
+				errorLogUpdate("Encounter Fetch Problem",e.toString(),UUID.randomUUID().toString());
+			}
+		}
+
 		Context.closeSession();
 	}
 	
