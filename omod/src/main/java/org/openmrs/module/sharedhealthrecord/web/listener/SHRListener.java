@@ -51,56 +51,56 @@ public class SHRListener{
 //	@Scheduled(fixedRate=10000)
 	private static final Logger log = LoggerFactory.getLogger(SHRListener.class);
 	public void sendAllData() throws Exception {
-		
-		Context.openSession();
-		
-		JSONObject getResponse = null;
-		boolean status = true;
-		try{
-			String globalServerUrl = centralServer + "openmrs/ws/rest/v1/visittype";
-			String get_result = HttpUtil.get(globalServerUrl, "", "admin:test");
-			JSONObject patienResponseCheck = new JSONObject(get_result);			
-		}catch(Exception e){
-			e.printStackTrace();
-			status = false;
-		}
-		
-		if(status){
-			try{
-//				PatientSendProcess process = new FailedPatientSendProcess();
-				sendFailedPatient();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			try{
-				sendPatient();
-
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			try{
-				sendFailedEncounter();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			try{
-				sendEncounter();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			try{
-				sendFailedMoneyReceipt();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			try{
-				sendMoneyReceipt();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-		}
-		
-		Context.closeSession();
+//		
+//		Context.openSession();
+//		
+//		JSONObject getResponse = null;
+//		boolean status = true;
+//		try{
+//			String globalServerUrl = centralServer + "openmrs/ws/rest/v1/visittype";
+//			String get_result = HttpUtil.get(globalServerUrl, "", "admin:test");
+//			JSONObject patienResponseCheck = new JSONObject(get_result);			
+//		}catch(Exception e){
+//			e.printStackTrace();
+//			status = false;
+//		}
+//		
+//		if(status){
+//			try{
+////				PatientSendProcess process = new FailedPatientSendProcess();
+//				sendFailedPatient();
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//			try{
+//				sendPatient();
+//
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//			try{
+//				sendFailedEncounter();
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//			try{
+//				sendEncounter();
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//			try{
+//				sendFailedMoneyReceipt();
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//			try{
+//				sendMoneyReceipt();
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//		}
+//		
+//		Context.closeSession();
 		
 	}
 	
@@ -1008,6 +1008,14 @@ public class SHRListener{
 		
 		jsonNestedPostMoneyReceipt.put("teamNo",
 				jsonNestedGetMoneyReceipt.get("teamNo"));
+		
+		if(jsonNestedGetMoneyReceipt.has("cspId")) {
+			String cspId = (String) jsonNestedGetMoneyReceipt.get("cspId");
+			if(cspId != null && !cspId.isEmpty()) {
+				jsonNestedPostMoneyReceipt.put("cspId", cspId);
+			}
+		}
+		
 		jsonNestedPostMoneyReceipt.put("moneyReceiptDate",
 				jsonNestedGetMoneyReceipt.get("moneyReceiptDate") );
 		
