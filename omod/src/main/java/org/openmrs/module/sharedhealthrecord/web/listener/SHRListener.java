@@ -422,7 +422,7 @@ public class SHRListener{
 				 return false;
 			 }
 //			errorLogUpdate("Money Receipt Format Post",postMoneyReceipt,mid);
-			String centralPostUrl = centralServer+"openmrs/ws/rest/v1/money-receipt/add-or-update";
+			String centralPostUrl = centralServer+"openmrs/ws/rest/v1/money-receipt/save-in-global";
 			//IF success update timestamp
 			String postAction = "";
 			try{

@@ -99,5 +99,11 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		return dao.getEventRecords(type, last_entry);
 	}
 
+	@Override
+	public String getClinicCodeForClinic() {
+		// TODO Auto-generated method stub
+		return dao.getClinicCodeForClinic();
+	}
+
 	
 }

@@ -12,6 +12,7 @@ import org.json.simple.parser.ParseException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sharedhealthrecord.SHRActionErrorLog;
 import org.openmrs.module.sharedhealthrecord.SHRExternalEncounter;
+import org.openmrs.module.sharedhealthrecord.api.SHRActionAuditInfoService;
 import org.openmrs.module.sharedhealthrecord.api.SHRActionErrorLogService;
 import org.openmrs.module.sharedhealthrecord.domain.Encounter;
 import org.openmrs.module.sharedhealthrecord.utils.HttpUtil;
@@ -38,31 +39,36 @@ public class SHRPatientFetchListener {
 	String centralServer = ServerAddress.centralServer();
 	private static final Logger log = LoggerFactory.getLogger(SHRPatientFetchListener.class);
 	public void fetchAndUpdatePatient(){
-//		Context.openSession();
-//		boolean status = true;
-//		try{
-//			String globalServerUrl = centralServer + "openmrs/ws/rest/v1/visittype";
-//			String get_result = HttpUtil.get(globalServerUrl, "", "admin:test");
-//			JSONObject patienResponseCheck = new JSONObject(get_result);
-//			
-//		}catch(Exception e){
-//			e.printStackTrace();
-//			status = false;
-//		}
-//		if(status) {
-//			try{
-//				patientFetchAndUpdateExecute();
-//			}catch(Exception e){
-//				errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
-//			}
-//			try{
-//				encounterFetchAndUpdateExecute();
-//			}catch(Exception e){
-//				errorLogUpdate("Encounter Fetch Problem",e.toString(),UUID.randomUUID().toString());
-//			}
-//		}
-//
-//		Context.closeSession();
+		Context.openSession();
+		boolean status = true;
+		try{
+			String globalServerUrl = centralServer + "openmrs/ws/rest/v1/visittype";
+			String get_result = HttpUtil.get(globalServerUrl, "", "admin:test");
+			JSONObject patienResponseCheck = new JSONObject(get_result);
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			status = false;
+		}
+		if(status) {
+			try{
+				//patientFetchAndUpdateExecute();
+			}catch(Exception e){
+				errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
+			}
+			try{
+				//encounterFetchAndUpdateExecute();
+			}catch(Exception e){
+				errorLogUpdate("Encounter Fetch Problem",e.toString(),UUID.randomUUID().toString());
+			}
+			try{
+				deleteLocalMoneyReceipt();
+			}catch(Exception e){
+				errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
+			}
+		}
+
+		Context.closeSession();
 	}
 	
 	public void patientFetchAndUpdateExecute(){
@@ -424,5 +430,40 @@ public class SHRPatientFetchListener {
 			+"?purge=true";
 			String result = HttpUtil.delete(deleteUrlString, "", "admin:test");
 			log.error("Delete Encounter: "+result);
+		}
+		
+		@SuppressWarnings("unused")
+		private void deleteLocalMoneyReceipt() throws JSONException{
+			String E_slipNo = "";
+			try {
+				String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic();
+				log.error("Clinic Code "+clinicCode);
+				String url = centralServer + "openmrs/ws/rest/v1/money-receipt/get-voided-money-receipt/000";
+				String moneyReceiptList = HttpUtil.get(url, "", "admin:test");
+				org.json.JSONArray getMoneyReceiptList = new org.json.JSONArray(moneyReceiptList);
+				
+				for(int i = 0; i < getMoneyReceiptList.length();i++){
+					org.json.JSONObject patientObject = getMoneyReceiptList.getJSONObject(i);
+					String eslipNo = patientObject.get("eslipNo").toString();
+					E_slipNo = eslipNo;
+					String eslipUrl = localServer + "openmrs/ws/rest/v1/money-receipt/void-money-receipt-by-eslip/" + eslipNo;
+					
+					String deletedEslip = HttpUtil.delete(eslipUrl, "", "admin:test");
+					if(deletedEslip.equalsIgnoreCase("success")) {
+						errorLogUpdate("Money Receipt Delete","success", eslipNo);
+					}
+					else if(deletedEslip.equalsIgnoreCase("No E-slip Found in server")) {
+						log.error("Nothing to delete "+ E_slipNo);
+					}
+					else {
+						errorLogUpdate("Money Receipt Delete","Delete Money Receipt Error:"+ deletedEslip, eslipNo);
+
+					}
+					
+				}
+			} catch (Exception e) {
+				errorLogUpdate("Money Receipt Delete","Delete Money Receipt Error:"+ e.toString(),E_slipNo);
+			}
+
 		}
 }

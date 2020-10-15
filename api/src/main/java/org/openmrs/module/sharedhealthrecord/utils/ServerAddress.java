@@ -4,10 +4,12 @@ public class ServerAddress {
 		
 	public static String localServer(){
 		
-		return "https://192.168.19.145/";
+		//return "https://192.168.19.145/";
+		return "https://localhost/";
 	}
 	
 	public static String centralServer(){
-		return "https://182.160.99.132/";
+		//return "https://182.160.99.132/";
+		return "https://192.168.19.147/";
 	}
 }

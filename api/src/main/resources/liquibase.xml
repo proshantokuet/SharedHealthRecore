@@ -60,6 +60,11 @@
 			<column name="sent_status" type="int(11)" />			
 		</addColumn>
 	 </changeSet>
+	 <changeSet id="shr_action_error_log-1.0.5" author="jysan">
+		<sql>
+			ALTER TABLE shr_action_error_log CHANGE error_message error_message mediumtext; 
+		</sql>
+	</changeSet>
     <changeSet id="shr_external_patient-1.0.0" author="jysan">
     	<createTable tableName="shr_external_patient">
     		<column name="epid" type="int(11)" autoIncrement="true">

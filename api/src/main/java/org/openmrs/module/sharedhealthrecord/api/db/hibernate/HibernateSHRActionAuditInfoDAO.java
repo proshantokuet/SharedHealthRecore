@@ -249,6 +249,19 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		}
 	}
 
+	@Override
+	public String getClinicCodeForClinic() {
+		// TODO Auto-generated method stub
+		String clinicCode = "0";
+		String sql = "select clinic_id from psi_clinic";
+		try{
+			clinicCode = sessionFactory.getCurrentSession().createSQLQuery(sql).list().get(0).toString();
+			return clinicCode;
+		}catch(Exception e){
+			return clinicCode;
+		}
+	}
+
 	
 
 	
