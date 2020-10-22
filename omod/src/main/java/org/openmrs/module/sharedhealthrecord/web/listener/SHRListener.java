@@ -974,7 +974,9 @@ public class SHRListener{
 		JSONObject jsonPostMoneyReceipt = new JSONObject();
 		JSONObject jsonNestedPostMoneyReceipt = new JSONObject();
 		JSONArray jsonNestedPostServices = new JSONArray();
+		JSONArray jsonNestedPostPayments = new JSONArray();
 		JSONArray jsonNestedGetServices = jsonMoneyReceipt.getJSONArray("services");
+		JSONArray jsonNestedGetPayments = jsonMoneyReceipt.getJSONArray("payments");
 		//Money Receipt Part
 		JSONObject jsonNestedGetMoneyReceipt = jsonMoneyReceipt.getJSONObject("moneyReceipt");
 		jsonNestedPostMoneyReceipt.put("clinicName", jsonNestedGetMoneyReceipt.
@@ -1051,6 +1053,10 @@ public class SHRListener{
 		jsonNestedPostMoneyReceipt.put("patientRegisteredDate", 
 				jsonNestedGetMoneyReceipt.get("patientRegisteredDate"));
 		
+		jsonNestedPostMoneyReceipt.put("overallDiscount", 
+				jsonNestedGetMoneyReceipt.get("overallDiscount").toString());
+		jsonNestedPostMoneyReceipt.put("dueAmount", 
+				jsonNestedGetMoneyReceipt.get("dueAmount").toString());
 		
 		jsonPostMoneyReceipt.put("moneyReceipt", jsonNestedPostMoneyReceipt);
 		
@@ -1079,6 +1085,18 @@ public class SHRListener{
 			jsonNestedPostServices.put(servicePost);
 		}
 		jsonPostMoneyReceipt.put("services", jsonNestedPostServices);
+		
+		for(int i = 0; i < jsonNestedGetPayments.length();i++){
+			JSONObject paymentObject = jsonNestedGetPayments.getJSONObject(i);
+			JSONObject paymentPost = new JSONObject();
+			paymentPost.put("receiveDate",paymentObject.get("receiveDate"));
+			paymentPost.put("receiveAmount", paymentObject.get("receiveAmount"));
+			
+			
+			jsonNestedPostPayments.put(paymentPost);
+		}
+		jsonPostMoneyReceipt.put("payments", jsonNestedPostPayments);
+
 		return jsonPostMoneyReceipt.toString();
 	}
 	
