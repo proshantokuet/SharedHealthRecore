@@ -438,7 +438,7 @@ public class SHRPatientFetchListener {
 			try {
 				String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic();
 				log.error("Clinic Code "+clinicCode);
-				String url = centralServer + "openmrs/ws/rest/v1/money-receipt/get-voided-money-receipt/000";
+				String url = centralServer + "openmrs/ws/rest/v1/money-receipt/get-voided-money-receipt/" + Integer.parseInt(clinicCode);
 				String moneyReceiptList = HttpUtil.get(url, "", "admin:test");
 				org.json.JSONArray getMoneyReceiptList = new org.json.JSONArray(moneyReceiptList);
 				

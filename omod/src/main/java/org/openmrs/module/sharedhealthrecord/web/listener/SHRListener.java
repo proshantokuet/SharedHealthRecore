@@ -1077,7 +1077,18 @@ public class SHRListener{
 			item.put("category", service.get("category"));
 			
 			servicePost.put("item", item);
-			
+			if(service.has("type")) {
+				String type = (String) service.get("type");
+				if(type != null && !type.isEmpty()) {
+					servicePost.put("type",  type);
+				}
+			}
+			if(service.has("packageUuid")) {
+				String packageUuid = (String) service.get("packageUuid");
+				if(packageUuid != null && !packageUuid.isEmpty()) {
+					servicePost.put("packageUuid",  service.get("packageUuid"));
+				}
+			};
 			servicePost.put("category", service.get("category"));
 			servicePost.put("totalAmount", service.get("totalAmount").toString());
 			servicePost.put("netPayable", service.get("netPayable"));
