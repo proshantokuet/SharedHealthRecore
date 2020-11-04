@@ -330,12 +330,12 @@ public class SHRListener{
 				.getMoneyReceipt(timestamp);
 			for(MoneyReceiptDTO receipt: receipts){
 				try{
-					String globalServerUrl = centralServer+"openmrs/ws/rest/v1/money-receipt"
-							+ "/geteslip/"+receipt.getEslipNo();
-					String moneyReceiptByEslip = "";
-					moneyReceiptByEslip = HttpUtil.get(globalServerUrl,"","admin:test");
-					JSONObject jsonMoneyReceipt = new JSONObject(moneyReceiptByEslip);
-					if(jsonMoneyReceipt.length() == 0) {
+//					String globalServerUrl = centralServer+"openmrs/ws/rest/v1/money-receipt"
+//							+ "/geteslip/"+receipt.getEslipNo();
+//					String moneyReceiptByEslip = "";
+//					moneyReceiptByEslip = HttpUtil.get(globalServerUrl,"","admin:test");
+//					JSONObject jsonMoneyReceipt = new JSONObject(moneyReceiptByEslip);
+//					if(jsonMoneyReceipt.length() == 0) {
 						//Local Money Receipt update
 						String mid = Integer.toString(receipt.getMid());
 						// 0 is the value of voided Status in case of failure in error log table
@@ -347,7 +347,7 @@ public class SHRListener{
 								.getTimeStampForMoneyReceipt(mid);
 						String timestampUpdate = Context.getService(SHRActionAuditInfoService.class)
 						.updateAuditMoneyReceipt(timestampOfMoneyreceipt);
-					}
+					//}
 				}catch(Exception e){
 					String midEx = Integer.toString(receipt.getMid());
 					errorLogInsert("Money Receipt",e.toString(),midEx,0);
@@ -1092,7 +1092,7 @@ public class SHRListener{
 			servicePost.put("category", service.get("category"));
 			servicePost.put("totalAmount", service.get("totalAmount").toString());
 			servicePost.put("netPayable", service.get("netPayable"));
-			
+			servicePost.put("uuid", service.get("uuid"));
 			jsonNestedPostServices.put(servicePost);
 		}
 		jsonPostMoneyReceipt.put("services", jsonNestedPostServices);
@@ -1102,8 +1102,7 @@ public class SHRListener{
 			JSONObject paymentPost = new JSONObject();
 			paymentPost.put("receiveDate",paymentObject.get("receiveDate"));
 			paymentPost.put("receiveAmount", paymentObject.get("receiveAmount"));
-			
-			
+			paymentPost.put("uuid", paymentObject.get("uuid"));
 			jsonNestedPostPayments.put(paymentPost);
 		}
 		jsonPostMoneyReceipt.put("payments", jsonNestedPostPayments);
