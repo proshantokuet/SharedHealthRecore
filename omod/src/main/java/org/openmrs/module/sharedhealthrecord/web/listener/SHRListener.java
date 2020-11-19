@@ -51,56 +51,61 @@ public class SHRListener{
 //	@Scheduled(fixedRate=10000)
 	private static final Logger log = LoggerFactory.getLogger(SHRListener.class);
 	public void sendAllData() throws Exception {
-//		
-//		Context.openSession();
-//		
-//		JSONObject getResponse = null;
-//		boolean status = true;
-//		try{
-//			String globalServerUrl = centralServer + "openmrs/ws/rest/v1/visittype";
-//			String get_result = HttpUtil.get(globalServerUrl, "", "admin:test");
-//			JSONObject patienResponseCheck = new JSONObject(get_result);			
-//		}catch(Exception e){
-//			e.printStackTrace();
-//			status = false;
-//		}
-//		
-//		if(status){
-//			try{
-////				PatientSendProcess process = new FailedPatientSendProcess();
-//				sendFailedPatient();
-//			}catch(Exception e){
-//				e.printStackTrace();
-//			}
-//			try{
-//				sendPatient();
-//
-//			}catch(Exception e){
-//				e.printStackTrace();
-//			}
-//			try{
-//				sendFailedEncounter();
-//			}catch(Exception e){
-//				e.printStackTrace();
-//			}
-//			try{
-//				sendEncounter();
-//			}catch(Exception e){
-//				e.printStackTrace();
-//			}
-//			try{
-//				sendFailedMoneyReceipt();
-//			}catch(Exception e){
-//				e.printStackTrace();
-//			}
-//			try{
-//				sendMoneyReceipt();
-//			}catch(Exception e){
-//				e.printStackTrace();
-//			}
-//		}
-//		
-//		Context.closeSession();
+		
+		Context.openSession();
+		
+		JSONObject getResponse = null;
+		boolean status = true;
+		try{
+			String globalServerUrl = centralServer + "openmrs/ws/rest/v1/visittype";
+			String get_result = HttpUtil.get(globalServerUrl, "", "admin:test");
+			JSONObject patienResponseCheck = new JSONObject(get_result);			
+		}catch(Exception e){
+			e.printStackTrace();
+			status = false;
+		}
+		
+		if(status){
+			try{
+//				PatientSendProcess process = new FailedPatientSendProcess();
+				sendFailedPatient();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+				sendPatient();
+
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+				//sendFailedEncounter();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+				//sendEncounter();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+				sendFailedMoneyReceipt();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try{
+				sendMoneyReceipt();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			try {
+				sendFollowUpDataToGlobal();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		Context.closeSession();
 		
 	}
 	
@@ -1121,6 +1126,41 @@ public class SHRListener{
 				centralServer+"openmrs/ws/rest/v1/encounter/"+encounterUuid
 		+"?purge=true";
 		String result = HttpUtil.delete(deleteUrlString, "", "admin:test");
+	}
+	
+	
+	public void sendFollowUpDataToGlobal() {
+		try{
+			String localGetUrl = localServer+"openmrs/ws/rest/v1/followup/get/followUpList";
+			String followUpList = HttpUtil.get(localGetUrl,"","admin:test");
+			JSONArray getFollowUpJsonArrayList = new JSONArray(followUpList);
+			for(int i = 0; i < getFollowUpJsonArrayList.length();i++){
+				JSONObject followUpJsonObject = getFollowUpJsonArrayList.getJSONObject(i);
+				String followUpUuid = "";
+				if(followUpJsonObject.has("uuid")) {
+					followUpUuid = followUpJsonObject.getString("uuid");
+				}
+				String centralPostUrl = centralServer+"openmrs/ws/rest/v1/followup/save-update-in-global";
+				String postAction = HttpUtil.post(centralPostUrl, "", followUpJsonObject.toString());
+				JSONObject postFollowUpResult = new JSONObject(postAction);
+				if(postFollowUpResult.has("isSuccess")) {
+					Boolean isSuccess = postFollowUpResult.getBoolean("isSuccess");
+					String message = postFollowUpResult.getString("message");
+					if(isSuccess && !message.equalsIgnoreCase("Follow Up Already UpDated")) {
+						String uuid = postFollowUpResult.getString("followupUuid");
+						SaveStatusOfEachOnSync("Follow-Up","Success", uuid);
+					}
+					else if(!isSuccess) {
+						 errorLogInsert("Follow-Up","Follow Sync Failed From Local To Global:"+ postAction,followUpUuid,2);
+					}
+				}
+			}
+
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
 	}
 	
 	
