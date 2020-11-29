@@ -52,7 +52,7 @@ public class SHRListener{
 	private static final Logger log = LoggerFactory.getLogger(SHRListener.class);
 	public void sendAllData() throws Exception {
 		
-		Context.openSession();
+/*		Context.openSession();
 		
 		JSONObject getResponse = null;
 		boolean status = true;
@@ -79,12 +79,12 @@ public class SHRListener{
 				e.printStackTrace();
 			}
 			try{
-				//sendFailedEncounter();
+				sendFailedEncounter();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 			try{
-				//sendEncounter();
+				sendEncounter();
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -105,7 +105,7 @@ public class SHRListener{
 			}
 		}
 		
-		Context.closeSession();
+		Context.closeSession();*/
 		
 	}
 	
@@ -478,7 +478,7 @@ public class SHRListener{
 		//failedPatient - flag to check which kind of encounter it is.
 	//</param>
 	private Boolean patientFetchAndPost(String patientUUid,String id,int voidedStatus) throws ParseException, JSONException{
-		
+			String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic();
 			JSONParser jsonParser = new JSONParser();
 		
 			// Get Patient Info from Local Server
@@ -560,7 +560,7 @@ public class SHRListener{
 					//origin table will be inserted in global server for addition only
 						if(patienResponseCheck.has("error")){
 							String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
-								insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+localServer+"/";
+								insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+clinicCode;
 								
 							String get = "";
 							try{

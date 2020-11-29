@@ -39,7 +39,7 @@ public class SHRPatientFetchListener {
 	String centralServer = ServerAddress.centralServer();
 	private static final Logger log = LoggerFactory.getLogger(SHRPatientFetchListener.class);
 	public void fetchAndUpdatePatient(){
-		Context.openSession();
+/*		Context.openSession();
 		boolean status = true;
 		try{
 			String globalServerUrl = centralServer + "openmrs/ws/rest/v1/visittype";
@@ -52,23 +52,23 @@ public class SHRPatientFetchListener {
 		}
 		if(status) {
 			try{
-				//patientFetchAndUpdateExecute();
+				patientFetchAndUpdateExecute();
 			}catch(Exception e){
 				errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
 			}
 			try{
-				//encounterFetchAndUpdateExecute();
+				encounterFetchAndUpdateExecute();
 			}catch(Exception e){
 				errorLogUpdate("Encounter Fetch Problem",e.toString(),UUID.randomUUID().toString());
 			}
 			try{
 				deleteLocalMoneyReceipt();
 			}catch(Exception e){
-				errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
+				errorLogUpdate("Voided Money Receipt Fetch Problem",e.toString(),UUID.randomUUID().toString());
 			}
 		}
 
-		Context.closeSession();
+		Context.closeSession();*/
 	}
 	
 	public void patientFetchAndUpdateExecute(){
@@ -110,11 +110,11 @@ public class SHRPatientFetchListener {
 	}
 	
 	private List<String> getPatientUuidList() throws JSONException{
+		String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic();
 		List<String> patientUuidList = new ArrayList<String>();
-		
 		String url = centralServer + 
 				"openmrs/ws/rest/v1/save-Patient/search/patientOriginByOriginName?"
-				+ "originName="+localServer+"&actionType=patient";
+				+ "originName="+clinicCode+"&actionType=patient";
 		log.error("patient external Check"+url);
 		String patientList = HttpUtil.get(url, "", "admin:test");
 		JSONArray getPatientList = new JSONArray(patientList);
@@ -273,10 +273,10 @@ public class SHRPatientFetchListener {
 	
 	public List<SHRExternalEncounter> getEncounterUuidList() throws JSONException{
 		List<SHRExternalEncounter> encounterList = new ArrayList<SHRExternalEncounter>();
-		
+		String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic();
 		String url = centralServer + 
 				"openmrs/ws/rest/v1/save-Patient/search/patientOriginByOriginName?"
-				+ "originName="+localServer+"&actionType=encounter";
+				+ "originName="+clinicCode+"&actionType=encounter";
 		String response = HttpUtil.get(url, "", "admin:test");
 		JSONArray getEncounterList = new JSONArray(response);
 		
