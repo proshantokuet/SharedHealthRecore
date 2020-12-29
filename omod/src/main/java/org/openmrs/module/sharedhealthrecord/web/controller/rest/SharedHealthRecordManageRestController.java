@@ -44,7 +44,8 @@ public class SharedHealthRecordManageRestController {
 	
 	private final static String baseOpenmrsUrl = "https://localhost";
 	
-	private final static String globalServerUrl = "https://192.168.19.147";
+	//private final static String globalServerUrl = "https://192.168.19.158";
+	private final static String globalServerUrl = "https://182.160.99.132";
 	
 	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
@@ -458,6 +459,15 @@ public class SharedHealthRecordManageRestController {
 					JSONArray obervations = getObservations(obs);
 					JSONObject encounter = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(obj.toString(),Encounter.class)));
 					encounter.put("observations", obervations);
+					if(encounter.containsKey("providers")) {
+						org.json.simple.JSONArray  providerArray = (org.json.simple.JSONArray) encounter.get("providers");
+						for (int i = 0; i < providerArray.size(); i++) {
+							org.json.simple.JSONObject providerObject = (org.json.simple.JSONObject) providerArray.get(i);
+							String providerUuid = "c1c26908-3f10-11e4-adec-0800271c1b75";
+							providerObject.remove("uuid");
+							providerObject.put("uuid", providerUuid);
+						}
+					}
 					String patientServiceUrl = baseOpenmrsUrl + "/openmrs/ws/rest/v1/bahmnicore/bahmniencounter";
 					if(proceedToCreateEncounter) {
 						String postResponse = HttpUtil.post(patientServiceUrl, "", encounter.toJSONString());
