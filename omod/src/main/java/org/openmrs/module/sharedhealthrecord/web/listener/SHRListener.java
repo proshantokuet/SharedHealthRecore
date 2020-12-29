@@ -52,7 +52,7 @@ public class SHRListener{
 	private static final Logger log = LoggerFactory.getLogger(SHRListener.class);
 	public void sendAllData() throws Exception {
 		
-/*		Context.openSession();
+		Context.openSession();
 		
 		JSONObject getResponse = null;
 		boolean status = true;
@@ -105,7 +105,7 @@ public class SHRListener{
 			}
 		}
 		
-		Context.closeSession();*/
+		Context.closeSession();
 		
 	}
 	
@@ -196,9 +196,10 @@ public class SHRListener{
 				status = false;
 			}
 			if(status) {
-				if(failPat.getVoided() < 2 && failPat.getSent_status() == 0){
+				if(failPat.getSent_status() == 0){
 					try {
-						Boolean flag = patientFetchAndPost(failPat.getUuid(),"",failPat.getVoided()+1);
+						int val = failPat.getVoided()+1;
+						Boolean flag = patientFetchAndPost(failPat.getUuid(),"",val > 1 ? 2 : val);
 						Context.getService(SHRActionErrorLogService.class)
 						.updateSentStatus(failPat.getEid(), flag == true ? 1 :0);
 						if(flag) {
@@ -289,11 +290,11 @@ public class SHRListener{
 				status = false;
 			}
 			if(status) {
-				if(encounter.getVoided() < 2 && encounter.getSent_status() == 0){
+				if(encounter.getSent_status() == 0){
 					try {
 						int val = encounter.getVoided() + 1;
 						Boolean flag = encounterFetchAndPost(encounter.getUuid(),"",
-								val);	
+								val > 1 ? 2 : val);	
 						Context.getService(SHRActionErrorLogService.class)
 							.updateSentStatus(encounter.getEid(), flag == true ? 1 :0);
 						if(flag) {
@@ -315,7 +316,7 @@ public class SHRListener{
 							errorLogInsert("Encounter","Encounter Error",encounter.getUuid(),encounter.getVoided() == 2 ? 1 : encounter.getVoided());
 						}
 						else {
-							errorLogInsert("Encounter","Encounter Error",encounter.getUuid(),encounter.getVoided()+1);
+							errorLogInsert("Encounter","Encounter Error",encounter.getUuid(),encounter.getVoided());
 						}
 						e.printStackTrace();
 					}
@@ -378,10 +379,10 @@ public class SHRListener{
 			String mid = receipt.getUuid();
 			Boolean flag = false;
 //			errorLogUpdate("Money Receipt Test","Status:"+receipt.getSent_status(),mid);
-				if(receipt.getVoided() < 2 && receipt.getSent_status() == 0){
+				if(receipt.getSent_status() == 0){
 					// +1 for status incrementing
-					
-					Boolean sentFlag = MoneyReceiptFetchAndPost(mid,receipt.getVoided() + 1);
+					int val = receipt.getVoided()+1;
+					Boolean sentFlag = MoneyReceiptFetchAndPost(mid, val > 1 ? 2 : val);
 					Context.getService(SHRActionErrorLogService.class).
 						updateSentStatus(receipt.getEid(), sentFlag == true? 1 : 0);
 					
