@@ -96,10 +96,10 @@ public class HttpUtil {
 	public static String post(String url, String payload, String data) {
 		try {
 			HttpPost request = (HttpPost) makeConnection(url, "", RequestMethod.POST, AuthType.BASIC, "admin:test");
-			request.setHeader(HTTP.CONTENT_TYPE, "application/json");
+			request.setHeader(HTTP.CONTENT_TYPE, "application/json; charset=UTF-8");
 			StringEntity entity = new StringEntity(data == null ? "" : data, "UTF-8");
 			//System.err.println(data);
-			entity.setContentEncoding("application/json");
+			entity.setContentEncoding("application/json; charset=UTF-8");
 			request.setEntity(entity);
 			org.apache.http.HttpResponse response = httpClient.execute(request);
 			String responseEntity = "";
