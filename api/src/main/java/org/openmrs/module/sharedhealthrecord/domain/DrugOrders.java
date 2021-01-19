@@ -1,5 +1,7 @@
 package org.openmrs.module.sharedhealthrecord.domain;
 
+import org.openmrs.module.sharedhealthrecord.orders.Concept;
+
 public class DrugOrders {
 	
 	private String careSetting;
@@ -19,6 +21,8 @@ public class DrugOrders {
 	private String orderType;
 	
 	private Drug drug;
+	
+	private Concept concept;
 	
 	private DosingInstructions dosingInstructions;
 	
@@ -100,6 +104,14 @@ public class DrugOrders {
 	
 	public void setDosingInstructions(DosingInstructions dosingInstructions) {
 		this.dosingInstructions = dosingInstructions;
+	}
+
+	public Concept getConcept() {
+		return concept;
+	}
+
+	public void setConcept(Concept concept) {
+		this.concept = concept;
 	}
 	
 }
