@@ -6,6 +6,7 @@ import java.security.KeyStore;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -22,6 +23,7 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 public class HttpUtil {
@@ -120,14 +122,17 @@ public class HttpUtil {
 	
 		try {
 			HttpGet request = (HttpGet) makeConnection(url, payload, RequestMethod.GET, AuthType.BASIC, authString);
-			
+			//request.setHeader("Content-Type", "application/json; charset=UTF-8");
+			//request.setHeader("accept-charset", "UTF-8");
+			//request.setHeader("Accept-Encoding", "UTF-8");
 			org.apache.http.HttpResponse response = httpClient.execute(request);
-			
 			int statusCode = response.getStatusLine().getStatusCode();
 			
 			String entity = "";
-			if (response.getEntity() != null) {				
-				entity = IOUtils.toString(response.getEntity().getContent());				
+			if (response.getEntity() != null) {
+				//HttpEntity entity = response.getEntity();
+				//entity = IOUtils.toString(response.getEntity().getContent());
+				entity = EntityUtils.toString(response.getEntity(),"UTF-8");
 			}
 			return entity;
 

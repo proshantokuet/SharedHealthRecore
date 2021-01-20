@@ -622,7 +622,7 @@ public class SHRListener{
 						+ encounterUuid + "?includeAll=true";
 				String response = "";
 				try{
-					response = HttpUtil.get(getUrl, "", "admin:test");					
+					response = HttpUtil.get(getUrl, "", "admin:test");
 				}catch(Exception e){
 					if("java.lang.RuntimeException: java.net.ConnectException: Network is unreachable (connect failed)".equalsIgnoreCase(e.toString())) {
 						errorLogInsert("Encounter","Encounter get Error:"+response,encounterUuid,voidedStatus == 2 ? 1 : voidedStatus);
@@ -634,11 +634,11 @@ public class SHRListener{
 				}
 				
 				//Encounter Response Formatting
-				JSONObject encounterResponse = new JSONObject(response);
+				//JSONObject encounterResponse = new JSONObject(response);
 				org.json.simple.JSONObject enc_response = new org.json.simple.JSONObject();
 				try{
 				 enc_response = (org.json.simple.JSONObject) jsonParser.
-						parse(encounterResponse.toString());
+						parse(response);
 				}catch(Exception e){
 					if("java.lang.RuntimeException: java.net.ConnectException: Network is unreachable (connect failed)".equalsIgnoreCase(e.toString())) {
 						errorLogInsert("Encounter",e.toString(),encounterUuid,voidedStatus == 2 ? 1 : voidedStatus);
