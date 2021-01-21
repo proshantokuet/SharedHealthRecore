@@ -39,7 +39,7 @@ public class SHRPatientFetchListener {
 	String centralServer = ServerAddress.centralServer();
 	private static final Logger log = LoggerFactory.getLogger(SHRPatientFetchListener.class);
 	public void fetchAndUpdatePatient(){
-/*		Context.openSession();
+		Context.openSession();
 		boolean status = true;
 		try{
 			String globalServerUrl = centralServer + "openmrs/ws/rest/v1/visittype";
@@ -68,7 +68,7 @@ public class SHRPatientFetchListener {
 			}
 		}
 
-		Context.closeSession();*/
+		Context.closeSession();
 	}
 	
 	public void patientFetchAndUpdateExecute(){
@@ -324,7 +324,10 @@ public class SHRPatientFetchListener {
 	public void errorLogUpdate(String type,String message, String uuId){
 		Context.clearSession();
 		Context.openSession();
-		SHRActionErrorLog log = new SHRActionErrorLog();
+		SHRActionErrorLog log  = Context.getService(SHRActionErrorLogService.class).getErrorByActionTypeAndIdWithoutSentStatus(type, uuId);
+		if(log == null) {
+			log = new SHRActionErrorLog();
+		}
 		log.setAction_type(type);
 		log.setError_message(message);
 		log.setUuid(uuId);
@@ -434,7 +437,7 @@ public class SHRPatientFetchListener {
 		
 		@SuppressWarnings("unused")
 		private void deleteLocalMoneyReceipt() throws JSONException{
-			String E_slipNo = "";
+			String E_slipNo = "0";
 			try {
 				String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic();
 				log.error("Clinic Code "+clinicCode);

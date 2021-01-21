@@ -144,4 +144,32 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHRActionErrorLog getErrorByActionTypeAndIdWithSentStatus(String action_type,
+			String id) {
+		List<SHRActionErrorLog> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from SHRActionErrorLog where action_type = :Action and uuid = :Id and sent_status != 1")
+		        .setString("Action", action_type).setString("Id", id).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHRActionErrorLog getErrorByActionTypeAndIdWithoutSentStatus(
+			String action_type, String id) {
+		List<SHRActionErrorLog> lists = sessionFactory.getCurrentSession()
+		        .createQuery("from SHRActionErrorLog where action_type = :Action and uuid = :Id")
+		        .setString("Action", action_type).setString("Id", id).list();
+		if (lists.size() != 0) {
+			return lists.get(0);
+		} else {
+			return null;
+		}
+	}
+
 }

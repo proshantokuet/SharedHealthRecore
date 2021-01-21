@@ -21,4 +21,8 @@ public interface SHRActionErrorLogService extends OpenmrsService{
 	public String failedUpdate(String action_type,String uuid);
 	
 	public String updateSentStatus(int eid, int sent_status);
+	
+	public SHRActionErrorLog getErrorByActionTypeAndIdWithSentStatus (String action_type,String id);
+	
+	public SHRActionErrorLog getErrorByActionTypeAndIdWithoutSentStatus (String action_type,String id);
 }

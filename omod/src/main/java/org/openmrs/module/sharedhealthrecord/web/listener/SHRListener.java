@@ -383,6 +383,7 @@ public class SHRListener{
 					// +1 for status incrementing
 					int val = receipt.getVoided()+1;
 					Boolean sentFlag = MoneyReceiptFetchAndPost(mid, val > 1 ? 2 : val);
+					log.error("sentFlag money receipt" + mid);
 					Context.getService(SHRActionErrorLogService.class).
 						updateSentStatus(receipt.getEid(), sentFlag == true? 1 : 0);
 					
@@ -392,6 +393,7 @@ public class SHRListener{
 	}
 	
 	private Boolean MoneyReceiptFetchAndPost(String mid,int voidedStatus){
+		log.error("Entering to fetch money receipt" + mid);
 		JSONParser jsonParser = new JSONParser();
 //		errorLogUpdate("Money Receript Hitting","Method Hits",mid);
 		try{
@@ -432,12 +434,20 @@ public class SHRListener{
 			//IF success update timestamp
 			String postAction = "";
 			try{
-			 postAction = HttpUtil.post(centralPostUrl, "", postMoneyReceipt);
-				if("".equalsIgnoreCase(postAction)){
-				   errorLogInsert("Money Receipt","Money Receipt failed while posting:"+ postAction,mid,voidedStatus);
-				   return false;
+				log.error("trying to post money receipt" + mid);
+				postAction = HttpUtil.post(centralPostUrl, "", postMoneyReceipt);
+				JSONObject returnedResultOfmoneyReceipt = new JSONObject(postAction);
+				log.error("returnedResultOfmoneyReceipt" + returnedResultOfmoneyReceipt.toString());
+				String sentStatus = returnedResultOfmoneyReceipt.getString("isSuccess");
+				if(sentStatus.equalsIgnoreCase("true")) {
+					return true;
+				}
+				else if(sentStatus.equalsIgnoreCase("false")){
+					   errorLogInsert("Money Receipt","Money Receipt failed while posting:"+ postAction,mid,voidedStatus);
+					   return false;
 				}
 			}catch(Exception e){
+				log.error("failed to post money receipt" + mid);
 				if("java.lang.RuntimeException: java.net.ConnectException: Network is unreachable (connect failed)".equalsIgnoreCase(e.toString())) {
 					errorLogInsert("Money Receipt","Money Receipt Post:"+e.toString(),mid,voidedStatus == 2 ? 1 : voidedStatus);
 				}
@@ -461,6 +471,7 @@ public class SHRListener{
 //				return false;
 //			}
 		}catch(Exception e){
+			log.error("in try catch after failed to post money receipt" + mid);
 			if("java.lang.RuntimeException: java.net.ConnectException: Network is unreachable (connect failed)".equalsIgnoreCase(e.toString())) {
 				errorLogInsert("Money Receipt",e.toString(),mid,voidedStatus == 2 ? 1 : voidedStatus);
 			}
@@ -470,7 +481,7 @@ public class SHRListener{
 			
 			return false;
 		}
-		
+		log.error("in the verge of returning status " + mid);
 		return true;
 	}
 	//<param>
@@ -923,12 +934,15 @@ public class SHRListener{
 		Context.clearSession();
 		Context.openSession();
 		//Delete existing if void > 0
-		if(voided > 0) {
-			Context.getService(SHRActionErrorLogService.class)
-				.delete_by_type_and_uuid(action_type, uuId);
-		}
+//		if(voided > 0) {
+//			Context.getService(SHRActionErrorLogService.class)
+//				.delete_by_type_and_uuid(action_type, uuId);
+//		}
 		//Insert Log
-		SHRActionErrorLog log = new SHRActionErrorLog();
+		SHRActionErrorLog log  = Context.getService(SHRActionErrorLogService.class).getErrorByActionTypeAndIdWithSentStatus(action_type, uuId);
+		if(log == null) {
+			log = new SHRActionErrorLog();
+		}
 		log.setAction_type(action_type);
 		log.setError_message(message);
 		log.setUuid(uuId);
