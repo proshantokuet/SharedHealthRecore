@@ -443,7 +443,8 @@ public class SHRListener{
 					return true;
 				}
 				else if(sentStatus.equalsIgnoreCase("false")){
-					   errorLogInsert("Money Receipt","Money Receipt failed while posting:"+ postAction,mid,voidedStatus);
+					   String message = returnedResultOfmoneyReceipt.getString("message");
+					   errorLogInsert("Money Receipt","Money Receipt failed while posting: "+message +"  .with Post Json "+ postAction,mid,voidedStatus);
 					   return false;
 				}
 			}catch(Exception e){
