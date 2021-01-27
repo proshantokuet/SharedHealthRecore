@@ -37,38 +37,41 @@ import com.google.gson.JsonSyntaxException;
 public class SHRPatientFetchListener {
 	String localServer = ServerAddress.localServer();
 	String centralServer = ServerAddress.centralServer();
+	String isDeployInGlobal = ServerAddress.isDeployInGlobal;
 	private static final Logger log = LoggerFactory.getLogger(SHRPatientFetchListener.class);
 	public void fetchAndUpdatePatient(){
-		Context.openSession();
-		boolean status = true;
-		try{
-			String globalServerUrl = centralServer + "openmrs/ws/rest/v1/visittype";
-			String get_result = HttpUtil.get(globalServerUrl, "", "admin:test");
-			JSONObject patienResponseCheck = new JSONObject(get_result);
-			
-		}catch(Exception e){
-			e.printStackTrace();
-			status = false;
+		if(isDeployInGlobal.equalsIgnoreCase("0")) {
+			Context.openSession();
+			boolean status = true;
+			try{
+				String globalServerUrl = centralServer + "openmrs/ws/rest/v1/visittype";
+				String get_result = HttpUtil.get(globalServerUrl, "", "admin:test");
+				JSONObject patienResponseCheck = new JSONObject(get_result);
+				
+			}catch(Exception e){
+				e.printStackTrace();
+				status = false;
+			}
+			if(status) {
+				try{
+					patientFetchAndUpdateExecute();
+				}catch(Exception e){
+					errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
+				}
+				try{
+					encounterFetchAndUpdateExecute();
+				}catch(Exception e){
+					errorLogUpdate("Encounter Fetch Problem",e.toString(),UUID.randomUUID().toString());
+				}
+				try{
+					deleteLocalMoneyReceipt();
+				}catch(Exception e){
+					errorLogUpdate("Voided Money Receipt Fetch Problem",e.toString(),UUID.randomUUID().toString());
+				}
+			}
+	
+			Context.closeSession();
 		}
-		if(status) {
-			try{
-				patientFetchAndUpdateExecute();
-			}catch(Exception e){
-				errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
-			}
-			try{
-				encounterFetchAndUpdateExecute();
-			}catch(Exception e){
-				errorLogUpdate("Encounter Fetch Problem",e.toString(),UUID.randomUUID().toString());
-			}
-			try{
-				deleteLocalMoneyReceipt();
-			}catch(Exception e){
-				errorLogUpdate("Voided Money Receipt Fetch Problem",e.toString(),UUID.randomUUID().toString());
-			}
-		}
-
-		Context.closeSession();
 	}
 	
 	public void patientFetchAndUpdateExecute(){

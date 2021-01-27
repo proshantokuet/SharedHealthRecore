@@ -44,8 +44,8 @@ public class SharedHealthRecordManageRestController {
 	
 	private final static String baseOpenmrsUrl = "https://localhost";
 	
-	//private final static String globalServerUrl = "https://192.168.19.158";
-	private final static String globalServerUrl = "https://182.160.99.132";
+	 //private final static String globalServerUrl = "https://182.160.99.132";
+	 private final static String globalServerUrl = ServerAddress.globalServerUrl;
 	
 	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	

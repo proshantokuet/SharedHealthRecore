@@ -45,68 +45,70 @@ public class SHRListener{
 	
 	String localServer = ServerAddress.localServer();
 	String centralServer = ServerAddress.centralServer();
+	String isDeployInGlobal = ServerAddress.isDeployInGlobal;
 	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@SuppressWarnings("rawtypes")
 //	@Scheduled(fixedRate=10000)
 	private static final Logger log = LoggerFactory.getLogger(SHRListener.class);
 	public void sendAllData() throws Exception {
-		
-		Context.openSession();
-		
-		JSONObject getResponse = null;
-		boolean status = true;
-		try{
-			String globalServerUrl = centralServer + "openmrs/ws/rest/v1/visittype";
-			String get_result = HttpUtil.get(globalServerUrl, "", "admin:test");
-			JSONObject patienResponseCheck = new JSONObject(get_result);			
-		}catch(Exception e){
-			e.printStackTrace();
-			status = false;
+		log.error("isDeployInGlobal " + isDeployInGlobal);
+		if(isDeployInGlobal.equalsIgnoreCase("0")) {
+			Context.openSession();
+			
+			JSONObject getResponse = null;
+			boolean status = true;
+			try{
+				String globalServerUrl = centralServer + "openmrs/ws/rest/v1/visittype";
+				String get_result = HttpUtil.get(globalServerUrl, "", "admin:test");
+				JSONObject patienResponseCheck = new JSONObject(get_result);			
+			}catch(Exception e){
+				e.printStackTrace();
+				status = false;
+			}
+			
+			if(status){
+				try{
+	//				PatientSendProcess process = new FailedPatientSendProcess();
+					sendFailedPatient();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				try{
+					sendPatient();
+	
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				try{
+					sendFailedEncounter();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				try{
+					sendEncounter();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				try{
+					sendFailedMoneyReceipt();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				try{
+					sendMoneyReceipt();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				try {
+					sendFollowUpDataToGlobal();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			Context.closeSession();
 		}
-		
-		if(status){
-			try{
-//				PatientSendProcess process = new FailedPatientSendProcess();
-				sendFailedPatient();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			try{
-				sendPatient();
-
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			try{
-				sendFailedEncounter();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			try{
-				sendEncounter();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			try{
-				sendFailedMoneyReceipt();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			try{
-				sendMoneyReceipt();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			try {
-				sendFollowUpDataToGlobal();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
-		Context.closeSession();
-		
 	}
 	
 	public void sendPatient() throws ParseException{

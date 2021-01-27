@@ -10,6 +10,13 @@ public class ServerAddress {
 	
 	public static String centralServer(){
 		//return "https://182.160.99.132/";
-		return "https://192.168.19.147/";
+		return "https://192.168.19.158/";
+		
 	}
+	//0 for false 1 for true
+	public static String isDeployInGlobal = "0";
+	
+	//url for downloading patient from local to server. no need to add slash / after the url
+	public static String globalServerUrl = "https://192.168.19.158";
+	
 }
