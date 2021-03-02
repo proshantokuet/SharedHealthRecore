@@ -1019,6 +1019,12 @@ public class SHRListener{
 			}
 		}
 		jsonNestedPostMoneyReceipt.put("reference", jsonNestedGetMoneyReceipt.get("reference"));
+		if(jsonNestedGetMoneyReceipt.has("referenceId")) {
+			String referenceId = (String) jsonNestedGetMoneyReceipt.get("referenceId");
+			if(referenceId != null && !referenceId.isEmpty()) {
+				jsonNestedPostMoneyReceipt.put("referenceId", referenceId);
+			}
+		}
 		jsonNestedPostMoneyReceipt.put("servicePoint",
 				jsonNestedGetMoneyReceipt.get("servicePoint"));
 		
