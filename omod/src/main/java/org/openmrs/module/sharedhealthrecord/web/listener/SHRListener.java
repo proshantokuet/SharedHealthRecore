@@ -1118,6 +1118,9 @@ public class SHRListener{
 					servicePost.put("packageUuid",  service.get("packageUuid"));
 				}
 			};
+			if(service.has("financialDiscount")) {
+				servicePost.put("financialDiscount", service.get("financialDiscount"));
+			}
 			servicePost.put("category", service.get("category"));
 			servicePost.put("totalAmount", service.get("totalAmount").toString());
 			servicePost.put("netPayable", service.get("netPayable"));
