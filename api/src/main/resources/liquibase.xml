@@ -29,6 +29,16 @@
     		<column name="patient_origin" type="varchar(1000)"/>
     	</createTable>
     </changeSet>
+	 <changeSet author="tanvir" id="shr_patient_origin-1.0.1">
+	 	<addColumn tableName="shr_patient_origin">
+			<column name="is_send_to_dhis" type="int(11)">
+			</column>	
+		</addColumn>
+		<addColumn tableName="shr_patient_origin">
+			<column name="encounter_uuid" type="varchar(255)">
+			</column>	
+		</addColumn>
+	 </changeSet>
     <changeSet id="shr_action_error_log-1.0.0" author="jysan">
     	<createTable tableName="shr_action_error_log">
     		<column name="eid" type="int(11)" autoIncrement="true">
@@ -79,6 +89,11 @@
     <changeSet author="jysan" id="shr_external_patient-1.0.1">
 	 	<addColumn tableName="shr_external_patient">
 			<column name="encounter_uuid" type="varchar(255)" />		
+		</addColumn>
+	 </changeSet>
+	 <changeSet author="tanvir" id="shr_external_patient-1.0.2">
+	 	<addColumn tableName="shr_external_patient">
+			<column name="origin_clinic" type="varchar(255)" />		
 		</addColumn>
 	 </changeSet>
 </databaseChangeLog>

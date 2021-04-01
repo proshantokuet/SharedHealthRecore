@@ -575,7 +575,7 @@ public class SHRListener{
 					//origin table will be inserted in global server for addition only
 						if(patienResponseCheck.has("error")){
 							String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
-								insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+clinicCode;
+								insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+clinicCode+"&syncStatus="+ServerAddress.sendToDhisFromGlobal+"&type=patient_uuid";
 								
 							String get = "";
 							try{
@@ -874,6 +874,25 @@ public class SHRListener{
 					if(!postStatus) {
 						return false;
 					}
+					else {
+						String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic();
+						String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
+							insertUrl += "?patient_origin="+clinicCode+"&syncStatus="+ServerAddress.sendToDhisFromGlobal+"&type=encounter_uuid&encounter_uuid="+encounterUuid;
+							
+						String get = "";
+						try{
+							get = HttpUtil.get(insertUrl, "", "admin:test");
+						}catch(Exception e){
+							if("java.lang.RuntimeException: java.net.ConnectException: Network is unreachable (connect failed)".equalsIgnoreCase(e.toString())) {
+								errorLogInsert("Encounter","Network is unreachable (connect failed):" + e.toString(),encounterUuid,voidedStatus == 2 ? 1 : voidedStatus);
+							}
+							else {
+								errorLogInsert("Encounter","Global Server Origin Save Error:" + e.toString(),encounterUuid,voidedStatus);
+							}
+							
+							return false;
+						}
+					}
 				}catch(Exception e){
 					if("java.lang.RuntimeException: java.net.ConnectException: Network is unreachable (connect failed)".equalsIgnoreCase(e.toString())) {
 						errorLogInsert("Encounter","Encounter post error:"+e.toString(),
@@ -1090,7 +1109,7 @@ public class SHRListener{
 		jsonPostMoneyReceipt.put("moneyReceipt", jsonNestedPostMoneyReceipt);
 		
 		//JSON services semi part
-		for(int i = 0; i < jsonNestedGetServices.length();i++){
+		for(int i = 0; i < jsonNestedGetServices.length();i++) {
 			JSONObject service = jsonNestedGetServices.getJSONObject(i);
 			JSONObject servicePost = new JSONObject();
 			servicePost.put("discount",service.get("discount"));
@@ -1120,6 +1139,9 @@ public class SHRListener{
 			};
 			if(service.has("financialDiscount")) {
 				servicePost.put("financialDiscount", service.get("financialDiscount"));
+			}
+			if(service.has("sendToDhisFromGlobal")) {
+				servicePost.put("sendToDhisFromGlobal", ServerAddress.sendToDhisFromGlobal);
 			}
 			servicePost.put("category", service.get("category"));
 			servicePost.put("totalAmount", service.get("totalAmount").toString());

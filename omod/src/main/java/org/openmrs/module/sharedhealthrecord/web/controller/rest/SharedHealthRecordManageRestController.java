@@ -70,11 +70,17 @@ public class SharedHealthRecordManageRestController {
 			String patientPostUrl = baseOpenmrsUrl + "/openmrs/ws/rest/v1/bahmnicore/patientprofile";
 			
 			String returnedResult = HttpUtil.post(patientPostUrl, "", data);
-			savePatientEntryDetails("patient", personUuid);
+			JSONParser jsonParserPatient = new JSONParser();
+			JSONObject patienResponseCheck = (JSONObject) jsonParserPatient.parse(returnedResult);
+			if(patienResponseCheck != null){
+				//savePatientEntryDetails("patient", personUuid,"");
+				savePatientEntryDetails("patient", personUuid,"fullEmr");
+			}
 			
 			Boolean isCompletedSavingBoolean = encounter(patientUuid, loginLocationUuid);
 			if (isCompletedSavingBoolean) {
-				savePatientEntryDetails("encounter", personUuid);
+				//savePatientEntryDetails("encounter", personUuid,"");
+				savePatientEntryDetails("encounter", personUuid,"fullEmr");
 			}
 			return new ResponseEntity<>(returnedResult, HttpStatus.OK);
 		}
@@ -198,12 +204,25 @@ public class SharedHealthRecordManageRestController {
 	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/insert/patientOriginDetails", method = RequestMethod.GET)
-	public ResponseEntity<String> savePatientOriginDetails(@RequestParam(required = true) String patient_uuid,@RequestParam(required = true) String patient_origin) throws Exception {
-		SHRPatientOrigin shrpatientorigin = new SHRPatientOrigin();
+	public ResponseEntity<String> savePatientOriginDetails(@RequestParam String patient_uuid,@RequestParam String patient_origin,@RequestParam String syncStatus,@RequestParam String type,@RequestParam String encounterUuid) throws Exception {
+		
+		SHRPatientOrigin shrpatientorigin = null;
+		if(type.equalsIgnoreCase("encounter_uuid")) {
+			shrpatientorigin = Context.getService(SHRPatientOriginService.class).getPatientOriginDetailById(type, encounterUuid);
+		}
+		else if(type.equalsIgnoreCase("patient_uuid")) {
+			
+			shrpatientorigin = Context.getService(SHRPatientOriginService.class).getPatientOriginDetailById(type, patient_uuid);
+		}
+		if(shrpatientorigin == null) {
+			shrpatientorigin =  new SHRPatientOrigin();
+		}
 		shrpatientorigin.setPatient_uuid(patient_uuid);
 		shrpatientorigin.setPatient_origin(patient_origin);
+		shrpatientorigin.setEncounter_uuid(encounterUuid);
+		shrpatientorigin.setIsSendToDHis(Integer.parseInt(syncStatus));
 		SHRPatientOrigin shrpatientoriginresponse = Context.getService(SHRPatientOriginService.class).savePatientOrigin(shrpatientorigin);
-		if(StringUtils.isBlank(shrpatientoriginresponse.getPatient_uuid())) {
+		if(StringUtils.isBlank(shrpatientoriginresponse.getPatient_origin())) {
 			JSONObject patientOriginObject = new JSONObject();
 			patientOriginObject.put("isSuccessfull", false);
 			patientOriginObject.put("message", "Error Occured");
@@ -585,12 +604,13 @@ public class SharedHealthRecordManageRestController {
         visitTypeMapping.put("bef32e14-3f12-11e4-adec-0800271c1b75", "LAB VISIT");
 	}
 	
-	private void savePatientEntryDetails(String actionType, String personUuid) {
+	private void savePatientEntryDetails(String actionType, String personUuid, String originType) {
 		SHRExternalPatient externalPatient = new SHRExternalPatient();
 		externalPatient.setAction_type(actionType);
 		externalPatient.setPatient_uuid(personUuid);
 		externalPatient.setIs_send_to_central("0");
 		externalPatient.setUuid(UUID.randomUUID().toString());
+		externalPatient.setOriginClinic(originType);
 		Context.getService(SHRExternalPatientService.class).saveExternalPatient(externalPatient);
 	}
 	

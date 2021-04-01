@@ -16,6 +16,8 @@ public class SHRPatientOrigin  extends BaseOpenmrsObject implements Serializable
 	private String action_type;
 	
 	private String encounter_uuid;
+	
+	private Integer isSendToDHis;
 
 	public int getOriginId() {
 		return originId;
@@ -55,6 +57,14 @@ public class SHRPatientOrigin  extends BaseOpenmrsObject implements Serializable
 
 	public void setEncounter_uuid(String encounter_uuid) {
 		this.encounter_uuid = encounter_uuid;
+	}
+
+	public Integer getIsSendToDHis() {
+		return isSendToDHis;
+	}
+
+	public void setIsSendToDHis(Integer isSendToDHis) {
+		this.isSendToDHis = isSendToDHis;
 	}
 
 	@Override

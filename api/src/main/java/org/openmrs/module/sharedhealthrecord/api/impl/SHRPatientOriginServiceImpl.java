@@ -32,6 +32,12 @@ public class SHRPatientOriginServiceImpl extends BaseOpenmrsService implements S
 		return dao.getpatientOriginByOriginName(originName, actionType);
 	}
 
+	@Override
+	public SHRPatientOrigin getPatientOriginDetailById(String type, String uuid) {
+		// TODO Auto-generated method stub
+		return dao.getPatientOriginDetailById(type, uuid);
+	}
+
 
 
 }

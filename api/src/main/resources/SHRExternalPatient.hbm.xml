@@ -9,6 +9,8 @@
        	  <property name="patient_uuid" column="patient_uuid" type="java.lang.String"/>
        	  <property name="is_send_to_central" column="is_send_to_central" type="java.lang.String"/>
        	  <property name="uuid" column="uuid" type="java.lang.String" not-null="true" />
-       	  <property name="encounter_uuid" column="encounter_uuid" type="java.lang.String"/> 
+       	  <property name="encounter_uuid" column="encounter_uuid" type="java.lang.String"/>
+       	  <property name="originClinic" column="origin_clinic" type="java.lang.String"/> 
+       	  
 	</class>
 </hibernate-mapping>

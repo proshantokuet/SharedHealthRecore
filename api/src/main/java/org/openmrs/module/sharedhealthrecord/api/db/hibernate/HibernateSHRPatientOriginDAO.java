@@ -78,4 +78,35 @@ protected final Log log = LogFactory.getLog(this.getClass());
 			return null;
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SHRPatientOrigin getPatientOriginDetailById(String type, String uuid) {
+		String patientOriginSql = ""
+				+ "SELECT patient_origin,patient_uuid,encounter_uuid from openmrs.shr_patient_origin "
+				+ "where "+type+" = '"+uuid+"'";
+		
+		List<SHRPatientOrigin> shrPatientOrigins = new ArrayList<SHRPatientOrigin>();
+		
+		try {
+			shrPatientOrigins = sessionFactory
+					.getCurrentSession()
+					.createSQLQuery(patientOriginSql)
+					.addScalar("patient_uuid", StandardBasicTypes.STRING)
+					.addScalar("patient_origin", StandardBasicTypes.STRING)
+					.addScalar("encounter_uuid", StandardBasicTypes.STRING)
+					.setResultTransformer(
+							new AliasToBeanResultTransformer(
+									SHRPatientOrigin.class)).list();
+			if (shrPatientOrigins.size() > 0) {
+				return shrPatientOrigins.get(0);
+			} 
+			else {
+				return null;
+			}
+		} 
+		catch (Exception e) {
+			return null;
+		}
+	}
 }
