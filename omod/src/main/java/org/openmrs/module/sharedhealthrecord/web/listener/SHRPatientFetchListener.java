@@ -438,7 +438,7 @@ public class SHRPatientFetchListener {
 			log.error("Delete Encounter: "+result);
 		}
 		
-		@SuppressWarnings("unused")
+
 		private void deleteLocalMoneyReceipt() throws JSONException{
 			String E_slipNo = "0";
 			try {
@@ -449,14 +449,27 @@ public class SHRPatientFetchListener {
 				org.json.JSONArray getMoneyReceiptList = new org.json.JSONArray(moneyReceiptList);
 				
 				for(int i = 0; i < getMoneyReceiptList.length();i++){
-					org.json.JSONObject patientObject = getMoneyReceiptList.getJSONObject(i);
-					String eslipNo = patientObject.get("eslipNo").toString();
+					org.json.JSONObject mrObject = getMoneyReceiptList.getJSONObject(i);
+					String eslipNo = mrObject.get("eslipNo").toString();
+					E_slipNo = "";
 					E_slipNo = eslipNo;
+					
 					String eslipUrl = localServer + "openmrs/ws/rest/v1/money-receipt/void-money-receipt-by-eslip/" + eslipNo;
 					
 					String deletedEslip = HttpUtil.delete(eslipUrl, "", "admin:test");
 					if(deletedEslip.equalsIgnoreCase("success")) {
 						errorLogUpdate("Money Receipt Delete","success", eslipNo);
+						String changeDeleteStatusInGlobal = centralServer + "openmrs/ws/rest/v1/money-receipt/change-delete-status-money-receipt/"+ eslipNo +"/" + 1;
+						String changeStatus = HttpUtil.get(changeDeleteStatusInGlobal, "", "admin:test");
+						org.json.JSONObject changeStatusJSON = new JSONObject(changeStatus);
+						   Boolean status = changeStatusJSON.getBoolean("isSuccessfull");
+						   if(!status) {
+							   errorLogUpdate("Money Receipt change delete status global","change status Money Receipt Error:"+ changeStatusJSON, eslipNo);
+						   }
+						   else{
+							   log.error("change success in delete money receipt status "+ eslipNo);
+							   errorLogUpdate("change success in delete money receipt status global","success", eslipNo);
+						   }
 					}
 					else if(deletedEslip.equalsIgnoreCase("No E-slip Found in server")) {
 						log.error("Nothing to delete "+ E_slipNo);

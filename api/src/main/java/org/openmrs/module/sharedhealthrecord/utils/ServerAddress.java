@@ -19,6 +19,7 @@ public class ServerAddress {
 	//url for downloading patient from local to server. no need to add slash / after the url
 	public static String globalServerUrl = "https://182.160.99.132";
 	
+	//data whether sync to dhis2 or not
 	public static int sendToDhisFromGlobal = 0;
 		
 }
