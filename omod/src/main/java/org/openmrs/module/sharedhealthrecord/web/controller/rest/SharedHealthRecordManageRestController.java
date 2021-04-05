@@ -9,6 +9,8 @@ import java.util.UUID;
 
 import org.openmrs.api.context.Context;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
@@ -46,7 +48,7 @@ public class SharedHealthRecordManageRestController {
 	
 	 //private final static String globalServerUrl = "https://182.160.99.132";
 	 private final static String globalServerUrl = ServerAddress.globalServerUrl;
-	
+	 protected final Log log = LogFactory.getLog(this.getClass());
 	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@RequestMapping(value = "/patient/toLocalServer", method = RequestMethod.GET)
@@ -209,25 +211,27 @@ public class SharedHealthRecordManageRestController {
 	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/insert/patientOriginDetails", method = RequestMethod.GET)
-	public ResponseEntity<String> savePatientOriginDetails(@RequestParam String patient_uuid,@RequestParam String patient_origin,@RequestParam String syncStatus,@RequestParam String type,@RequestParam String encounterUuid) throws Exception {
+	public ResponseEntity<String> savePatientOriginDetails(@RequestParam String patient_uuid,@RequestParam String patient_origin,@RequestParam String syncStatus,@RequestParam String type,@RequestParam String encounter_uuid) throws Exception {
 		
 		try {
 			SHRPatientOrigin shrpatientorigin = null;
 			if(type.equalsIgnoreCase("encounter_uuid")) {
-				shrpatientorigin = Context.getService(SHRPatientOriginService.class).getPatientOriginDetailById(type, encounterUuid);
+				shrpatientorigin = Context.getService(SHRPatientOriginService.class).getPatientOriginDetailById(type, encounter_uuid);
 			}
 			else if(type.equalsIgnoreCase("patient_uuid")) {
 				
 				shrpatientorigin = Context.getService(SHRPatientOriginService.class).getPatientOriginDetailById(type, patient_uuid);
 			}
+			
 			if(shrpatientorigin == null) {
+				log.error("in null scope" + patient_uuid);
 				shrpatientorigin =  new SHRPatientOrigin();
 				shrpatientorigin.setPatient_origin(patient_origin);
 				shrpatientorigin.setIsSendToDHis(Integer.parseInt(syncStatus));
 			}
 			shrpatientorigin.setPatient_uuid(patient_uuid);
 			
-			shrpatientorigin.setEncounter_uuid(encounterUuid);
+			shrpatientorigin.setEncounter_uuid(encounter_uuid);
 			
 			SHRPatientOrigin shrpatientoriginresponse = Context.getService(SHRPatientOriginService.class).savePatientOrigin(shrpatientorigin);
 			JSONObject patientOriginObject = new JSONObject();

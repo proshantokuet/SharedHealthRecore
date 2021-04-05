@@ -575,8 +575,8 @@ public class SHRListener{
 					//origin table will be inserted in global server for addition only
 						if(patienResponseCheck.has("error")){
 							String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
-								insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+clinicCode+"&syncStatus="+ServerAddress.sendToDhisFromGlobal+"&type=patient_uuid";
-								
+								insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+clinicCode+"&syncStatus="+ServerAddress.sendToDhisFromGlobal+"&type=patient_uuid&encounter_uuid=0";
+							log.error("Insert url" + insertUrl);
 							String get = "";
 							try{
 								get = HttpUtil.get(insertUrl, "", "admin:test");
@@ -877,7 +877,7 @@ public class SHRListener{
 					else {
 						String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic();
 						String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
-							insertUrl += "?patient_origin="+clinicCode+"&syncStatus="+ServerAddress.sendToDhisFromGlobal+"&type=encounter_uuid&encounter_uuid="+encounterUuid;
+							insertUrl += "?patient_origin="+clinicCode+"&syncStatus="+ServerAddress.sendToDhisFromGlobal+"&type=encounter_uuid&encounter_uuid="+encounterUuid+"&patient_uuid=0";
 							
 						String get = "";
 						try{
