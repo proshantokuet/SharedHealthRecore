@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 @Configuration
 @EnableAsync
 @Controller
-public class SHRListener{
+public class SHRListenerEncounter{
 	
 	String localServer = ServerAddress.localServer();
 	String centralServer = ServerAddress.centralServer();
@@ -50,7 +50,7 @@ public class SHRListener{
 	
 	@SuppressWarnings("rawtypes")
 //	@Scheduled(fixedRate=10000)
-	private static final Logger log = LoggerFactory.getLogger(SHRListener.class);
+	private static final Logger log = LoggerFactory.getLogger(SHRListenerEncounter.class);
 	public void sendAllData() throws Exception {
 		log.error("isDeployInGlobal " + isDeployInGlobal);
 		if(isDeployInGlobal.equalsIgnoreCase("0")) {
@@ -75,7 +75,7 @@ public class SHRListener{
 					e.printStackTrace();
 				}
 				try{
-					sendPatient();
+					//sendPatient();
 	
 				}catch(Exception e){
 					e.printStackTrace();
@@ -86,7 +86,7 @@ public class SHRListener{
 					e.printStackTrace();
 				}
 				try{
-					//sendEncounter();
+					sendEncounter();
 				}catch(Exception e){
 					e.printStackTrace();
 				}
