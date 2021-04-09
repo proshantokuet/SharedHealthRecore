@@ -1063,9 +1063,10 @@ public class SHRListenerMoneyReceipt{
 		}
 		jsonNestedPostMoneyReceipt.put("sateliteClinicId",
 				jsonNestedGetMoneyReceipt.get("sateliteClinicId"));
-		
+		if(jsonNestedGetMoneyReceipt.has("teamNo")) {
 		jsonNestedPostMoneyReceipt.put("teamNo",
 				jsonNestedGetMoneyReceipt.get("teamNo"));
+		}
 		
 		if(jsonNestedGetMoneyReceipt.has("cspId")) {
 			String cspId = (String) jsonNestedGetMoneyReceipt.get("cspId");
