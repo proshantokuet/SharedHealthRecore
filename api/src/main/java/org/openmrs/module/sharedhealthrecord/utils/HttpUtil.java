@@ -39,8 +39,8 @@ public class HttpUtil {
 			sf.setHostnameVerifier(CustomCertificateSSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 			
 			BasicHttpParams basicHttpParams = new BasicHttpParams();
-			HttpConnectionParams.setConnectionTimeout(basicHttpParams, 30000);
-			HttpConnectionParams.setSoTimeout(basicHttpParams, 60000);
+			HttpConnectionParams.setConnectionTimeout(basicHttpParams, 120000);
+			HttpConnectionParams.setSoTimeout(basicHttpParams, 120000);
 			
 			SchemeRegistry registry = new SchemeRegistry();
 			registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));

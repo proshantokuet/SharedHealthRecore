@@ -493,7 +493,16 @@ public class SHRListenerFailedPatient{
 		//failedPatient - flag to check which kind of encounter it is.
 	//</param>
 	private Boolean patientFetchAndPost(String patientUUid,String id,int voidedStatus) throws ParseException, JSONException{
-			String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic();
+			
+			String clinicCode = "";
+			if(ServerAddress.sendToDhisFromGlobal == 0) {
+				clinicCode = "0";
+			}
+			else {
+				clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic(patientUUid);
+			}
+			
+			//String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic(patientUUid);
 			JSONParser jsonParser = new JSONParser();
 		
 			// Get Patient Info from Local Server
@@ -573,7 +582,7 @@ public class SHRListenerFailedPatient{
 					else {
 //					errorLogUpdate("patient post",returnedResult,patientUUid);
 					//origin table will be inserted in global server for addition only
-						if(patienResponseCheck.has("error")){
+						if(!returnedResultOfPatient.has("error")){
 							String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
 								insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+clinicCode+"&syncStatus="+ServerAddress.sendToDhisFromGlobal+"&type=patient_uuid&encounter_uuid=0";
 							log.error("Insert url" + insertUrl);
@@ -883,7 +892,7 @@ public class SHRListenerFailedPatient{
 						if(patientsToSend != null && ServerAddress.sendToDhisFromGlobal == 1) {
 							statusSync = 0;
 						}
-						String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic();
+						String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic(patientUuid);
 						String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
 							insertUrl += "?patient_origin="+clinicCode+"&syncStatus="+statusSync+"&type=encounter_uuid&encounter_uuid="+encounterUuid+"&patient_uuid=0";
 							

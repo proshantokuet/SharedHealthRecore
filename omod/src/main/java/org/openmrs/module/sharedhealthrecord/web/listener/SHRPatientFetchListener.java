@@ -113,7 +113,13 @@ public class SHRPatientFetchListener {
 	}
 	
 	private List<String> getPatientUuidList() throws JSONException{
-		String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic();
+		String clinicCode = "";
+		if(ServerAddress.sendToDhisFromGlobal == 0) {
+			clinicCode = "0";
+		}
+		else {
+			clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic("0");
+		}
 		List<String> patientUuidList = new ArrayList<String>();
 		String url = centralServer + 
 				"openmrs/ws/rest/v1/save-Patient/search/patientOriginByOriginName?"
@@ -276,7 +282,13 @@ public class SHRPatientFetchListener {
 	
 	public List<SHRExternalEncounter> getEncounterUuidList() throws JSONException{
 		List<SHRExternalEncounter> encounterList = new ArrayList<SHRExternalEncounter>();
-		String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic();
+		String clinicCode = "";
+		if(ServerAddress.sendToDhisFromGlobal == 0) {
+			clinicCode = "0";
+		}
+		else {
+			clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic("0");
+		}
 		String url = centralServer + 
 				"openmrs/ws/rest/v1/save-Patient/search/patientOriginByOriginName?"
 				+ "originName="+clinicCode+"&actionType=encounter";
@@ -442,7 +454,13 @@ public class SHRPatientFetchListener {
 		private void deleteLocalMoneyReceipt() throws JSONException{
 			String E_slipNo = "0";
 			try {
-				String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic();
+				String clinicCode = "";
+				if(ServerAddress.sendToDhisFromGlobal == 0) {
+					clinicCode = "0";
+				}
+				else {
+					clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic("0");
+				}				
 				log.error("Clinic Code "+clinicCode);
 				String url = centralServer + "openmrs/ws/rest/v1/money-receipt/get-voided-money-receipt/" + Integer.parseInt(clinicCode);
 				String moneyReceiptList = HttpUtil.get(url, "", "admin:test");

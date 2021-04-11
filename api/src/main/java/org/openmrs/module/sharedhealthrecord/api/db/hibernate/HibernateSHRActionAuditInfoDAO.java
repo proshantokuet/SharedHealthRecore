@@ -250,10 +250,20 @@ protected final Log log = LogFactory.getLog(this.getClass());
 	}
 
 	@Override
-	public String getClinicCodeForClinic() {
+	public String getClinicCodeForClinic(String patientUuid) {
 		// TODO Auto-generated method stub
-		String clinicCode = "0";
+		String clinicCode = "";
 		String sql = "select cid from psi_clinic";
+//		String sql = ""
+//				+ "select "
+//				+ "	pa.value "
+//				+ "from "
+//				+ "	person p "
+//				+ "join person_attribute pa on "
+//				+ "	p.person_id = pa.person_id "
+//				+ "where "
+//				+ "	pa.person_attribute_type_id = 32 "
+//				+ "	and p.uuid = '"+patientUuid+"'";
 		try{
 			clinicCode = sessionFactory.getCurrentSession().createSQLQuery(sql).list().get(0).toString();
 			return clinicCode;

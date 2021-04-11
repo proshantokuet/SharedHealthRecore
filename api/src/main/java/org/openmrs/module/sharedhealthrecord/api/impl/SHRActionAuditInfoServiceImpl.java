@@ -100,9 +100,9 @@ protected final Log log = LogFactory.getLog(this.getClass());
 	}
 
 	@Override
-	public String getClinicCodeForClinic() {
+	public String getClinicCodeForClinic(String patientUuid) {
 		// TODO Auto-generated method stub
-		return dao.getClinicCodeForClinic();
+		return dao.getClinicCodeForClinic(patientUuid);
 	}
 
 	
