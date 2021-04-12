@@ -880,7 +880,7 @@ public class SHRListenerEncounter{
 						String patientUuid = postResponseObject.getString("patientUuid");
 						int statusSync = ServerAddress.sendToDhisFromGlobal;
 						List<SHRExternalPatient> patientsToSend = Context.getService(SHRExternalPatientService.class).findByPatientUuid(patientUuid,"patient");
-						if(patientsToSend != null && ServerAddress.sendToDhisFromGlobal == 1) {
+						if(patientsToSend.size() !=0 && ServerAddress.sendToDhisFromGlobal == 1) {
 							statusSync = 0;
 						}
 						String clinicCode = "";
