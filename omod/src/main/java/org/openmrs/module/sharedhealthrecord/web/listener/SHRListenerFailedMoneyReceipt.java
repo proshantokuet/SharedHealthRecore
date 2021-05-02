@@ -3,10 +3,12 @@ package org.openmrs.module.sharedhealthrecord.web.listener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,11 +49,16 @@ public class SHRListenerFailedMoneyReceipt{
 	String centralServer = ServerAddress.centralServer();
 	String isDeployInGlobal = ServerAddress.isDeployInGlobal;
 	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final ReentrantLock lock = new ReentrantLock();
 	
 	@SuppressWarnings("rawtypes")
 //	@Scheduled(fixedRate=10000)
 	private static final Logger log = LoggerFactory.getLogger(SHRListenerFailedMoneyReceipt.class);
 	public void sendAllData() throws Exception {
+		if (!lock.tryLock()) {
+			log.error("It is already in progress.");
+	        return;
+		}
 		log.error("isDeployInGlobal " + isDeployInGlobal);
 		if(isDeployInGlobal.equalsIgnoreCase("0")) {
 			Context.openSession();
@@ -69,34 +76,7 @@ public class SHRListenerFailedMoneyReceipt{
 			
 			if(status){
 				try{
-	//				PatientSendProcess process = new FailedPatientSendProcess();
-					//sendFailedPatient();
-				}catch(Exception e){
-					e.printStackTrace();
-				}
-				try{
-					//sendPatient();
-	
-				}catch(Exception e){
-					e.printStackTrace();
-				}
-				try{
-					//sendFailedEncounter();
-				}catch(Exception e){
-					e.printStackTrace();
-				}
-				try{
-					//sendEncounter();
-				}catch(Exception e){
-					e.printStackTrace();
-				}
-				try{
 					sendFailedMoneyReceipt();
-				}catch(Exception e){
-					e.printStackTrace();
-				}
-				try{
-					//sendMoneyReceipt();
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -104,6 +84,10 @@ public class SHRListenerFailedMoneyReceipt{
 					sendFollowUpDataToGlobal();
 				} catch (Exception e) {
 					e.printStackTrace();
+				}
+				finally {
+					lock.unlock();
+					log.error("complete listener moneyreceipt failed at:" +new Date());
 				}
 			}
 			

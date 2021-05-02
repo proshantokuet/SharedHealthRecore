@@ -1,8 +1,10 @@
 package org.openmrs.module.sharedhealthrecord.web.listener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +41,14 @@ public class SHRPatientFetchListener {
 	String centralServer = ServerAddress.centralServer();
 	String isDeployInGlobal = ServerAddress.isDeployInGlobal;
 	private static final Logger log = LoggerFactory.getLogger(SHRPatientFetchListener.class);
+	private static final ReentrantLock lock = new ReentrantLock();
+
+	
 	public void fetchAndUpdatePatient(){
+		if (!lock.tryLock()) {
+			log.error("It is already in progress.");
+	        return;
+		}
 		if(isDeployInGlobal.equalsIgnoreCase("0")) {
 			Context.openSession();
 			boolean status = true;
@@ -67,6 +76,10 @@ public class SHRPatientFetchListener {
 					deleteLocalMoneyReceipt();
 				}catch(Exception e){
 					errorLogUpdate("Voided Money Receipt Fetch Problem",e.toString(),UUID.randomUUID().toString());
+				}
+				finally {
+					lock.unlock();
+					log.error("complete fetch listener all at:" +new Date());
 				}
 			}
 	
