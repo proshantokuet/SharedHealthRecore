@@ -205,7 +205,7 @@ public class SHRListenerEncounter{
 			}
 		}
 	}
-	public void sendEncounter() throws ParseException{
+	public synchronized void sendEncounter() throws ParseException{
 		JSONParser jsonParser = new JSONParser();
 		String last_entry = Context.getService(SHRActionAuditInfoService.class)
 				.getLastEntryForEncounter();

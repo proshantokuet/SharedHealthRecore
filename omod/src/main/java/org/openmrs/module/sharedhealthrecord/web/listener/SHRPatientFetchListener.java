@@ -87,7 +87,7 @@ public class SHRPatientFetchListener {
 		}
 	}
 	
-	public void patientFetchAndUpdateExecute(){
+	public synchronized void patientFetchAndUpdateExecute(){
 		//fetch patient 
 		List<String> patientUuidList = new ArrayList<String>();
 		String postPatientResponse = "";
@@ -192,7 +192,7 @@ public class SHRPatientFetchListener {
 //		errorLogUpdate("patient Update to Central Server",get_result,patientUuid);
 	}
 	
-	public void encounterFetchAndUpdateExecute() throws JSONException, JsonSyntaxException, ParseException{
+	public synchronized void encounterFetchAndUpdateExecute() throws JSONException, JsonSyntaxException, ParseException{
 		List<SHRExternalEncounter> encounterUuidList = new ArrayList<SHRExternalEncounter>();
 		String postEncounterResponse = "";
 		try{
@@ -464,7 +464,7 @@ public class SHRPatientFetchListener {
 		}
 		
 
-		private void deleteLocalMoneyReceipt() throws JSONException{
+		private synchronized void deleteLocalMoneyReceipt() throws JSONException{
 			String E_slipNo = "0";
 			try {
 				String clinicCode = "";

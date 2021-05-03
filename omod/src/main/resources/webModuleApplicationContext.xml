@@ -38,7 +38,9 @@
 	<bean id="shrListenerFailedMoneyReceipt" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListenerFailedMoneyReceipt"></bean>
 	<bean id="shrListenerMoneyReceipt" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListenerMoneyReceipt"></bean>
 	
-	<bean id="shrPatientFetchListener" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRPatientFetchListener"></bean> -->
+	<bean id="shrPatientFetchListener" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRPatientFetchListener"></bean>
+	
+	<bean id="shrFollowUpDataListener" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListenerFollowUpData"></bean> -->
 	
 <!-- 	<task:scheduled-tasks scheduler="shr2Task">
 		<task:scheduled ref="shrListener" method="sendAllData" cron="*/55 * * * * *" />
@@ -52,9 +54,10 @@
 		<task:scheduled ref="shrListenerMoneyReceipt" method="sendAllData" cron="*/55 * * * * *" />
 		
 		<task:scheduled ref="shrPatientFetchListener" method="fetchAndUpdatePatient" cron="*/55 * * * * *"/>
+		<task:scheduled ref="shrFollowUpDataListener" method="sendAllData" cron="*/55 * * * * *"/>
 	</task:scheduled-tasks>
 	
-	<task:scheduler pool-size="7" id="shr2Task"/> -->
+	<task:scheduler pool-size="1" id="shr2Task"/> -->
 	
 	<!-- jysan vai commented this -->
 	<!-- <task:annotation-driven /> -->

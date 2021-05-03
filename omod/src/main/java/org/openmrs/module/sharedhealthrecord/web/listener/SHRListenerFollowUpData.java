@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 @Configuration
 @EnableAsync
 @Controller
-public class SHRListenerFailedMoneyReceipt{
+public class SHRListenerFollowUpData{
 	
 	String localServer = ServerAddress.localServer();
 	String centralServer = ServerAddress.centralServer();
@@ -53,8 +53,9 @@ public class SHRListenerFailedMoneyReceipt{
 	
 	@SuppressWarnings("rawtypes")
 //	@Scheduled(fixedRate=10000)
-	private static final Logger log = LoggerFactory.getLogger(SHRListenerFailedMoneyReceipt.class);
+	private static final Logger log = LoggerFactory.getLogger(SHRListenerFollowUpData.class);
 	public void sendAllData() throws Exception {
+		log.error("Entered in followup listener" + new Date());
 		if (!lock.tryLock()) {
 			log.error("It is already in progress.");
 	        return;
@@ -75,9 +76,9 @@ public class SHRListenerFailedMoneyReceipt{
 			}
 			
 			if(status){
-				try{
-					sendFailedMoneyReceipt();
-				}catch(Exception e){
+				try {
+					sendFollowUpDataToGlobal();
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				finally {

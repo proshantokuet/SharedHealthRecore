@@ -92,7 +92,7 @@ public class SHRListener{
 		}
 	}
 	
-	public void sendPatient() throws ParseException{
+	public synchronized void sendPatient() throws ParseException{
 		
 		String last_entry = Context.getService(SHRActionAuditInfoService.class)
 				.getLastEntryForPatient();

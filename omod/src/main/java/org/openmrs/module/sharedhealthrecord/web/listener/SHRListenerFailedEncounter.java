@@ -258,7 +258,7 @@ public class SHRListenerFailedEncounter{
 			}
 	}
 	
-	public void sendFailedEncounter(){
+	public synchronized void sendFailedEncounter(){
 		List<SHRActionErrorLog> failedEncounters = Context.getService(SHRActionErrorLogService.class)
 				.get_list_by_Action_type("Encounter");
 		for(SHRActionErrorLog encounter: failedEncounters){

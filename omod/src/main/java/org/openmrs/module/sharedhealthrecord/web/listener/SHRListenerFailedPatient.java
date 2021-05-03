@@ -160,7 +160,7 @@ public class SHRListenerFailedPatient{
 			errorLogInsert("Patient",e.toString(),patUuid,0);
 		}
 	}
-	public void sendFailedPatient() throws ParseException{
+	public synchronized void sendFailedPatient() throws ParseException{
 		
 		List<SHRActionErrorLog> failedPatients = new ArrayList<SHRActionErrorLog>();
 		

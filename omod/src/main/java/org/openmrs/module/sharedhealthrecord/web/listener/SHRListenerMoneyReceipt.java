@@ -309,7 +309,7 @@ public class SHRListenerMoneyReceipt{
 		}
 	}
 	
-	public void sendMoneyReceipt(){
+	public synchronized void sendMoneyReceipt(){
 		JSONParser jsonParser = new JSONParser();
 		// Check shr_action_audit_info for last sent timestamp
 		String timestamp = Context.getService(SHRActionAuditInfoService.class)
