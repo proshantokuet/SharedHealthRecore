@@ -22,5 +22,7 @@ public interface SHRActionAuditInfoDAO {
 	
 	public String getTimeStampForMoneyReceipt(String mid);
 	
+	public String getClinicCodeForClinic(String patientUuid);
+
 	
 }

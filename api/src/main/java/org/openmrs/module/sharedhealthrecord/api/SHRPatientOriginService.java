@@ -10,5 +10,7 @@ public interface SHRPatientOriginService  extends OpenmrsService {
 	
 	public SHRPatientOrigin savePatientOrigin (SHRPatientOrigin shrPatientOrigin);
 	
+	public SHRPatientOrigin getPatientOriginDetailById (String type ,String uuid);
+	
 	public List<SHRPatientOrigin> getpatientOriginByOriginName (String originName, String actionType);
 }

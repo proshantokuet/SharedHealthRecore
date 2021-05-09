@@ -12,6 +12,8 @@ public class GroupMember {
 	
 	private String value;
 	
+	private boolean voided;
+	
 	private List<GroupMember> groupMembers;
 	
 	public List<GroupMember> getGroupMembers() {
@@ -52,6 +54,14 @@ public class GroupMember {
 	
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public boolean isVoided() {
+		return voided;
+	}
+
+	public void setVoided(boolean voided) {
+		this.voided = voided;
 	}
 	
 }

@@ -6,6 +6,7 @@ import java.security.KeyStore;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -22,6 +23,7 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 public class HttpUtil {
@@ -37,8 +39,8 @@ public class HttpUtil {
 			sf.setHostnameVerifier(CustomCertificateSSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 			
 			BasicHttpParams basicHttpParams = new BasicHttpParams();
-			HttpConnectionParams.setConnectionTimeout(basicHttpParams, 30000);
-			HttpConnectionParams.setSoTimeout(basicHttpParams, 60000);
+			HttpConnectionParams.setConnectionTimeout(basicHttpParams, 120000);
+			HttpConnectionParams.setSoTimeout(basicHttpParams, 120000);
 			
 			SchemeRegistry registry = new SchemeRegistry();
 			registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
@@ -95,11 +97,11 @@ public class HttpUtil {
 	
 	public static String post(String url, String payload, String data) {
 		try {
-			HttpPost request = (HttpPost) makeConnection(url, "", RequestMethod.POST, AuthType.BASIC, "admin:test");
-			request.setHeader(HTTP.CONTENT_TYPE, "application/json");
+			HttpPost request = (HttpPost) makeConnection(url, "", RequestMethod.POST, AuthType.BASIC, "superadmin:Admin@123");
+			request.setHeader(HTTP.CONTENT_TYPE, "application/json; charset=UTF-8");
 			StringEntity entity = new StringEntity(data == null ? "" : data, "UTF-8");
 			//System.err.println(data);
-			entity.setContentEncoding("application/json");
+			entity.setContentEncoding("application/json; charset=UTF-8");
 			request.setEntity(entity);
 			org.apache.http.HttpResponse response = httpClient.execute(request);
 			String responseEntity = "";
@@ -119,15 +121,18 @@ public class HttpUtil {
 	public static String get(String url, String payload, String authString) {
 	
 		try {
-			HttpGet request = (HttpGet) makeConnection(url, payload, RequestMethod.GET, AuthType.BASIC, authString);
-			
+			HttpGet request = (HttpGet) makeConnection(url, payload, RequestMethod.GET, AuthType.BASIC, "superadmin:Admin@123");
+			//request.setHeader("Content-Type", "application/json; charset=UTF-8");
+			//request.setHeader("accept-charset", "UTF-8");
+			//request.setHeader("Accept-Encoding", "UTF-8");
 			org.apache.http.HttpResponse response = httpClient.execute(request);
-			
 			int statusCode = response.getStatusLine().getStatusCode();
 			
 			String entity = "";
-			if (response.getEntity() != null) {				
-				entity = IOUtils.toString(response.getEntity().getContent());				
+			if (response.getEntity() != null) {
+				//HttpEntity entity = response.getEntity();
+				//entity = IOUtils.toString(response.getEntity().getContent());
+				entity = EntityUtils.toString(response.getEntity(),"UTF-8");
 			}
 			return entity;
 
@@ -141,7 +146,7 @@ public class HttpUtil {
 	
 	public static String delete(String url, String payload, String authString) {
 		try {
-			HttpDelete request = (HttpDelete) makeConnection(url, payload, RequestMethod.DELETE, AuthType.BASIC, authString);
+			HttpDelete request = (HttpDelete) makeConnection(url, payload, RequestMethod.DELETE, AuthType.BASIC, "superadmin:Admin@123");
 			org.apache.http.HttpResponse response = httpClient.execute(request);
 			
 			int statusCode = response.getStatusLine().getStatusCode();

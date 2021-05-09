@@ -43,17 +43,17 @@ import org.slf4j.LoggerFactory;
 @Configuration
 @EnableAsync
 @Controller
-public class SHRListener{
+public class SHRListenerFailedEncounter{
 	
 	String localServer = ServerAddress.localServer();
 	String centralServer = ServerAddress.centralServer();
 	String isDeployInGlobal = ServerAddress.isDeployInGlobal;
 	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static final ReentrantLock lock = new ReentrantLock();
-
+	
 	@SuppressWarnings("rawtypes")
 //	@Scheduled(fixedRate=10000)
-	private static final Logger log = LoggerFactory.getLogger(SHRListener.class);
+	private static final Logger log = LoggerFactory.getLogger(SHRListenerFailedEncounter.class);
 	public void sendAllData() throws Exception {
 		if (!lock.tryLock()) {
 			log.error("It is already in progress.");
@@ -76,14 +76,13 @@ public class SHRListener{
 			
 			if(status){
 				try{
-					sendPatient();
-	
+					sendFailedEncounter();
 				}catch(Exception e){
 					e.printStackTrace();
 				}
 				finally {
 					lock.unlock();
-					log.error("complete listener patient at:" +new Date());
+					log.error("complete listener encounter failed at:" +new Date());
 				}
 
 			}
@@ -92,7 +91,7 @@ public class SHRListener{
 		}
 	}
 	
-	public synchronized void sendPatient() throws ParseException{
+	public void sendPatient() throws ParseException{
 		
 		String last_entry = Context.getService(SHRActionAuditInfoService.class)
 				.getLastEntryForPatient();
@@ -259,7 +258,7 @@ public class SHRListener{
 			}
 	}
 	
-	public void sendFailedEncounter(){
+	public synchronized void sendFailedEncounter(){
 		List<SHRActionErrorLog> failedEncounters = Context.getService(SHRActionErrorLogService.class)
 				.get_list_by_Action_type("Encounter");
 		for(SHRActionErrorLog encounter: failedEncounters){
@@ -474,13 +473,7 @@ public class SHRListener{
 		//failedPatient - flag to check which kind of encounter it is.
 	//</param>
 	private Boolean patientFetchAndPost(String patientUUid,String id,int voidedStatus) throws ParseException, JSONException{
-			String clinicCode = "";
-			if(ServerAddress.sendToDhisFromGlobal == 0) {
-				clinicCode = "0";
-			}
-			else {
-				clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic(patientUUid);
-			}
+			String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic(patientUUid);
 			JSONParser jsonParser = new JSONParser();
 		
 			// Get Patient Info from Local Server
@@ -560,7 +553,7 @@ public class SHRListener{
 					else {
 //					errorLogUpdate("patient post",returnedResult,patientUUid);
 					//origin table will be inserted in global server for addition only
-						if(!returnedResultOfPatient.has("error")){
+						if(patienResponseCheck.has("error")){
 							String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
 								insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+clinicCode+"&syncStatus="+ServerAddress.sendToDhisFromGlobal+"&type=patient_uuid&encounter_uuid=0";
 							log.error("Insert url" + insertUrl);
@@ -867,10 +860,16 @@ public class SHRListener{
 						String patientUuid = postResponseObject.getString("patientUuid");
 						int statusSync = ServerAddress.sendToDhisFromGlobal;
 						List<SHRExternalPatient> patientsToSend = Context.getService(SHRExternalPatientService.class).findByPatientUuid(patientUuid,"patient");
-						if(patientsToSend != null && ServerAddress.sendToDhisFromGlobal == 1) {
+						if(patientsToSend.size() !=0 && ServerAddress.sendToDhisFromGlobal == 1) {
 							statusSync = 0;
 						}
-						String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic(patientUuid);
+						String clinicCode = "";
+						if(ServerAddress.sendToDhisFromGlobal == 0) {
+							clinicCode = "0";
+						}
+						else {
+							clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic(patientUuid);
+						}
 						String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
 							insertUrl += "?patient_origin="+clinicCode+"&syncStatus="+statusSync+"&type=encounter_uuid&encounter_uuid="+encounterUuid+"&patient_uuid=0";
 							

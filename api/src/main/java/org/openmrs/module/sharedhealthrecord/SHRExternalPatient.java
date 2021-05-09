@@ -11,6 +11,7 @@ public class SHRExternalPatient extends BaseOpenmrsObject implements Serializabl
 	 private String patient_uuid;
 	 private String encounter_uuid;
 	 private String is_send_to_central;
+	 private String originClinic;
 	 
 	 
 	public String getAction_type() {
@@ -55,6 +56,14 @@ public class SHRExternalPatient extends BaseOpenmrsObject implements Serializabl
 		this.is_send_to_central = is_send_to_central;
 	}
 
+
+	public String getOriginClinic() {
+		return originClinic;
+	}
+
+	public void setOriginClinic(String originClinic) {
+		this.originClinic = originClinic;
+	}
 
 	@Override
 	public Integer getId() {

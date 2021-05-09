@@ -9,6 +9,8 @@ import java.util.UUID;
 
 import org.openmrs.api.context.Context;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
@@ -19,6 +21,8 @@ import org.openmrs.module.sharedhealthrecord.api.SHRExternalPatientService;
 import org.openmrs.module.sharedhealthrecord.api.SHRPatientOriginService;
 import org.openmrs.module.sharedhealthrecord.api.SHRPatientVisitService;
 import org.openmrs.module.sharedhealthrecord.domain.Encounter;
+import org.openmrs.module.sharedhealthrecord.domain.GroupMember;
+import org.openmrs.module.sharedhealthrecord.domain.GroupMemberWithValue;
 import org.openmrs.module.sharedhealthrecord.domain.Observation;
 import org.openmrs.module.sharedhealthrecord.domain.ObservationWithGroupMemebrs;
 import org.openmrs.module.sharedhealthrecord.domain.ObservationWithValues;
@@ -40,10 +44,11 @@ import com.google.gson.Gson;
 @RestController
 public class SharedHealthRecordManageRestController {
 	
-	private final static String baseOpenmrsUrl = "https://192.168.19.145";
+	private final static String baseOpenmrsUrl = "https://localhost";
 	
-	private final static String globalServerUrl = "https://192.168.19.158";
-	
+	 //private final static String globalServerUrl = "https://182.160.99.132";
+	 private final static String globalServerUrl = ServerAddress.globalServerUrl;
+	 protected final Log log = LogFactory.getLog(this.getClass());
 	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@RequestMapping(value = "/patient/toLocalServer", method = RequestMethod.GET)
@@ -67,11 +72,22 @@ public class SharedHealthRecordManageRestController {
 			String patientPostUrl = baseOpenmrsUrl + "/openmrs/ws/rest/v1/bahmnicore/patientprofile";
 			
 			String returnedResult = HttpUtil.post(patientPostUrl, "", data);
-			savePatientEntryDetails("patient", personUuid);
+			JSONParser jsonParserPatient = new JSONParser();
+			JSONObject patienResponseCheck = (JSONObject) jsonParserPatient.parse(returnedResult);
+			if(patienResponseCheck != null){
+				//savePatientEntryDetails("patient", personUuid,"");
+				savePatientEntryDetails("patient", personUuid,"fullEmr");
+				SHRPatientOrigin shrPatientOrigin = new SHRPatientOrigin();
+				shrPatientOrigin.setPatient_uuid(personUuid);
+				shrPatientOrigin.setPatient_origin("");
+				shrPatientOrigin.setIsSendToDHis(ServerAddress.sendToDhisFromGlobal);
+				Context.getService(SHRPatientOriginService.class).savePatientOrigin(shrPatientOrigin);
+			}
 			
 			Boolean isCompletedSavingBoolean = encounter(patientUuid, loginLocationUuid);
 			if (isCompletedSavingBoolean) {
-				savePatientEntryDetails("encounter", personUuid);
+				//savePatientEntryDetails("encounter", personUuid,"");
+				savePatientEntryDetails("encounter", personUuid,"fullEmr");
 			}
 			return new ResponseEntity<>(returnedResult, HttpStatus.OK);
 		}
@@ -103,7 +119,7 @@ public class SharedHealthRecordManageRestController {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<>(e.getMessage().toString(), HttpStatus.OK);
+			return new ResponseEntity<>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -195,23 +211,41 @@ public class SharedHealthRecordManageRestController {
 	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/insert/patientOriginDetails", method = RequestMethod.GET)
-	public ResponseEntity<String> savePatientOriginDetails(@RequestParam(required = true) String patient_uuid,@RequestParam(required = true) String patient_origin) throws Exception {
-		SHRPatientOrigin shrpatientorigin = new SHRPatientOrigin();
-		shrpatientorigin.setPatient_uuid(patient_uuid);
-		shrpatientorigin.setPatient_origin(patient_origin);
-		SHRPatientOrigin shrpatientoriginresponse = Context.getService(SHRPatientOriginService.class).savePatientOrigin(shrpatientorigin);
-		if(StringUtils.isBlank(shrpatientoriginresponse.getPatient_uuid())) {
-			JSONObject patientOriginObject = new JSONObject();
-			patientOriginObject.put("isSuccessfull", false);
-			patientOriginObject.put("message", "Error Occured");
-			return new ResponseEntity<>(patientOriginObject.toJSONString(), HttpStatus.OK);
-		}
-		else {
+	public ResponseEntity<String> savePatientOriginDetails(@RequestParam String patient_uuid,@RequestParam String patient_origin,@RequestParam String syncStatus,@RequestParam String type,@RequestParam String encounter_uuid) throws Exception {
+		
+		try {
+			SHRPatientOrigin shrpatientorigin = null;
+			if(type.equalsIgnoreCase("encounter_uuid")) {
+				shrpatientorigin = Context.getService(SHRPatientOriginService.class).getPatientOriginDetailById(type, encounter_uuid);
+			}
+			else if(type.equalsIgnoreCase("patient_uuid")) {
+				
+				shrpatientorigin = Context.getService(SHRPatientOriginService.class).getPatientOriginDetailById(type, patient_uuid);
+			}
+			
+			if(shrpatientorigin == null) {
+				log.error("in null scope" + patient_uuid);
+				shrpatientorigin =  new SHRPatientOrigin();
+				shrpatientorigin.setPatient_origin(patient_origin);
+				shrpatientorigin.setIsSendToDHis(Integer.parseInt(syncStatus));
+			}
+			shrpatientorigin.setPatient_uuid(patient_uuid);
+			
+			shrpatientorigin.setEncounter_uuid(encounter_uuid);
+			
+			SHRPatientOrigin shrpatientoriginresponse = Context.getService(SHRPatientOriginService.class).savePatientOrigin(shrpatientorigin);
 			JSONObject patientOriginObject = new JSONObject();
 			patientOriginObject.put("isSuccessfull", true);
-			patientOriginObject.put("patient_uuid", shrpatientoriginresponse.getPatient_uuid());
+			patientOriginObject.put("message", "OK");
 			return new ResponseEntity<>(patientOriginObject.toJSONString(), HttpStatus.OK);
 		}
+		catch (Exception e) {
+			JSONObject patientOriginObject = new JSONObject();
+			patientOriginObject.put("isSuccessfull", false);
+			patientOriginObject.put("message", "ERROR");
+			return new ResponseEntity<>(patientOriginObject.toJSONString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -239,59 +273,67 @@ public class SharedHealthRecordManageRestController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/insert/patientVisitDetails", method = RequestMethod.POST)
 	public ResponseEntity<String> savePatientVisitDetails(@RequestBody String visitJson) throws Exception {
-
-		JSONParser jsonParser = new JSONParser();
-		JSONObject patientVisitJsonObject = (JSONObject) jsonParser.parse(visitJson);
-		SHRPatientVisit shrPatientVisit = new SHRPatientVisit();
-		if (patientVisitJsonObject.containsKey("patient_uuid")) {
-			String patient_id = (String) patientVisitJsonObject.get("patient_uuid");
-			SHRPatientVisit patientIdResponse = Context.getService(SHRPatientVisitService.class).getPatientIdByPatientUuid(patient_id);
-			if (patientIdResponse != null) {
+		try {
+			JSONParser jsonParser = new JSONParser();
+			JSONObject patientVisitJsonObject = (JSONObject) jsonParser.parse(visitJson);
+			SHRPatientVisit shrPatientVisit = new SHRPatientVisit();
+			if (patientVisitJsonObject.containsKey("patient_uuid")) {
+				String patient_id = (String) patientVisitJsonObject.get("patient_uuid");
+				SHRPatientVisit patientIdResponse = Context.getService(SHRPatientVisitService.class).getPatientIdByPatientUuid(patient_id);
+				if (patientIdResponse != null) {
+					
+					shrPatientVisit.setPatient_id(patientIdResponse.getPerson_id());
+				}
+				else {
+					JSONObject patientObject = new JSONObject();
+					patientObject.put("isSuccessfull", false);
+					patientObject.put("message", "No patient Found by this uuid");
+					return new ResponseEntity<>(patientObject.toJSONString(), HttpStatus.OK);
+				}
 				
-				shrPatientVisit.setPatient_id(patientIdResponse.getPerson_id());
 			}
-			else {
-				JSONObject patientObject = new JSONObject();
-				patientObject.put("isSuccessfull", false);
-				patientObject.put("message", "No patient Found by this uuid");
-				return new ResponseEntity<>(patientObject.toJSONString(), HttpStatus.OK);
+			if (patientVisitJsonObject.containsKey("visit_type_id")) {
+				String visit_type_id =  (String) patientVisitJsonObject.get("visit_type_id");
+				shrPatientVisit.setVisit_type_id(Integer.parseInt(visit_type_id));
+			}
+			if (patientVisitJsonObject.containsKey("uuid")) {
+				shrPatientVisit.setUuid((String) patientVisitJsonObject.get("uuid"));
+			}
+			if (patientVisitJsonObject.containsKey("date_started")) {
+				String dateStarted = (String) patientVisitJsonObject.get("date_started");
+				shrPatientVisit.setDate_started(dateFormatTwentyFourHour.parse(dateStarted));
+			}
+			if (patientVisitJsonObject.containsKey("date_stopped")) {
+				String dateStopped = (String) patientVisitJsonObject.get("date_stopped");
+				if (dateStopped != null) {
+					shrPatientVisit.setDate_stopped(dateFormatTwentyFourHour.parse(dateStopped));
+				}
+				else {
+					//String dateStarted = (String) patientVisitJsonObject.get("date_started");
+					shrPatientVisit.setDate_stopped(null);
+				}
+			}
+			if (patientVisitJsonObject.containsKey("location_id")) {
+				//String localtionId = (String)patientVisitJsonObject.get("location_id");
+				//shrPatientVisit.setLocation_id(Integer.parseInt(localtionId));
+				shrPatientVisit.setLocation_id(1);
 			}
 			
+			SHRPatientVisit shrpatientoriginresponse = Context.getService(SHRPatientVisitService.class).savePatientVisit(shrPatientVisit);
+			JSONObject patientVisitObject = new JSONObject();
+			patientVisitObject.put("visit_type_id", Integer.toString(shrpatientoriginresponse.getVisit_type_id()));
+			patientVisitObject.put("date_started", shrpatientoriginresponse.getDate_started().toString());
+			patientVisitObject.put("date_stopped", shrpatientoriginresponse.getDate_stopped() == null ? "null" : shrpatientoriginresponse.getDate_stopped().toString());
+			patientVisitObject.put("location_id", Integer.toString(shrpatientoriginresponse.getLocation_id()));
+			patientVisitObject.put("patient_id", Integer.toString(shrpatientoriginresponse.getPatient_id()));
+			patientVisitObject.put("uuid", shrpatientoriginresponse.getUuid());
+			patientVisitObject.put("isSuccessfull", shrpatientoriginresponse.isSuccessfull());
+			return new ResponseEntity<>(patientVisitObject.toJSONString(), HttpStatus.OK);
 		}
-		if (patientVisitJsonObject.containsKey("visit_type_id")) {
-			String visit_type_id =  (String) patientVisitJsonObject.get("visit_type_id");
-			shrPatientVisit.setVisit_type_id(Integer.parseInt(visit_type_id));
+		catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		if (patientVisitJsonObject.containsKey("uuid")) {
-			shrPatientVisit.setUuid((String) patientVisitJsonObject.get("uuid"));
-		}
-		if (patientVisitJsonObject.containsKey("date_started")) {
-			String dateStarted = (String) patientVisitJsonObject.get("date_started");
-			shrPatientVisit.setDate_started(dateFormatTwentyFourHour.parse(dateStarted));
-		}
-		if (patientVisitJsonObject.containsKey("date_stopped")) {
-			String dateStopped = (String) patientVisitJsonObject.get("date_stopped");
-			if (dateStopped != null) {
-				shrPatientVisit.setDate_stopped(dateFormatTwentyFourHour.parse(dateStopped));
-			}
-			else {
-				//String dateStarted = (String) patientVisitJsonObject.get("date_started");
-				shrPatientVisit.setDate_stopped(null);
-			}
-		}
-		if (patientVisitJsonObject.containsKey("location_id")) {
-			shrPatientVisit.setLocation_id(1);
-		}
-		SHRPatientVisit shrpatientoriginresponse = Context.getService(SHRPatientVisitService.class).savePatientVisit(shrPatientVisit);
-		JSONObject patientVisitObject = new JSONObject();
-		patientVisitObject.put("visit_type_id", Integer.toString(shrpatientoriginresponse.getVisit_type_id()));
-		patientVisitObject.put("date_started", shrpatientoriginresponse.getDate_started().toString());
-		patientVisitObject.put("date_stopped", shrpatientoriginresponse.getDate_stopped() == null ? "null" : shrpatientoriginresponse.getDate_stopped().toString());
-		patientVisitObject.put("location_id", Integer.toString(shrpatientoriginresponse.getLocation_id()));
-		patientVisitObject.put("patient_id", Integer.toString(shrpatientoriginresponse.getPatient_id()));
-		patientVisitObject.put("uuid", shrpatientoriginresponse.getUuid());
-		patientVisitObject.put("isSuccessfull", shrpatientoriginresponse.isSuccessfull());
-		return new ResponseEntity<>(patientVisitObject.toJSONString(), HttpStatus.OK);
+
 	}
 																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																					
 	@SuppressWarnings("unchecked")
@@ -444,13 +486,33 @@ public class SharedHealthRecordManageRestController {
 					String visitTypeUuidString = (String)obj.get("visitTypeUuid");
 					String visitTypeValue = visitTypeMapping.get(visitTypeUuidString);
 					obj.put("visitType", visitTypeValue);
+					if(obj.containsKey("locationUuid"))
+					{
+						obj.remove("locationUuid");
+					}
+					obj.put("locationUuid", "8d6c993e-c2cc-11de-8d13-0010c6dffd0f");
 					JSONArray obs = (JSONArray) obj.get("observations");
 					JSONArray obervations = getObservations(obs);
 					JSONObject encounter = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(obj.toString(),Encounter.class)));
 					encounter.put("observations", obervations);
+					if(encounter.containsKey("providers")) {
+						org.json.simple.JSONArray  providerArray = (org.json.simple.JSONArray) encounter.get("providers");
+						for (int i = 0; i < providerArray.size(); i++) {
+							org.json.simple.JSONObject providerObject = (org.json.simple.JSONObject) providerArray.get(i);
+							String providerUuid = "c1c26908-3f10-11e4-adec-0800271c1b75";
+							providerObject.remove("uuid");
+							providerObject.put("uuid", providerUuid);
+						}
+					}
 					String patientServiceUrl = baseOpenmrsUrl + "/openmrs/ws/rest/v1/bahmnicore/bahmniencounter";
 					if(proceedToCreateEncounter) {
 						String postResponse = HttpUtil.post(patientServiceUrl, "", encounter.toJSONString());
+						JSONObject postResponseObject = (JSONObject) jsonParser.parse(postResponse);
+						SHRPatientOrigin shrPatientOrigin = new SHRPatientOrigin();
+						shrPatientOrigin.setEncounter_uuid(encounterUuid);
+						shrPatientOrigin.setPatient_origin("");
+						shrPatientOrigin.setIsSendToDHis(ServerAddress.sendToDhisFromGlobal);
+						Context.getService(SHRPatientOriginService.class).savePatientOrigin(shrPatientOrigin);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -486,6 +548,29 @@ public class SharedHealthRecordManageRestController {
 					
 					JSONObject obs = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(ob.toString(),
 					    ObservationWithGroupMemebrs.class)));
+					JSONArray groupMembersArray = new JSONArray();
+					for (int i = 0; i < groupMembers.size(); i++) {
+						
+						JSONObject groupMemberCustom = (JSONObject) groupMembers.get(i);
+						JSONObject mappedGroupmemberObject = new JSONObject();
+						try {
+							String typeGroupMember = (String) groupMemberCustom.get("type");
+							if(typeGroupMember.equalsIgnoreCase("Coded")) {
+							 mappedGroupmemberObject = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(groupMemberCustom.toString(),
+									 GroupMemberWithValue.class)));
+							}
+							else
+							{
+							 mappedGroupmemberObject = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(groupMemberCustom.toString(),
+									 GroupMember.class)));
+							}
+							groupMembersArray.add(mappedGroupmemberObject);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					obs.put("groupMembers", groupMembersArray);
 					observations.add(obs);
 				} else {
 					
@@ -542,12 +627,13 @@ public class SharedHealthRecordManageRestController {
         visitTypeMapping.put("bef32e14-3f12-11e4-adec-0800271c1b75", "LAB VISIT");
 	}
 	
-	private void savePatientEntryDetails(String actionType, String personUuid) {
+	private void savePatientEntryDetails(String actionType, String personUuid, String originType) {
 		SHRExternalPatient externalPatient = new SHRExternalPatient();
 		externalPatient.setAction_type(actionType);
 		externalPatient.setPatient_uuid(personUuid);
 		externalPatient.setIs_send_to_central("0");
 		externalPatient.setUuid(UUID.randomUUID().toString());
+		externalPatient.setOriginClinic(originType);
 		Context.getService(SHRExternalPatientService.class).saveExternalPatient(externalPatient);
 	}
 	
@@ -668,6 +754,65 @@ public class SharedHealthRecordManageRestController {
 					externalPatientObject.put("encounterUuid", responseExternalPatient.getEncounter_uuid());
 					return new ResponseEntity<>(externalPatientObject.toJSONString(), HttpStatus.OK);
 				}
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/close/visitInGlobal", method = RequestMethod.GET)
+	public ResponseEntity<String> closeVisitInGlobal(@RequestParam(required = true) String visitUuid) throws Exception {
+		JSONParser jsonParser = new JSONParser();
+		try {
+			JSONObject patientVisit = new JSONObject();
+			String visitUrl = globalServerUrl + "/openmrs/ws/rest/v1/visit/" + visitUuid;
+			String visitResponse = HttpUtil.get(visitUrl, "", "admin:test");
+			//Read JSON file
+			JSONObject visitObject = (JSONObject) jsonParser.parse(visitResponse);
+			if(visitObject.containsKey("error")) {
+					patientVisit.put("isSuccessfull", true);
+					patientVisit.put("Message", "Success");
+					patientVisit.put("visitUuid", visitUuid);
+				}
+			else if (visitObject.containsKey("uuid")) {
+					String visitPostUrl = globalServerUrl + "/openmrs/ws/rest/v1/bahmnicore/visit/endVisit" + "?visitUuid=" + visitUuid;
+					String returnedResult = HttpUtil.post(visitPostUrl, "", "");
+					JSONObject returnedResultObject = (JSONObject) jsonParser.parse(returnedResult);
+					if(!returnedResultObject.containsKey("error")) {
+						patientVisit.put("isSuccessfull", true);
+						patientVisit.put("Message", "Success");
+						patientVisit.put("visitUuid", visitUuid);
+					}
+					else {
+						patientVisit.put("isSuccessfull", false);
+						patientVisit.put("Message", "Vist Close in GLobal Server Failed");
+						patientVisit.put("visitUuid", visitUuid);
+					}					
+			}
+			return new ResponseEntity<>(patientVisit.toJSONString(), HttpStatus.OK);
+		}
+		catch (Exception e) {
+			//e.printStackTrace();
+			String errorMessage = e.getMessage().toString();
+			if("java.net.ConnectException: Network is unreachable (connect failed)".equalsIgnoreCase(errorMessage)) {
+				JSONObject patientVisit = new JSONObject();
+				patientVisit.put("isSuccessfull", false);
+				patientVisit.put("Message", "Please Connect to Internet Before closing Visit");
+				patientVisit.put("visitUuid", visitUuid);
+				return new ResponseEntity<>(patientVisit.toJSONString(), HttpStatus.OK);
+			}
+			else if ("java.net.SocketException: Network is unreachable (connect failed)".equalsIgnoreCase(errorMessage)) {
+				JSONObject patientVisit = new JSONObject();
+				patientVisit.put("isSuccessfull", false);
+				patientVisit.put("Message", "Please Connect to Internet Before closing Visit");
+				patientVisit.put("visitUuid", visitUuid);
+				return new ResponseEntity<>(patientVisit.toJSONString(), HttpStatus.OK);
+			}
+			else {
+				JSONObject patientVisit = new JSONObject();
+				patientVisit.put("isSuccessfull", false);
+				patientVisit.put("Message", errorMessage);
+				patientVisit.put("visitUuid", visitUuid);
+				return new ResponseEntity<>(patientVisit.toJSONString(), HttpStatus.OK);
+			}
 		}
 	}
 }

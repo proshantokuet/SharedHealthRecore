@@ -73,4 +73,18 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		// TODO Auto-generated method stub
 		return dao.updateSentStatus(eid, sent_status);
 	}
+
+	@Override
+	public SHRActionErrorLog getErrorByActionTypeAndIdWithSentStatus(String action_type,
+			String id) {
+		// TODO Auto-generated method stub
+		return dao.getErrorByActionTypeAndIdWithSentStatus(action_type, id);
+	}
+
+	@Override
+	public SHRActionErrorLog getErrorByActionTypeAndIdWithoutSentStatus(
+			String action_type, String id) {
+		// TODO Auto-generated method stub
+		return dao.getErrorByActionTypeAndIdWithoutSentStatus(action_type, id);
+	}
 }

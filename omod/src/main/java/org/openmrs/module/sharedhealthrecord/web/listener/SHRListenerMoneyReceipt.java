@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 @Configuration
 @EnableAsync
 @Controller
-public class SHRListener{
+public class SHRListenerMoneyReceipt{
 	
 	String localServer = ServerAddress.localServer();
 	String centralServer = ServerAddress.centralServer();
@@ -51,9 +51,10 @@ public class SHRListener{
 	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static final ReentrantLock lock = new ReentrantLock();
 
+	
 	@SuppressWarnings("rawtypes")
 //	@Scheduled(fixedRate=10000)
-	private static final Logger log = LoggerFactory.getLogger(SHRListener.class);
+	private static final Logger log = LoggerFactory.getLogger(SHRListenerMoneyReceipt.class);
 	public void sendAllData() throws Exception {
 		if (!lock.tryLock()) {
 			log.error("It is already in progress.");
@@ -76,14 +77,13 @@ public class SHRListener{
 			
 			if(status){
 				try{
-					sendPatient();
-	
+					sendMoneyReceipt();
 				}catch(Exception e){
 					e.printStackTrace();
 				}
 				finally {
 					lock.unlock();
-					log.error("complete listener patient at:" +new Date());
+					log.error("complete listener money receipt at:" +new Date());
 				}
 
 			}
@@ -92,7 +92,7 @@ public class SHRListener{
 		}
 	}
 	
-	public synchronized void sendPatient() throws ParseException{
+	public void sendPatient() throws ParseException{
 		
 		String last_entry = Context.getService(SHRActionAuditInfoService.class)
 				.getLastEntryForPatient();
@@ -309,7 +309,7 @@ public class SHRListener{
 		}
 	}
 	
-	public void sendMoneyReceipt(){
+	public synchronized void sendMoneyReceipt(){
 		JSONParser jsonParser = new JSONParser();
 		// Check shr_action_audit_info for last sent timestamp
 		String timestamp = Context.getService(SHRActionAuditInfoService.class)
@@ -474,13 +474,7 @@ public class SHRListener{
 		//failedPatient - flag to check which kind of encounter it is.
 	//</param>
 	private Boolean patientFetchAndPost(String patientUUid,String id,int voidedStatus) throws ParseException, JSONException{
-			String clinicCode = "";
-			if(ServerAddress.sendToDhisFromGlobal == 0) {
-				clinicCode = "0";
-			}
-			else {
-				clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic(patientUUid);
-			}
+			String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic(patientUUid);
 			JSONParser jsonParser = new JSONParser();
 		
 			// Get Patient Info from Local Server
@@ -560,7 +554,7 @@ public class SHRListener{
 					else {
 //					errorLogUpdate("patient post",returnedResult,patientUUid);
 					//origin table will be inserted in global server for addition only
-						if(!returnedResultOfPatient.has("error")){
+						if(patienResponseCheck.has("error")){
 							String insertUrl = centralServer+"openmrs/ws/rest/v1/save-Patient/insert/patientOriginDetails";
 								insertUrl += "?patient_uuid="+patientUUid+"&patient_origin="+clinicCode+"&syncStatus="+ServerAddress.sendToDhisFromGlobal+"&type=patient_uuid&encounter_uuid=0";
 							log.error("Insert url" + insertUrl);
@@ -1050,9 +1044,10 @@ public class SHRListener{
 		}
 		jsonNestedPostMoneyReceipt.put("sateliteClinicId",
 				jsonNestedGetMoneyReceipt.get("sateliteClinicId"));
-		
+		if(jsonNestedGetMoneyReceipt.has("teamNo")) {
 		jsonNestedPostMoneyReceipt.put("teamNo",
 				jsonNestedGetMoneyReceipt.get("teamNo"));
+		}
 		
 		if(jsonNestedGetMoneyReceipt.has("cspId")) {
 			String cspId = (String) jsonNestedGetMoneyReceipt.get("cspId");

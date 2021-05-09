@@ -43,17 +43,17 @@ import org.slf4j.LoggerFactory;
 @Configuration
 @EnableAsync
 @Controller
-public class SHRListener{
+public class SHRListenerFailedPatient{
 	
 	String localServer = ServerAddress.localServer();
 	String centralServer = ServerAddress.centralServer();
 	String isDeployInGlobal = ServerAddress.isDeployInGlobal;
 	public static DateFormat dateFormatTwentyFourHour = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static final ReentrantLock lock = new ReentrantLock();
-
+	
 	@SuppressWarnings("rawtypes")
 //	@Scheduled(fixedRate=10000)
-	private static final Logger log = LoggerFactory.getLogger(SHRListener.class);
+	private static final Logger log = LoggerFactory.getLogger(SHRListenerFailedPatient.class);
 	public void sendAllData() throws Exception {
 		if (!lock.tryLock()) {
 			log.error("It is already in progress.");
@@ -76,14 +76,13 @@ public class SHRListener{
 			
 			if(status){
 				try{
-					sendPatient();
-	
+					sendFailedPatient();
 				}catch(Exception e){
 					e.printStackTrace();
 				}
 				finally {
 					lock.unlock();
-					log.error("complete listener patient at:" +new Date());
+					log.error("complete listener failed patient at:" +new Date());
 				}
 
 			}
@@ -92,7 +91,7 @@ public class SHRListener{
 		}
 	}
 	
-	public synchronized void sendPatient() throws ParseException{
+	public void sendPatient() throws ParseException{
 		
 		String last_entry = Context.getService(SHRActionAuditInfoService.class)
 				.getLastEntryForPatient();
@@ -161,7 +160,7 @@ public class SHRListener{
 			errorLogInsert("Patient",e.toString(),patUuid,0);
 		}
 	}
-	public void sendFailedPatient() throws ParseException{
+	public synchronized void sendFailedPatient() throws ParseException{
 		
 		List<SHRActionErrorLog> failedPatients = new ArrayList<SHRActionErrorLog>();
 		
@@ -474,6 +473,7 @@ public class SHRListener{
 		//failedPatient - flag to check which kind of encounter it is.
 	//</param>
 	private Boolean patientFetchAndPost(String patientUUid,String id,int voidedStatus) throws ParseException, JSONException{
+			
 			String clinicCode = "";
 			if(ServerAddress.sendToDhisFromGlobal == 0) {
 				clinicCode = "0";
@@ -481,6 +481,8 @@ public class SHRListener{
 			else {
 				clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic(patientUUid);
 			}
+			
+			//String clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic(patientUUid);
 			JSONParser jsonParser = new JSONParser();
 		
 			// Get Patient Info from Local Server

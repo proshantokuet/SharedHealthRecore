@@ -6,6 +6,9 @@
             <generator class="native"/>
        	  </id>
        	  <property name="patient_uuid" column="patient_uuid" type="java.lang.String"/>
-       	  <property name="patient_origin" column="patient_origin" type="java.lang.String"/> 
+       	  <property name="patient_origin" column="patient_origin" type="java.lang.String"/>
+       	  <property name="isSendToDHis" column="is_send_to_dhis" type="java.lang.Integer"/> 
+       	  <property name="encounter_uuid" column="encounter_uuid" type="java.lang.String"/> 
+       	   
 	</class>
 </hibernate-mapping>

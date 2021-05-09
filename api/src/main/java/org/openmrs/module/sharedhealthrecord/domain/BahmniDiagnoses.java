@@ -5,6 +5,8 @@ public class BahmniDiagnoses {
 	
 	private CodedAnswer codedAnswer;
 	
+	private String freeTextAnswer;
+	
 	private String order;
 	
 	private String certainty;
@@ -23,6 +25,14 @@ public class BahmniDiagnoses {
 
 	public void setCodedAnswer(CodedAnswer codedAnswer) {
 		this.codedAnswer = codedAnswer;
+	}
+
+	public String getFreeTextAnswer() {
+		return freeTextAnswer;
+	}
+
+	public void setFreeTextAnswer(String freeTextAnswer) {
+		this.freeTextAnswer = freeTextAnswer;
 	}
 
 	public String getOrder() {

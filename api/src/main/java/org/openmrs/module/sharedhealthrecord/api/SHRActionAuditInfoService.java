@@ -24,4 +24,6 @@ public interface SHRActionAuditInfoService extends OpenmrsService{
 	public String updateAuditMoneyReceipt(String last_timestamp);
 	
 	public String getTimeStampForMoneyReceipt(String mid);
+	
+	public String getClinicCodeForClinic(String patientUuid);
 }

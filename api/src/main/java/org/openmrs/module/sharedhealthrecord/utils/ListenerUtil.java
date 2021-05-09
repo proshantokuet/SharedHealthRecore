@@ -62,6 +62,7 @@ public class ListenerUtil {
 		Context.clearSession();
 		Context.openSession();
 	}
+	@SuppressWarnings("unchecked")
 	public static JSONArray getIdentifiers(JSONArray _identifiers) {
 		
 		JSONArray identifiers = new JSONArray();

@@ -1,10 +1,11 @@
 package org.openmrs.module.sharedhealthrecord.web.listener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
 
-import org.jfree.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +14,7 @@ import org.json.simple.parser.ParseException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sharedhealthrecord.SHRActionErrorLog;
 import org.openmrs.module.sharedhealthrecord.SHRExternalEncounter;
+import org.openmrs.module.sharedhealthrecord.api.SHRActionAuditInfoService;
 import org.openmrs.module.sharedhealthrecord.api.SHRActionErrorLogService;
 import org.openmrs.module.sharedhealthrecord.domain.Encounter;
 import org.openmrs.module.sharedhealthrecord.utils.HttpUtil;
@@ -37,24 +39,55 @@ import com.google.gson.JsonSyntaxException;
 public class SHRPatientFetchListener {
 	String localServer = ServerAddress.localServer();
 	String centralServer = ServerAddress.centralServer();
+	String isDeployInGlobal = ServerAddress.isDeployInGlobal;
 	private static final Logger log = LoggerFactory.getLogger(SHRPatientFetchListener.class);
+	private static final ReentrantLock lock = new ReentrantLock();
+
+	
 	public void fetchAndUpdatePatient(){
-//		Context.openSession();
-//		errorLogUpdate("Patient Fetch Problem","Hitting in Patient Fetch",UUID.randomUUID().toString());
-//		try{
-//			patientFetchAndUpdateExecute();
-//		}catch(Exception e){
-////			errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
-//		}
-//		try{
-//			encounterFetchAndUpdateExecute();
-//		}catch(Exception e){
-//			
-//		}
-//		Context.closeSession();
+		if (!lock.tryLock()) {
+			log.error("It is already in progress.");
+	        return;
+		}
+		if(isDeployInGlobal.equalsIgnoreCase("0")) {
+			Context.openSession();
+			boolean status = true;
+			try{
+				String globalServerUrl = centralServer + "openmrs/ws/rest/v1/visittype";
+				String get_result = HttpUtil.get(globalServerUrl, "", "admin:test");
+				JSONObject patienResponseCheck = new JSONObject(get_result);
+				
+			}catch(Exception e){
+				e.printStackTrace();
+				status = false;
+			}
+			if(status) {
+				try{
+					patientFetchAndUpdateExecute();
+				}catch(Exception e){
+					errorLogUpdate("Patient Fetch Problem",e.toString(),UUID.randomUUID().toString());
+				}
+				try{
+					encounterFetchAndUpdateExecute();
+				}catch(Exception e){
+					errorLogUpdate("Encounter Fetch Problem",e.toString(),UUID.randomUUID().toString());
+				}
+				try{
+					deleteLocalMoneyReceipt();
+				}catch(Exception e){
+					errorLogUpdate("Voided Money Receipt Fetch Problem",e.toString(),UUID.randomUUID().toString());
+				}
+				finally {
+					lock.unlock();
+					log.error("complete fetch listener all at:" +new Date());
+				}
+			}
+	
+			Context.closeSession();
+		}
 	}
 	
-	public void patientFetchAndUpdateExecute(){
+	public synchronized void patientFetchAndUpdateExecute(){
 		//fetch patient 
 		List<String> patientUuidList = new ArrayList<String>();
 		String postPatientResponse = "";
@@ -93,11 +126,17 @@ public class SHRPatientFetchListener {
 	}
 	
 	private List<String> getPatientUuidList() throws JSONException{
+		String clinicCode = "";
+		if(ServerAddress.sendToDhisFromGlobal == 0) {
+			clinicCode = "0";
+		}
+		else {
+			clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic("0");
+		}
 		List<String> patientUuidList = new ArrayList<String>();
-		
 		String url = centralServer + 
 				"openmrs/ws/rest/v1/save-Patient/search/patientOriginByOriginName?"
-				+ "originName="+localServer+"&actionType=patient";
+				+ "originName="+clinicCode+"&actionType=patient";
 		log.error("patient external Check"+url);
 		String patientList = HttpUtil.get(url, "", "admin:test");
 		JSONArray getPatientList = new JSONArray(patientList);
@@ -153,7 +192,7 @@ public class SHRPatientFetchListener {
 //		errorLogUpdate("patient Update to Central Server",get_result,patientUuid);
 	}
 	
-	public void encounterFetchAndUpdateExecute() throws JSONException, JsonSyntaxException, ParseException{
+	public synchronized void encounterFetchAndUpdateExecute() throws JSONException, JsonSyntaxException, ParseException{
 		List<SHRExternalEncounter> encounterUuidList = new ArrayList<SHRExternalEncounter>();
 		String postEncounterResponse = "";
 		try{
@@ -203,7 +242,7 @@ public class SHRPatientFetchListener {
 			if(enc_response.containsKey("location"))
 				enc_response.remove("location");
 
-			enc_response.put("location", "8d6c993e-c2cc-11de-8d13-0010c6dffd0f");
+			enc_response.put("locationUuid", "8d6c993e-c2cc-11de-8d13-0010c6dffd0f");
 			//Encounter  Existence Check in Global Server
 			String searchEncounterUrl = localServer + "openmrs/ws/rest/v1/bahmnicore/bahmniencounter/"
 					+ encounterUuid + "?includeAll=true";
@@ -235,11 +274,18 @@ public class SHRPatientFetchListener {
 			
 			try{
 				String postResponse = HttpUtil.post(postUrl, "", encounter_.toJSONString());
-//				errorLogUpdate("Encounter Post Final",postResponse,encounterUuid);
-				log.error("Encounter Post Response:"+postResponse);
-				updateExternalEncounter(patientUuid,encounterUuid);
+				JSONObject postResponseObject = new JSONObject(postResponse);
+				if(postResponseObject.has("error")) {
+					JSONObject errorMessageObject = (JSONObject) postResponseObject.get("error");
+					String errorMessage = errorMessageObject.getString("message");
+					errorLogUpdate("Encounter Fetch Uuid","Encounter post error:"+ errorMessage,
+							encounterUuid);
+				}
+				else {
+					updateExternalEncounter(patientUuid,encounterUuid);
+				}
 			}catch(Exception e){
-				errorLogUpdate("Encounter","Encounter post error:"+e.toString(),
+				errorLogUpdate("Encounter Fetch Uuid","Encounter post error:"+e.toString(),
 						encounterUuid);
 				return;
 			}
@@ -249,10 +295,16 @@ public class SHRPatientFetchListener {
 	
 	public List<SHRExternalEncounter> getEncounterUuidList() throws JSONException{
 		List<SHRExternalEncounter> encounterList = new ArrayList<SHRExternalEncounter>();
-		
+		String clinicCode = "";
+		if(ServerAddress.sendToDhisFromGlobal == 0) {
+			clinicCode = "0";
+		}
+		else {
+			clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic("0");
+		}
 		String url = centralServer + 
 				"openmrs/ws/rest/v1/save-Patient/search/patientOriginByOriginName?"
-				+ "originName="+localServer+"&actionType=encounter";
+				+ "originName="+clinicCode+"&actionType=encounter";
 		String response = HttpUtil.get(url, "", "admin:test");
 		JSONArray getEncounterList = new JSONArray(response);
 		
@@ -300,7 +352,10 @@ public class SHRPatientFetchListener {
 	public void errorLogUpdate(String type,String message, String uuId){
 		Context.clearSession();
 		Context.openSession();
-		SHRActionErrorLog log = new SHRActionErrorLog();
+		SHRActionErrorLog log  = Context.getService(SHRActionErrorLogService.class).getErrorByActionTypeAndIdWithoutSentStatus(type, uuId);
+		if(log == null) {
+			log = new SHRActionErrorLog();
+		}
 		log.setAction_type(type);
 		log.setError_message(message);
 		log.setUuid(uuId);
@@ -406,5 +461,59 @@ public class SHRPatientFetchListener {
 			+"?purge=true";
 			String result = HttpUtil.delete(deleteUrlString, "", "admin:test");
 			log.error("Delete Encounter: "+result);
+		}
+		
+
+		private synchronized void deleteLocalMoneyReceipt() throws JSONException{
+			String E_slipNo = "0";
+			try {
+				String clinicCode = "";
+				if(ServerAddress.sendToDhisFromGlobal == 0) {
+					clinicCode = "0";
+				}
+				else {
+					clinicCode = Context.getService(SHRActionAuditInfoService.class).getClinicCodeForClinic("0");
+				}				
+				log.error("Clinic Code "+clinicCode);
+				String url = centralServer + "openmrs/ws/rest/v1/money-receipt/get-voided-money-receipt/" + Integer.parseInt(clinicCode);
+				String moneyReceiptList = HttpUtil.get(url, "", "admin:test");
+				org.json.JSONArray getMoneyReceiptList = new org.json.JSONArray(moneyReceiptList);
+				
+				for(int i = 0; i < getMoneyReceiptList.length();i++){
+					org.json.JSONObject mrObject = getMoneyReceiptList.getJSONObject(i);
+					String eslipNo = mrObject.get("eslipNo").toString();
+					E_slipNo = "";
+					E_slipNo = eslipNo;
+					
+					String eslipUrl = localServer + "openmrs/ws/rest/v1/money-receipt/void-money-receipt-by-eslip/" + eslipNo;
+					
+					String deletedEslip = HttpUtil.delete(eslipUrl, "", "admin:test");
+					if(deletedEslip.equalsIgnoreCase("success")) {
+						errorLogUpdate("Money Receipt Delete","success", eslipNo);
+						String changeDeleteStatusInGlobal = centralServer + "openmrs/ws/rest/v1/money-receipt/change-delete-status-money-receipt/"+ eslipNo +"/" + 1;
+						String changeStatus = HttpUtil.get(changeDeleteStatusInGlobal, "", "admin:test");
+						org.json.JSONObject changeStatusJSON = new JSONObject(changeStatus);
+						   Boolean status = changeStatusJSON.getBoolean("isSuccessfull");
+						   if(!status) {
+							   errorLogUpdate("Money Receipt change delete status global","change status Money Receipt Error:"+ changeStatusJSON, eslipNo);
+						   }
+						   else{
+							   log.error("change success in delete money receipt status "+ eslipNo);
+							   errorLogUpdate("change success in delete money receipt status global","success", eslipNo);
+						   }
+					}
+					else if(deletedEslip.equalsIgnoreCase("No E-slip Found in server")) {
+						log.error("Nothing to delete "+ E_slipNo);
+					}
+					else {
+						errorLogUpdate("Money Receipt Delete","Delete Money Receipt Error:"+ deletedEslip, eslipNo);
+
+					}
+					
+				}
+			} catch (Exception e) {
+				errorLogUpdate("Money Receipt Delete","Delete Money Receipt Error:"+ e.toString(),E_slipNo);
+			}
+
 		}
 }
