@@ -1010,10 +1010,20 @@ public class SHRListenerMoneyReceipt{
 		JSONArray jsonNestedGetPayments = jsonMoneyReceipt.getJSONArray("payments");
 		//Money Receipt Part
 		JSONObject jsonNestedGetMoneyReceipt = jsonMoneyReceipt.getJSONObject("moneyReceipt");
-		jsonNestedPostMoneyReceipt.put("clinicName", jsonNestedGetMoneyReceipt.
-				get("clinicName"));
-		jsonNestedPostMoneyReceipt.put("clinicCode",jsonNestedGetMoneyReceipt.get("clinicCode"));
-		jsonNestedPostMoneyReceipt.put("orgUnit",jsonNestedGetMoneyReceipt.get("orgUnit"));
+		
+		if(jsonNestedGetMoneyReceipt.has("clinicName")) {
+			jsonNestedPostMoneyReceipt.put("clinicName", jsonNestedGetMoneyReceipt.
+					get("clinicName"));
+		}
+		
+		if(jsonNestedGetMoneyReceipt.has("clinicCode")) {
+			jsonNestedPostMoneyReceipt.put("clinicCode",jsonNestedGetMoneyReceipt.get("clinicCode"));
+		}
+		
+		if(jsonNestedGetMoneyReceipt.has("orgUnit")) {
+			jsonNestedPostMoneyReceipt.put("orgUnit",jsonNestedGetMoneyReceipt.get("orgUnit"));
+		}
+		
 		if(jsonNestedGetMoneyReceipt.has("slipNo")) {
 			String slipNo = (String) jsonNestedGetMoneyReceipt.get("slipNo");
 			if(slipNo != null && !slipNo.isEmpty()) {
@@ -1026,27 +1036,41 @@ public class SHRListenerMoneyReceipt{
 				jsonNestedPostMoneyReceipt.put("eslipNo", eslipNo);
 			}
 		}
-		jsonNestedPostMoneyReceipt.put("reference", jsonNestedGetMoneyReceipt.get("reference"));
+		
+		if(jsonNestedGetMoneyReceipt.has("reference")) {
+			jsonNestedPostMoneyReceipt.put("reference", jsonNestedGetMoneyReceipt.get("reference"));
+
+		}
+		
 		if(jsonNestedGetMoneyReceipt.has("referenceId")) {
 			String referenceId = (String) jsonNestedGetMoneyReceipt.get("referenceId");
 			if(referenceId != null && !referenceId.isEmpty()) {
 				jsonNestedPostMoneyReceipt.put("referenceId", referenceId);
 			}
 		}
-		jsonNestedPostMoneyReceipt.put("servicePoint",
-				jsonNestedGetMoneyReceipt.get("servicePoint"));
+		if(jsonNestedGetMoneyReceipt.has("servicePoint")) {
+			jsonNestedPostMoneyReceipt.put("servicePoint",
+					jsonNestedGetMoneyReceipt.get("servicePoint"));
+		}
 		
-		jsonNestedPostMoneyReceipt.put("session",
-				jsonNestedGetMoneyReceipt.get("session"));
+		if(jsonNestedGetMoneyReceipt.has("session")) {
+			jsonNestedPostMoneyReceipt.put("session",
+					jsonNestedGetMoneyReceipt.get("session"));
+		}
+
 		if(jsonNestedGetMoneyReceipt.has("other")) {
 			jsonNestedPostMoneyReceipt.put("other",
 					jsonNestedGetMoneyReceipt.get("other"));
 		}
-		jsonNestedPostMoneyReceipt.put("sateliteClinicId",
-				jsonNestedGetMoneyReceipt.get("sateliteClinicId"));
+		
+		if(jsonNestedGetMoneyReceipt.has("sateliteClinicId")) {
+			jsonNestedPostMoneyReceipt.put("sateliteClinicId",
+					jsonNestedGetMoneyReceipt.get("sateliteClinicId"));
+		}
+		
 		if(jsonNestedGetMoneyReceipt.has("teamNo")) {
-		jsonNestedPostMoneyReceipt.put("teamNo",
-				jsonNestedGetMoneyReceipt.get("teamNo"));
+			jsonNestedPostMoneyReceipt.put("teamNo",
+					jsonNestedGetMoneyReceipt.get("teamNo"));
 		}
 		
 		if(jsonNestedGetMoneyReceipt.has("cspId")) {
@@ -1056,40 +1080,68 @@ public class SHRListenerMoneyReceipt{
 			}
 		}
 		
-		jsonNestedPostMoneyReceipt.put("moneyReceiptDate",
-				jsonNestedGetMoneyReceipt.get("moneyReceiptDate") );
+		if(jsonNestedGetMoneyReceipt.has("moneyReceiptDate")) {
+			jsonNestedPostMoneyReceipt.put("moneyReceiptDate",
+					jsonNestedGetMoneyReceipt.get("moneyReceiptDate") );
+		}
 		
 		 
 		//Data Collector Part
 		JSONObject jsonNestedDataCollector = new JSONObject();
 		jsonNestedDataCollector.put("id", "");
-		jsonNestedDataCollector.put("designation", 
-				jsonNestedGetMoneyReceipt.get("designation"));
+		if(jsonNestedGetMoneyReceipt.has("designation")) {
+			jsonNestedDataCollector.put("designation", 
+					jsonNestedGetMoneyReceipt.get("designation"));
+		}
+		else {
+			jsonNestedDataCollector.put("designation", "");
+		}
 		jsonNestedDataCollector.put("userRole", "");
-		jsonNestedDataCollector.put("username",
-				jsonNestedGetMoneyReceipt.get("dataCollector"));
+		if(jsonNestedGetMoneyReceipt.has("dataCollector")) {
+			jsonNestedDataCollector.put("username",
+					jsonNestedGetMoneyReceipt.get("dataCollector"));
+		}
+		else {
+			jsonNestedDataCollector.put("username", "");
+		}
 		
 		jsonNestedPostMoneyReceipt.put("dataCollector", jsonNestedDataCollector);
 		
 		//Mid will remain null
-		jsonNestedPostMoneyReceipt.put("mid",
-				"");
+		jsonNestedPostMoneyReceipt.put("mid","");
 		
-		jsonNestedPostMoneyReceipt.put("patientName", jsonNestedGetMoneyReceipt.get("patientName"));
-		jsonNestedPostMoneyReceipt.put("patientUuid", jsonNestedGetMoneyReceipt.get("patientUuid"));
-		jsonNestedPostMoneyReceipt.put("uic", jsonNestedGetMoneyReceipt.get("uic"));
-		jsonNestedPostMoneyReceipt.put("contact", jsonNestedGetMoneyReceipt.get("contact"));
-		jsonNestedPostMoneyReceipt.put("gender", jsonNestedGetMoneyReceipt.get("gender"));
-		jsonNestedPostMoneyReceipt.put("dob", jsonNestedGetMoneyReceipt.get("dob"));
-		jsonNestedPostMoneyReceipt.put("wealth", jsonNestedGetMoneyReceipt.get("wealth"));
+		if(jsonNestedGetMoneyReceipt.has("patientName")) {
+			jsonNestedPostMoneyReceipt.put("patientName", jsonNestedGetMoneyReceipt.get("patientName"));
+
+		}
+		if(jsonNestedGetMoneyReceipt.has("patientUuid")) {
+			jsonNestedPostMoneyReceipt.put("patientUuid", jsonNestedGetMoneyReceipt.get("patientUuid"));
+		}
+		if(jsonNestedGetMoneyReceipt.has("uic")) {
+			jsonNestedPostMoneyReceipt.put("uic", jsonNestedGetMoneyReceipt.get("uic"));
+		}
+		if(jsonNestedGetMoneyReceipt.has("contact")) {
+			jsonNestedPostMoneyReceipt.put("contact", jsonNestedGetMoneyReceipt.get("contact"));
+		}
+		if(jsonNestedGetMoneyReceipt.has("gender")) {
+			jsonNestedPostMoneyReceipt.put("gender", jsonNestedGetMoneyReceipt.get("gender"));
+		}
+		if(jsonNestedGetMoneyReceipt.has("dob")) {
+			jsonNestedPostMoneyReceipt.put("dob", jsonNestedGetMoneyReceipt.get("dob"));
+		}
+		if(jsonNestedGetMoneyReceipt.has("wealth")) {
+			jsonNestedPostMoneyReceipt.put("wealth", jsonNestedGetMoneyReceipt.get("wealth"));
+		}
 		jsonNestedPostMoneyReceipt.put("isComplete", 1);
 		jsonNestedPostMoneyReceipt.put("totalAmount",
 				jsonNestedGetMoneyReceipt.get("totalAmount").toString());
 		jsonNestedPostMoneyReceipt.put("totalDiscount", 
 				jsonNestedGetMoneyReceipt.get("totalDiscount").toString()
 				);
-		jsonNestedPostMoneyReceipt.put("patientRegisteredDate", 
+		if(jsonNestedGetMoneyReceipt.has("patientRegisteredDate")) {
+			jsonNestedPostMoneyReceipt.put("patientRegisteredDate", 
 				jsonNestedGetMoneyReceipt.get("patientRegisteredDate"));
+		}
 		
 		jsonNestedPostMoneyReceipt.put("overallDiscount", 
 				jsonNestedGetMoneyReceipt.get("overallDiscount").toString());
@@ -1106,13 +1158,19 @@ public class SHRListenerMoneyReceipt{
 			servicePost.put("quantity", service.get("quantity"));
 			
 			JSONObject code = new JSONObject();
-			code.put("code", service.get("code"));
+			if(service.has("code")) {
+				code.put("code", service.get("code"));
+			}
 			servicePost.put("code", code);
 			
 			servicePost.put("unitCost",service.get("unitCost"));
 			JSONObject item = new JSONObject();
-			item.put("name",service.get("item"));
-			item.put("category", service.get("category"));
+			if(service.has("item")) {
+				item.put("name",service.get("item"));
+			}
+			if(service.has("category")) {
+				item.put("category", service.get("category"));
+			}
 			
 			servicePost.put("item", item);
 			if(service.has("type")) {
@@ -1133,10 +1191,14 @@ public class SHRListenerMoneyReceipt{
 			if(service.has("sendToDhisFromGlobal")) {
 				servicePost.put("sendToDhisFromGlobal", ServerAddress.sendToDhisFromGlobal);
 			}
-			servicePost.put("category", service.get("category"));
+			if(service.has("category")) {
+				servicePost.put("category", service.get("category"));
+			}
 			servicePost.put("totalAmount", service.get("totalAmount").toString());
 			servicePost.put("netPayable", service.get("netPayable"));
-			servicePost.put("uuid", service.get("uuid"));
+			if(service.has("uuid")) {
+				servicePost.put("uuid", service.get("uuid"));
+			}
 			jsonNestedPostServices.put(servicePost);
 		}
 		jsonPostMoneyReceipt.put("services", jsonNestedPostServices);
