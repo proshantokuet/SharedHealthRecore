@@ -78,6 +78,7 @@ public class SHRListenerMoneyReceipt{
 			if(status){
 				try{
 					sendMoneyReceipt();
+					Thread.sleep(1000);
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -332,10 +333,10 @@ public class SHRListenerMoneyReceipt{
 						if(saveFlagMoneyReceipt) {
 							SaveStatusOfEachOnSync("Money Receipt", "success", mid);					
 						}
-						String timestampOfMoneyreceipt = Context.getService(SHRActionAuditInfoService.class)
-								.getTimeStampForMoneyReceipt(mid);
-						String timestampUpdate = Context.getService(SHRActionAuditInfoService.class)
-						.updateAuditMoneyReceipt(timestampOfMoneyreceipt);
+//						String timestampOfMoneyreceipt = Context.getService(SHRActionAuditInfoService.class)
+//								.getTimeStampForMoneyReceipt(mid);
+						log.error("Updated timestamp form list " + receipt.getTimestamp());
+						String timestampUpdate = Context.getService(SHRActionAuditInfoService.class).updateAuditMoneyReceipt(receipt.getTimestamp());
 					//}
 				}catch(Exception e){
 					String midEx = Integer.toString(receipt.getMid());

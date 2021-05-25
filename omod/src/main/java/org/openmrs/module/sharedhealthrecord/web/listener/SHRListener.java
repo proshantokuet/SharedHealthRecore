@@ -77,7 +77,7 @@ public class SHRListener{
 			if(status){
 				try{
 					sendPatient();
-	
+					Thread.sleep(1000);
 				}catch(Exception e){
 					e.printStackTrace();
 				}

@@ -92,7 +92,7 @@ protected final Log log = LogFactory.getLog(this.getClass());
 				+ " `timestamp` as timestamp "
 				+ " FROM openmrs.psi_money_receipt "
 				+ " WHERE timestamp > '"+timestamp+"' and is_complete = 1 "
-				+ " LIMIT 500 ";
+				+ " order by timestamp asc LIMIT 300 ";
 		try{
 			List<MoneyReceiptDTO> receipts = sessionFactory.getCurrentSession()
 					.createSQLQuery(sql)
@@ -223,7 +223,7 @@ protected final Log log = LogFactory.getLog(this.getClass());
 				+ " tags as tags "
 				+ " FROM openmrs.event_records "
 				+ " WHERE title='"+type+"'"
-				+ " AND id > '"+last_entry+"' ";
+				+ " AND id > '"+last_entry+"' order by id asc limit 100 ";
 		try{
 			List<EventRecordsDTO> records = sessionFactory.getCurrentSession().createSQLQuery(sql)
 					.addScalar("id",StandardBasicTypes.INTEGER)

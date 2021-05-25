@@ -77,6 +77,7 @@ public class SHRListenerFailedMoneyReceipt{
 			if(status){
 				try{
 					sendFailedMoneyReceipt();
+					Thread.sleep(1000);
 				}catch(Exception e){
 					e.printStackTrace();
 				}

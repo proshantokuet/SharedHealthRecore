@@ -74,6 +74,7 @@ public class SHRPatientFetchListener {
 				}
 				try{
 					deleteLocalMoneyReceipt();
+					Thread.sleep(1000);
 				}catch(Exception e){
 					errorLogUpdate("Voided Money Receipt Fetch Problem",e.toString(),UUID.randomUUID().toString());
 				}

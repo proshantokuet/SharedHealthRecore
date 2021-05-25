@@ -49,7 +49,7 @@ protected final Log log = LogFactory.getLog(this.getClass());
 				+ "error_message as error_message, uuid as uuid, "
 				+" voided as voided, sent_status as sent_status "
 				+ "FROM openmrs.shr_action_error_log "
-				+ "WHERE action_type = '"+action_type+"' AND sent_status = 0";
+				+ "WHERE action_type = '"+action_type+"' AND sent_status = 0 order by eid ASC ";
 		
 		ret = sessionFactory.getCurrentSession().
 				createSQLQuery(sql)
