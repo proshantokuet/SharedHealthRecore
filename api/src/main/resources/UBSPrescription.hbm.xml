@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="org.openmrs.module.sharedhealthrecord.UBSPrescription" table="ubs_prescription" lazy="false">
+		  <id column="prescription_id" name="prescriptionId" type="int">
+            <generator class="native"/>
+       	  </id>
+       	  <property name="patientName" column="patient_name" type="java.lang.String"/>
+       	  <property name="gender" column="gender" type="java.lang.String"/> 
+       	  <property name="visitDate" column="visit_date" type="java.util.Date"/>
+       	  <property name="visitUuid" column="visit_uuid" type="java.lang.String"/>
+       	  <property name="patientAge" column="age" type="java.lang.String"/>
+       	  <property name="patientUuid" column="patient_uuid" type="java.lang.String"/>
+       	  <property name="providerName" column="provider_name" type="java.lang.String"/>
+       	  <property name="providerInfo" column="provider_info" type="java.lang.String"/>
+       	  <property name="chiefComplaint" column="chief_complaint" type="java.lang.String"/>
+       	  <property name="diagnosis" column="diagnosis" type="java.lang.String"/>
+       	  <property name="advice" column="advice" type="java.lang.String"/>
+       	 <set name="prescribedMedicine" cascade="all">
+	       <key>
+	           <column name="ubs_prescription_id" not-null="true" />
+	       </key>
+	       <one-to-many class="org.openmrs.module.sharedhealthrecord.UBSPrescribedMedicines" />
+	    </set>
+       	  
+       	<property name="dateCreated" column="date_created" type="java.util.Date" not-null="true"/>
+		<many-to-one name="creator" column ="creator" class="org.openmrs.User" not-null="true"/>
+		<many-to-one name="changedBy" column="changed_by" class="org.openmrs.User" />
+		<property name="dateChanged" column="date_changed" type="java.util.Date" />
+		<property name="voided" column="voided" type="boolean" not-null="true"/>
+		<many-to-one name="voidedBy" column="voided_by" class="org.openmrs.User" />
+		<property name="dateVoided" column="date_voided" type="java.util.Date" />
+		<property name="voidReason" column="void_reason" type="java.lang.String" /> 
+		<property name="uuid" column="uuid" type="java.lang.String" not-null="true" />
+       	   
+       	   
+	</class>
+</hibernate-mapping>

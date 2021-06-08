@@ -36,6 +36,9 @@
 		SHRActionErrorLog.hbm.xml
 		SHRExternalPatient.hbm.xml
 		SHRPatientOrigin.hbm.xml
+		UBSMedicine.hbm.xml
+		UBSPrescription.hbm.xml
+		UBSPrescribedMedicine.hbm.xml
 				
 	</mappingFiles>
 
