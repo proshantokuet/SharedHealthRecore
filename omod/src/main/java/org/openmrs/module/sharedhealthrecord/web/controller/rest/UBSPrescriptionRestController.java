@@ -14,6 +14,8 @@ import org.openmrs.module.sharedhealthrecord.UBSMedicines;
 import org.openmrs.module.sharedhealthrecord.UBSPrescribedMedicines;
 import org.openmrs.module.sharedhealthrecord.UBSPrescription;
 import org.openmrs.module.sharedhealthrecord.api.UBSPrescriptionService;
+import org.openmrs.module.sharedhealthrecord.dto.UBSPrescribedMedicinesDTO;
+import org.openmrs.module.sharedhealthrecord.dto.UBSPrescriptionDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,13 +33,13 @@ public class UBSPrescriptionRestController {
 	protected final Log log = LogFactory.getLog(this.getClass());
 
 	@RequestMapping(value = "/save-update", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	public ResponseEntity<String> savePrescription(@RequestBody UBSPrescription dto) throws Exception {
+	public ResponseEntity<String> savePrescription(@RequestBody UBSPrescriptionDTO dto) throws Exception {
 		
 		JSONObject response = new JSONObject();
 		log.error("DTO" + dto);
 		try {
 			
-			Set<UBSPrescribedMedicines> UbsPrescribedMedicines = dto.getPrescribedMedicine();
+			Set<UBSPrescribedMedicinesDTO> UbsPrescribedMedicines = dto.getPrescribedMedicine();
 			UBSPrescription ubsPrescription = Context.getService(UBSPrescriptionService.class).findById(dto.getPrescriptionId());
 			if (ubsPrescription == null) {
 				ubsPrescription = new UBSPrescription();
@@ -64,7 +66,7 @@ public class UBSPrescriptionRestController {
 				
 			log.error("ubsprescrion Object Creating Seuccess " + dto.getPatientName());
 			Set<UBSPrescribedMedicines> ubsPrescribedMedicinesNew = new HashSet<UBSPrescribedMedicines>();;
-			for (UBSPrescribedMedicines ubsMedicine : UbsPrescribedMedicines) {
+			for (UBSPrescribedMedicinesDTO ubsMedicine : UbsPrescribedMedicines) {
 				
 				UBSPrescribedMedicines prescribedMedicine = Context.getService(UBSPrescriptionService.class).findPrescribedMedicineById(ubsMedicine.getPmId());
 				
@@ -80,7 +82,7 @@ public class UBSPrescriptionRestController {
 				}
 				
 				prescribedMedicine.setMedicineName(ubsMedicine.getMedicineName());
-				prescribedMedicine.setMedicineId(ubsMedicine.getMedicineId());
+				prescribedMedicine.setMedicineId(0);
 				prescribedMedicine.setFrequency(ubsMedicine.getFrequency());
 				prescribedMedicine.setDuration(ubsMedicine.getDuration());
 				prescribedMedicine.setInstruction(ubsMedicine.getInstruction());
@@ -88,7 +90,7 @@ public class UBSPrescriptionRestController {
 			}
 
 			ubsPrescription.setPrescribedMedicine(ubsPrescribedMedicinesNew);
-			
+			log.error("ubsprescrion Object Creating Seuccess full " + ubsPrescription.getPrescribedMedicine().size());
 			UBSPrescription afterSavePrescription =  Context.getService(UBSPrescriptionService.class).saveorUpdate(ubsPrescription);
 			response.put("message", "Prescription Successfully Saved");
 			response.put("prescriptionId", afterSavePrescription.getPrescriptionId());
