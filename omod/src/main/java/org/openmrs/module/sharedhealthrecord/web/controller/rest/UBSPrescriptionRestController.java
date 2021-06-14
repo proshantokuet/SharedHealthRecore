@@ -2,6 +2,8 @@ package org.openmrs.module.sharedhealthrecord.web.controller.rest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -235,7 +237,7 @@ public class UBSPrescriptionRestController {
 
 			PdfPTable patientInformtionTable = new PdfPTable(2);
 			patientInformtionTable.setWidthPercentage(100);
-			addPatientInfo(patientInformtionTable);
+			addPatientInfo(patientInformtionTable,dto);
 			document.add(patientInformtionTable);
 			
 	        float[] columnWidths = {3,6};
@@ -243,7 +245,7 @@ public class UBSPrescriptionRestController {
 			PdfPTable medicationTable = new PdfPTable(columnWidths);
 			medicationTable.setWidthPercentage(100);
 
-			addMedicineInfoRow(medicationTable);
+			addMedicineInfoRow(medicationTable,dto);
 			document.add(medicationTable);
 			
 		}
@@ -258,7 +260,7 @@ public class UBSPrescriptionRestController {
 		 return out.toByteArray();
 	}
 	
-	private void addPatientInfo(PdfPTable table) {
+	private void addPatientInfo(PdfPTable table, UBSPrescription dto) {
 		
 		String clinicName = "Patient Name: ";
 		
@@ -273,7 +275,7 @@ public class UBSPrescriptionRestController {
 		patientCell.setLeading(3, 1);
 		table.addCell(patientCell);
 		
-		String clinicNameAnswer = "Md.Tanvir Rahman";
+		String clinicNameAnswer = dto.getPatientName();
 		
 		PdfPCell patientCellAnswer = new PdfPCell(new Paragraph(new Phrase(clinicNameAnswer, textFont)));
 		//patientCellAnswer.setExtraParagraphSpace(2);
@@ -295,7 +297,7 @@ public class UBSPrescriptionRestController {
 		//clinicIdCell.setColspan(10);
 		table.addCell(clinicIdCell);
 		
-		String clinicIdAnswer = "24 years 11 Month 3 Days";
+		String clinicIdAnswer = dto.getPatientAge();
 		
 		PdfPCell clinicIdCellAnswer = new PdfPCell(new Paragraph(new Phrase(clinicIdAnswer, textFont)));
 		//clinicIdCellAnswer.setExtraParagraphSpace(2);
@@ -316,7 +318,7 @@ public class UBSPrescriptionRestController {
 		//satelliteCLinicCell.setColspan(19);
 		table.addCell(satelliteCLinicCell);
 		
-		String sateliteClinicIdAnswer = "Male";
+		String sateliteClinicIdAnswer = dto.getGender();
 		
 		PdfPCell sateliteClinicIdAnswerCell = new PdfPCell(new Paragraph(new Phrase(sateliteClinicIdAnswer, textFont)));
 		//sateliteClinicIdAnswerCell.setExtraParagraphSpace(2);
@@ -339,7 +341,8 @@ public class UBSPrescriptionRestController {
 		//teamNoCell.setColspan(11);
 		table.addCell(teamNoCell);
 		
-		String teamNoAnswer = "2021-06-08";
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String teamNoAnswer = dateFormat.format(dto.getVisitDate());
 		
 		PdfPCell teamNoCellAnswer = new PdfPCell(new Paragraph(new Phrase(teamNoAnswer, textFont)));
 		//teamNoCellAnswer.setExtraParagraphSpace(2);
@@ -367,7 +370,7 @@ public class UBSPrescriptionRestController {
 		
 	}
 	
-	private void addMedicineInfoRow(PdfPTable medicationTable) {
+	private void addMedicineInfoRow(PdfPTable medicationTable, UBSPrescription dto) {
 		
 		System.out.println("addMedicineInfoRow");
 		String name = "";
@@ -377,11 +380,11 @@ public class UBSPrescriptionRestController {
 		
 		Paragraph historyPara = new Paragraph();
 		historyPara.add(new Paragraph("Chief Complaints : "+ "\n" + "\n", paraFont));
-		historyPara.add(new Paragraph("Joint Pain,Blurred Vision,Tender nech,Neck Mass,Chest Pain,Palpitations"+ "\n" + "\n", textFont));
+		historyPara.add(new Paragraph(dto.getChiefComplaint()+ "\n" + "\n", textFont));
 		historyPara.add(new Paragraph("Medical Diagnosis : "+ "\n"+ "\n", paraFont));
-		historyPara.add(new Paragraph("Lab Test,Hiv Test,Blood Test"+ "\n" + "\n", textFont));
+		historyPara.add(new Paragraph(dto.getDiagnosis()+ "\n" + "\n", textFont));
 		historyPara.add(new Paragraph("Advice : " + "\n"+ "\n", paraFont));
-		historyPara.add(new Paragraph("Take Sleep and Rest"+ "\n" + "\n", textFont));
+		historyPara.add(new Paragraph(dto.getAdvice()+ "\n" + "\n", textFont));
 		historyPara.add(new Paragraph(" "));
 		
 
@@ -395,15 +398,14 @@ public class UBSPrescriptionRestController {
 		historyCell.setLeading(4, 1);
 		medicationTable.addCell(historyCell);
 		
-		int j = 1;
-		//String prescriptions = "Medication : "+ "\n" + "\n";
+		int j = 1;		
 		String prescriptions = "";
-		name = "Napa-Extra";
-		frequency = "Thice a week";
-		duration = "7 Days";
-		instruction = "Take Rest and drink enough water to make you hydrated";
-		
-		for(int i = 0; i< 15; i++) {
+		for (UBSPrescribedMedicines prescribedMedicine : dto.getPrescribedMedicine()) {
+			
+			name = prescribedMedicine.getMedicineName();
+			frequency = prescribedMedicine.getFrequency();
+			duration = prescribedMedicine.getDuration() + " days";
+			instruction = prescribedMedicine.getInstruction();
 			prescriptions += j + ".  " + name + " - " + frequency + " - " + duration + " - " + instruction + "\n";
 			j++;
 		}
