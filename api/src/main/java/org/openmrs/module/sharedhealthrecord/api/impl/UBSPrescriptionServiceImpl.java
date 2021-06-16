@@ -22,11 +22,10 @@ public class UBSPrescriptionServiceImpl extends BaseOpenmrsService implements UB
 	}
 
 	@Override
-	public List<UBSMedicines> getMedicineList() {
+	public List<UBSMedicines> getMedicineList(String type) {
 		// TODO Auto-generated method stub
-		return dao.getMedicineList();
+		return dao.getMedicineList(type);
 	}
-
 	@Override
 	public UBSPrescription saveorUpdate(UBSPrescription ubsPrescription) {
 		// TODO Auto-generated method stub
@@ -43,6 +42,12 @@ public class UBSPrescriptionServiceImpl extends BaseOpenmrsService implements UB
 	public UBSPrescribedMedicines findPrescribedMedicineById(int id) {
 		// TODO Auto-generated method stub
 		return dao.findPrescribedMedicineById(id);
+	}
+
+	@Override
+	public UBSPrescription findPrescriptionByVisitId(String visitUuid) {
+		// TODO Auto-generated method stub
+		return dao.findPrescriptionByVisitId(visitUuid);
 	}
 
 	

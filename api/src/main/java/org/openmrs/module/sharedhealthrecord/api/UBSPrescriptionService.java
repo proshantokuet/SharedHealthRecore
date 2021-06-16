@@ -11,12 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface UBSPrescriptionService extends OpenmrsService {
 
-	List<UBSMedicines> getMedicineList();
+	List<UBSMedicines> getMedicineList(String type);
 	
 	UBSPrescription saveorUpdate(UBSPrescription ubsPrescription);
 	
 	UBSPrescription findById(int id);
 	
 	UBSPrescribedMedicines findPrescribedMedicineById (int id);
+	
+	UBSPrescription findPrescriptionByVisitId(String visitUuid);
 }
  

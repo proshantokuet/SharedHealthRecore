@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="org.openmrs.module.sharedhealthrecord.UBSUniqueIdGenerator" table="ubs_id_generate" lazy="false">
+        <id column="eid" name="eid" type="int">
+            <generator class="native"/>
+        </id> 
+        
+	    <property name="generateId" column="generate_id" type="int"/>
+	     
+	    <property name="dateCreated" column="date_created" type="java.util.Date" not-null="true"/>		
+		<property name="dateChanged" column="date_changed" type="java.util.Date" />	
+		
+		
+		
+	    
+    </class>
+</hibernate-mapping>

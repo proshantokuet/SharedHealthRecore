@@ -28,6 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
@@ -138,9 +139,9 @@ public class UBSPrescriptionRestController {
 	}
 	
 	@RequestMapping(value = "/medicinelist", method = RequestMethod.GET)
-	public ResponseEntity<String> getMedicineList() throws Exception {
+	public ResponseEntity<String> getMedicineList(@RequestParam(required = true) String type) throws Exception {
 		try {
-			List<UBSMedicines> medicinesList = Context.getService(UBSPrescriptionService.class).getMedicineList();
+			List<UBSMedicines> medicinesList = Context.getService(UBSPrescriptionService.class).getMedicineList(type);
 			String medicineJson = gson.toJson(medicinesList);
 			return new ResponseEntity<>(medicineJson, HttpStatus.OK);
 		}
@@ -259,6 +260,30 @@ public class UBSPrescriptionRestController {
 		}
 		 return out.toByteArray();
 	}
+	
+    @RequestMapping(value = "/prescriptionPdfGenerate/{visituuid}",method = RequestMethod.GET)
+    public ResponseEntity<byte[]> generatePdfByvisitUuid(@RequestParam(required = true) String visituuid) throws IOException {
+
+		UBSPrescription ubsPrescription = Context.getService(UBSPrescriptionService.class).findPrescriptionByVisitId(visituuid);
+    	
+    	//creating the pdf
+		if(ubsPrescription != null) {
+	        byte[] pdf = createPdf(ubsPrescription);
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(new MediaType("application", "pdf"));
+	        headers.setContentDispositionFormData("attachment", "x.pdf");
+	        headers.setContentLength(pdf.length);
+	        return new ResponseEntity<byte[]>(pdf, headers, HttpStatus.OK);
+		}
+		else {
+			byte[] pdf =  new byte[100];
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(new MediaType("application", "pdf"));
+	        headers.setContentDispositionFormData("attachment", "x.pdf");
+	        headers.setContentLength(pdf.length);
+			return new ResponseEntity<byte[]>(pdf, headers, HttpStatus.NO_CONTENT);
+		}
+    }
 	
 	private void addPatientInfo(PdfPTable table, UBSPrescription dto) {
 		

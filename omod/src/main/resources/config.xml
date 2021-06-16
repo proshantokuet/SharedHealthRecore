@@ -39,6 +39,7 @@
 		UBSMedicine.hbm.xml
 		UBSPrescription.hbm.xml
 		UBSPrescribedMedicine.hbm.xml
+		UBSUniqueIdGenerator.hbm.xml
 				
 	</mappingFiles>
 

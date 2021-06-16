@@ -87,4 +87,20 @@
 			<column name="uuid" type="varchar(255)" />
     	</createTable>
     </changeSet>
+    	<changeSet id="ubsidgenerate-1.0.0" author="tanvir">
+		<createTable tableName="ubs_id_generate">
+			<column name="eid" type="int(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>			
+			<column name="generate_id" type="int(11)" />
+			
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>		
+			
+			<column name="date_changed" type="datetime" />
+			
+			
+		</createTable>
+	</changeSet>
 </databaseChangeLog>
