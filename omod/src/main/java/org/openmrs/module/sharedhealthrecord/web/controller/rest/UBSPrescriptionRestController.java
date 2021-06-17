@@ -261,7 +261,7 @@ public class UBSPrescriptionRestController {
 		 return out.toByteArray();
 	}
 	
-    @RequestMapping(value = "/prescriptionPdfGenerate/{visituuid}",method = RequestMethod.GET)
+    @RequestMapping(value = "/prescriptionDownload",method = RequestMethod.GET)
     public ResponseEntity<byte[]> generatePdfByvisitUuid(@RequestParam(required = true) String visituuid) throws IOException {
 
 		UBSPrescription ubsPrescription = Context.getService(UBSPrescriptionService.class).findPrescriptionByVisitId(visituuid);

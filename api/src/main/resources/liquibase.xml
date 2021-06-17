@@ -103,4 +103,63 @@
 			
 		</createTable>
 	</changeSet>
+	
+	    <changeSet id="ubs_commodities_distribution-1.0.0" author="tanvir">
+    	<createTable tableName="ubs_commodities_distribution">
+    		<column name="distribute_id" type="int(11)" autoIncrement="true">
+    			<constraints primaryKey="true" nullable="false" />
+    		</column>
+    		<column name="patient_name" type="varchar(255)"/>
+    		<column name="gender" type="varchar(255)"/>
+    		<column name="age" type="varchar(255)"/>
+    		<column name="patient_uuid" type="varchar(255)"/>
+    		<column name="provider_name" type="varchar(255)"/>
+    		<column name="slip_no" type="varchar(255)"/>
+    		<column name="distribute_date" type="datetime"/>
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="date_changed" type="datetime" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
+    	</createTable>
+    </changeSet>
+    
+     <changeSet id="ubs_commodities_details-1.0.0" author="tanvir">
+    	<createTable tableName="ubs_commodities_details">
+    		<column name="distributeDetailsId" type="int(11)" autoIncrement="true">
+    			<constraints primaryKey="true" nullable="false" />
+    		</column>
+    		<column name="commodities_name" type="varchar(255)"/>
+    		<column name="commodities_id" type="int(11)"/>
+    		<column name="quantity" type="int(11)"/>
+    		
+    		<column name="ubs_commodities_details_id" type="int(11)"/>
+    		
+			<column name="date_created" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="creator" type="int(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="changed_by" type="int(11)" />
+			<column name="date_changed" type="datetime" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="voided_by" type="int(11)" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" />
+			<column name="uuid" type="varchar(255)" />
+    	</createTable>
+    </changeSet>
 </databaseChangeLog>

@@ -84,7 +84,7 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		List<UBSPrescription> ubsPrescriptions = sessionFactory
 				.getCurrentSession()
 				.createQuery(
-						"from UBSPrescription where visitUuid = :id").setString("id", visitUuid).list();
+						"from UBSPrescription where visitUuid = :id order by prescriptionId desc").setString("id", visitUuid).list();
 		if(ubsPrescriptions.size() > 0) {
 			return ubsPrescriptions.get(0);
 		}
