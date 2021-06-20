@@ -136,7 +136,7 @@
     
      <changeSet id="ubs_commodities_details-1.0.0" author="tanvir">
     	<createTable tableName="ubs_commodities_details">
-    		<column name="distributeDetailsId" type="int(11)" autoIncrement="true">
+    		<column name="distribute_details_id" type="int(11)" autoIncrement="true">
     			<constraints primaryKey="true" nullable="false" />
     		</column>
     		<column name="commodities_name" type="varchar(255)"/>
