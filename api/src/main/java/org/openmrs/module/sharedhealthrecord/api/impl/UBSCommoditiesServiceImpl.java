@@ -1,11 +1,14 @@
 package org.openmrs.module.sharedhealthrecord.api.impl;
 
+import java.util.List;
+
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.sharedhealthrecord.UBSCommoditiesDistributeDetails;
 import org.openmrs.module.sharedhealthrecord.UBSCommoditiesDistribution;
 import org.openmrs.module.sharedhealthrecord.UBSUniqueIdGenerator;
 import org.openmrs.module.sharedhealthrecord.api.UBSCommoditiesService;
 import org.openmrs.module.sharedhealthrecord.api.db.UBSCommoditiesDAO;
+import org.openmrs.module.sharedhealthrecord.dto.UBSCommoditiesReportDTO;
 
 public class UBSCommoditiesServiceImpl extends BaseOpenmrsService implements UBSCommoditiesService {
 
@@ -51,6 +54,12 @@ public class UBSCommoditiesServiceImpl extends BaseOpenmrsService implements UBS
 			int distributeDetailsId) {
 		// TODO Auto-generated method stub
 		return dao.findByDistributeDetailsId(distributeDetailsId);
+	}
+
+	@Override
+	public List<UBSCommoditiesReportDTO> findAllByPatientUuid(String patientUuid) {
+		// TODO Auto-generated method stub
+		return dao.findAllByPatientUuid(patientUuid);
 	}
 
 }

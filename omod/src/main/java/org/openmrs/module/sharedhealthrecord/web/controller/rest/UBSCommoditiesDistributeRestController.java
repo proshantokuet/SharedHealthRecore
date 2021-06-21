@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sharedhealthrecord.UBSCommoditiesDistributeDetails;
 import org.openmrs.module.sharedhealthrecord.UBSCommoditiesDistribution;
+import org.openmrs.module.sharedhealthrecord.UBSMedicines;
 import org.openmrs.module.sharedhealthrecord.UBSPrescribedMedicines;
 import org.openmrs.module.sharedhealthrecord.UBSPrescription;
 import org.openmrs.module.sharedhealthrecord.UBSUniqueIdGenerator;
@@ -21,22 +23,27 @@ import org.openmrs.module.sharedhealthrecord.api.UBSCommoditiesService;
 import org.openmrs.module.sharedhealthrecord.api.UBSPrescriptionService;
 import org.openmrs.module.sharedhealthrecord.dto.UBSCommoditiesDistributeDetailsDTO;
 import org.openmrs.module.sharedhealthrecord.dto.UBSCommoditiesDistributionDTO;
+import org.openmrs.module.sharedhealthrecord.dto.UBSCommoditiesReportDTO;
 import org.openmrs.module.sharedhealthrecord.dto.UBSPrescribedMedicinesDTO;
 import org.openmrs.module.sharedhealthrecord.dto.UBSPrescriptionDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
+
 
 @RequestMapping("/rest/v1/commodities")
 @RestController
 public class UBSCommoditiesDistributeRestController {
+	
 	protected final Log log = LogFactory.getLog(this.getClass());
-
+	Gson gson = new Gson();
 	
 	
 	@RequestMapping(value = "/save-update", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -114,9 +121,10 @@ public class UBSCommoditiesDistributeRestController {
 	@RequestMapping(value = "/geUniqueId", method = RequestMethod.GET)
 	public ResponseEntity<String> getId() throws Exception {
 	
-		String id = generateSquentialId();
-		
-		return new ResponseEntity<>(id, HttpStatus.OK);
+		//String id = generateSquentialId();
+		  JSONObject testobject = new JSONObject();
+	        testobject.put("tableData", "<tr><th>Name</th></tr>");
+		return new ResponseEntity<>(testobject.toString(), HttpStatus.OK);
  
 	}
 	
@@ -172,6 +180,19 @@ public class UBSCommoditiesDistributeRestController {
 		String sequenceSlipNo = "" + year + monthS + dayS + serquenceNumber;
 		
 		return sequenceSlipNo;
+	}
+	
+	@RequestMapping(value = "/commoditiesList/{patientUuid}", method = RequestMethod.GET)
+	public ResponseEntity<String> getCommoditiesList(@PathVariable String patientUuid) throws Exception {
+		try {
+			List<UBSCommoditiesReportDTO> reportDto = Context.getService(UBSCommoditiesService.class).findAllByPatientUuid(patientUuid);
+			String reportJson = gson.toJson(reportDto);
+			return new ResponseEntity<>(reportJson, HttpStatus.OK);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(e.getMessage().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 }
