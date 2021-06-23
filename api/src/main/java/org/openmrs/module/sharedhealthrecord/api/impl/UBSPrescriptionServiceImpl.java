@@ -50,5 +50,13 @@ public class UBSPrescriptionServiceImpl extends BaseOpenmrsService implements UB
 		return dao.findPrescriptionByVisitId(visitUuid);
 	}
 
+	@Override
+	public List<UBSMedicines> getMedicineListAll() {
+		// TODO Auto-generated method stub
+		return dao.getMedicineListAll();
+	}
+	
+	
+
 	
 }

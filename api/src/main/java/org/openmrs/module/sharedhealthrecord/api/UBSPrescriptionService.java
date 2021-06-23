@@ -20,5 +20,8 @@ public interface UBSPrescriptionService extends OpenmrsService {
 	UBSPrescribedMedicines findPrescribedMedicineById (int id);
 	
 	UBSPrescription findPrescriptionByVisitId(String visitUuid);
+	
+	List<UBSMedicines> getMedicineListAll();
+
 }
  

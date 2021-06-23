@@ -17,6 +17,8 @@ public interface UBSPrescriptionDAO {
 	UBSPrescribedMedicines findPrescribedMedicineById (int id);
 	
 	UBSPrescription findPrescriptionByVisitId(String visitUuid);
+	
+	List<UBSMedicines> getMedicineListAll();
 
 
 

@@ -90,5 +90,16 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		}
 		else return null;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<UBSMedicines> getMedicineListAll() {
+		// TODO Auto-generated method stub
+		List<UBSMedicines> ubsMedicines = sessionFactory
+				.getCurrentSession()
+				.createQuery(
+						"from UBSMedicines where voided = 0 order by name ASC").list();
+		return ubsMedicines;
+	}
 	
 }

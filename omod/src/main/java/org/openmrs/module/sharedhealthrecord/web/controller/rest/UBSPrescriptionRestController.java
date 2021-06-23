@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -141,7 +142,14 @@ public class UBSPrescriptionRestController {
 	@RequestMapping(value = "/medicinelist", method = RequestMethod.GET)
 	public ResponseEntity<String> getMedicineList(@RequestParam(required = true) String type) throws Exception {
 		try {
-			List<UBSMedicines> medicinesList = Context.getService(UBSPrescriptionService.class).getMedicineList(type);
+			List<UBSMedicines> medicinesList = new ArrayList<UBSMedicines>();
+			if(type.equalsIgnoreCase("ALL")) {
+				 medicinesList = Context.getService(UBSPrescriptionService.class).getMedicineListAll();
+
+			}
+			else {
+				 medicinesList = Context.getService(UBSPrescriptionService.class).getMedicineList(type);
+			}
 			String medicineJson = gson.toJson(medicinesList);
 			return new ResponseEntity<>(medicineJson, HttpStatus.OK);
 		}
