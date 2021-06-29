@@ -15,7 +15,9 @@ package org.openmrs.module.sharedhealthrecord.api.db.hibernate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
+import org.openmrs.module.sharedhealthrecord.UBSDataExtract;
 import org.openmrs.module.sharedhealthrecord.api.db.SharedHealthRecordDAO;
 
 /**
@@ -39,4 +41,26 @@ public class HibernateSharedHealthRecordDAO implements SharedHealthRecordDAO {
     public SessionFactory getSessionFactory() {
 	    return sessionFactory;
     }
+
+	@Override
+	public boolean ubsSaveExtractedFieldsToTable(UBSDataExtract dto,String tableName) {
+		try {
+			String sql = ""
+					+ "INSERT INTO openmrs." +tableName.trim()
+					+ "(issues, encounter_uuid, value, patient_uuid) "
+					+ "VALUES(:issue,:enounterUuid,:value,:patientUuid);";
+			
+			SQLQuery saveDetails = sessionFactory.getCurrentSession().createSQLQuery(sql);
+			int Status = saveDetails.setString("issue", dto.getQuestion())
+					   .setString("enounterUuid", dto.getEncounterUuid())
+					   .setString("value", dto.getAnswer())
+					   .setString("patientUuid", dto.getPatientUuid()).executeUpdate();
+			if (Status == 1) return true;
+			else return false;
+		} catch (Exception e) {
+			// TODO: handle exception
+			return false;
+		}
+
+	}
 }

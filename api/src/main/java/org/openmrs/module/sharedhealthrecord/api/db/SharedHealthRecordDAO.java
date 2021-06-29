@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.sharedhealthrecord.api.db;
 
+import org.openmrs.module.sharedhealthrecord.UBSDataExtract;
 import org.openmrs.module.sharedhealthrecord.api.SharedHealthRecordService;
 
 /**
@@ -23,4 +24,6 @@ public interface SharedHealthRecordDAO {
 	/*
 	 * Add DAO methods here
 	 */
+	
+	public boolean ubsSaveExtractedFieldsToTable(UBSDataExtract dto, String tableName);
 }

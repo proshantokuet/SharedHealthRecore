@@ -14,6 +14,7 @@
 package org.openmrs.module.sharedhealthrecord.api;
 
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.sharedhealthrecord.UBSDataExtract;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -33,4 +34,7 @@ public interface SharedHealthRecordService extends OpenmrsService {
 	 * Add service methods here
 	 * 
 	 */
+	
+	public boolean ubsSaveExtractedFieldsToTable(UBSDataExtract dto, String tableName);
+	
 }

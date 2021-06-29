@@ -10,8 +10,8 @@ public class ServerAddress {
 	
 	public static String centralServer(){
 		//return "https://182.160.99.132/";
-		//return "https://192.168.19.158/";
-		return "https://10.100.11.5/";
+		return "https://192.168.19.47/";
+		//return "https://10.100.11.5/";
 		
 	}
 	//0 for false 1 for true

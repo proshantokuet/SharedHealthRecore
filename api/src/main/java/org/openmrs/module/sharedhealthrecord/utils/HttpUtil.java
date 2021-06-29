@@ -97,7 +97,7 @@ public class HttpUtil {
 	
 	public static String post(String url, String payload, String data) {
 		try {
-			HttpPost request = (HttpPost) makeConnection(url, "", RequestMethod.POST, AuthType.BASIC, "superadmin:Admin@123");
+			HttpPost request = (HttpPost) makeConnection(url, "", RequestMethod.POST, AuthType.BASIC, "superman:Admin123");
 			request.setHeader(HTTP.CONTENT_TYPE, "application/json; charset=UTF-8");
 			StringEntity entity = new StringEntity(data == null ? "" : data, "UTF-8");
 			//System.err.println(data);
@@ -121,7 +121,7 @@ public class HttpUtil {
 	public static String get(String url, String payload, String authString) {
 	
 		try {
-			HttpGet request = (HttpGet) makeConnection(url, payload, RequestMethod.GET, AuthType.BASIC, "superadmin:Admin@123");
+			HttpGet request = (HttpGet) makeConnection(url, payload, RequestMethod.GET, AuthType.BASIC, "superman:Admin123");
 			//request.setHeader("Content-Type", "application/json; charset=UTF-8");
 			//request.setHeader("accept-charset", "UTF-8");
 			//request.setHeader("Accept-Encoding", "UTF-8");
@@ -146,7 +146,7 @@ public class HttpUtil {
 	
 	public static String delete(String url, String payload, String authString) {
 		try {
-			HttpDelete request = (HttpDelete) makeConnection(url, payload, RequestMethod.DELETE, AuthType.BASIC, "superadmin:Admin@123");
+			HttpDelete request = (HttpDelete) makeConnection(url, payload, RequestMethod.DELETE, AuthType.BASIC, "superman:Admin123");
 			org.apache.http.HttpResponse response = httpClient.execute(request);
 			
 			int statusCode = response.getStatusLine().getStatusCode();

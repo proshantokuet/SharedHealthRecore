@@ -162,4 +162,32 @@
 			<column name="uuid" type="varchar(255)" />
     	</createTable>
     </changeSet>
+    <changeSet id="acute_health_condition-1.0.0" author="tanvir">
+    	<createTable tableName="acute_health_condition">
+    		<column name="id" type="int(11)" autoIncrement="true">
+    			<constraints primaryKey="true" nullable="false" />
+    		</column>
+    		<column name="issues" type="varchar(500)"/>
+    		<column name="value" type="varchar(255)"/>
+    		<column name="encounter_uuid" type="varchar(255)"/>
+    		<column name="patient_uuid" type="varchar(255)"/>
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+    	</createTable>
+    </changeSet>
+    <changeSet id="sexual_reproductive_health-1.0.0" author="tanvir">
+    	<createTable tableName="sexual_reproductive_health">
+    		<column name="id" type="int(11)" autoIncrement="true">
+    			<constraints primaryKey="true" nullable="false" />
+    		</column>
+    		<column name="issues" type="varchar(500)"/>
+    		<column name="value" type="varchar(255)"/>
+    		<column name="encounter_uuid" type="varchar(255)"/>
+    		<column name="patient_uuid" type="varchar(255)"/>
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+    	</createTable>
+    </changeSet>
 </databaseChangeLog>

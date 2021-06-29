@@ -16,6 +16,7 @@ package org.openmrs.module.sharedhealthrecord.api.impl;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.sharedhealthrecord.UBSDataExtract;
 import org.openmrs.module.sharedhealthrecord.api.SharedHealthRecordService;
 import org.openmrs.module.sharedhealthrecord.api.db.SharedHealthRecordDAO;
 
@@ -41,4 +42,11 @@ public class SharedHealthRecordServiceImpl extends BaseOpenmrsService implements
     public SharedHealthRecordDAO getDao() {
 	    return dao;
     }
+
+	@Override
+	public boolean ubsSaveExtractedFieldsToTable(UBSDataExtract dto,
+			String tableName) {
+		// TODO Auto-generated method stub
+		return dao.ubsSaveExtractedFieldsToTable(dto, tableName);
+	}
 }
