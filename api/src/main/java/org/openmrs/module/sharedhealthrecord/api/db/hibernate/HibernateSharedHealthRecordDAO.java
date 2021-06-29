@@ -47,14 +47,15 @@ public class HibernateSharedHealthRecordDAO implements SharedHealthRecordDAO {
 		try {
 			String sql = ""
 					+ "INSERT INTO openmrs." +tableName.trim()
-					+ "(issues, encounter_uuid, value, patient_uuid) "
-					+ "VALUES(:issue,:enounterUuid,:value,:patientUuid);";
+					+ "(issues, encounter_uuid, value, patient_uuid, voided) "
+					+ "VALUES(:issue,:enounterUuid,:value,:patientUuid,:flag);";
 			
 			SQLQuery saveDetails = sessionFactory.getCurrentSession().createSQLQuery(sql);
 			int Status = saveDetails.setString("issue", dto.getQuestion())
 					   .setString("enounterUuid", dto.getEncounterUuid())
 					   .setString("value", dto.getAnswer())
-					   .setString("patientUuid", dto.getPatientUuid()).executeUpdate();
+					   .setString("patientUuid", dto.getPatientUuid())
+					   .setInteger("flag", 1).executeUpdate();
 			if (Status == 1) return true;
 			else return false;
 		} catch (Exception e) {

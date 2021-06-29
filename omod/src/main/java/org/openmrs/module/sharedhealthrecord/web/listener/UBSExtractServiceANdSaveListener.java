@@ -17,6 +17,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sharedhealthrecord.UBSDataExtract;
+import org.openmrs.module.sharedhealthrecord.api.SharedHealthRecordService;
 import org.openmrs.module.sharedhealthrecord.utils.HttpUtil;
 import org.openmrs.module.sharedhealthrecord.utils.ServerAddress;
 import org.openmrs.module.sharedhealthrecord.web.controller.rest.SharedHealthRecordManageRestController;
@@ -57,7 +58,7 @@ public class UBSExtractServiceANdSaveListener{
 	        return;
 		}
 		log.error("isDeployInGlobal " + isDeployInGlobal);
-		if(isDeployInGlobal.equalsIgnoreCase("0")) {
+
 			Context.openSession();
 			JSONParser jsonParser = new JSONParser();
 			JSONObject getResponse = null;
@@ -84,7 +85,6 @@ public class UBSExtractServiceANdSaveListener{
 			}
 			
 			Context.closeSession();
-		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -106,9 +106,11 @@ public class UBSExtractServiceANdSaveListener{
 				
 		        if(IntialJsonDHISArray.size() > 0) {
 					String serviceString = IntialJsonDHISArray.toString();
+					log.error("serviceString" + serviceString);
 					//System.out.println(serviceString);
-					Object document = SharedHealthRecordManageRestController.parseDocument(serviceString);
+					Object document = UBSConfigurationJsonPath.parseDocument(serviceString);
 					List<String> servicesInObservation = JsonPath.read(document, "$..service");
+					log.error("servicesInObservation" + servicesInObservation.toString());
 					Set<String> uniqueSetOfServices = new HashSet<>();
 					uniqueSetOfServices.addAll(servicesInObservation);
 					//System.out.println(uniqueSetOfServices.toString());
@@ -129,12 +131,13 @@ public class UBSExtractServiceANdSaveListener{
 									 List<UBSDataExtract> data = gson.fromJson(extractServiceArray.toString(),
 										    new TypeToken<ArrayList<UBSDataExtract>>() {}.getType());
 									//System.out.println(data.size());
+									 log.error("data size" + data.size());
+									boolean flag = true;
 									for (UBSDataExtract obsData : data) {
-										System.out.println(obsData.getQuestion());
-										System.out.println(obsData.getAnswer());
-										System.out.println(obsData.getPatientUuid());
-										System.out.println(obsData.getEncounterUuid());
+										flag = Context.getService(SharedHealthRecordService.class).ubsSaveExtractedFieldsToTable(obsData, tableName);
+										if(!flag) break;
 									}
+									log.error("completed saving " + flag);
 								}
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -157,7 +160,7 @@ public class UBSExtractServiceANdSaveListener{
 		
 		_obs.forEach(_ob -> {
 			JSONObject ob = (JSONObject) _ob;
-			System.out.println(ob.toString());
+			//System.out.println(ob.toString());
 			String type = (String) ob.get("type");
 			JSONArray groupMembers = (JSONArray) ob.get("groupMembers");
 			// System.out.println("Coded..........:" + groupMembers.size() + " type:" + type);

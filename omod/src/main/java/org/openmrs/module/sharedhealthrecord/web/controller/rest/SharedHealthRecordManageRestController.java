@@ -39,7 +39,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
-import com.jayway.jsonpath.Configuration;
 
 @RequestMapping("/rest/v1/save-Patient")
 @RestController
@@ -817,7 +816,4 @@ public class SharedHealthRecordManageRestController {
 		}
 	}
 	
-	public static Object parseDocument(String IntialJsonDHISArray){
-		 return Configuration.defaultConfiguration().jsonProvider().parse(IntialJsonDHISArray);
-	}
 }
