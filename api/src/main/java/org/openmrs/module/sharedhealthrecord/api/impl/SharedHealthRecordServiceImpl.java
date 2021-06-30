@@ -49,4 +49,11 @@ public class SharedHealthRecordServiceImpl extends BaseOpenmrsService implements
 		// TODO Auto-generated method stub
 		return dao.ubsSaveExtractedFieldsToTable(dto, tableName);
 	}
+
+	@Override
+	public boolean deleteExtractedFieldsByEncounterUuid(String encounterUuid,
+			String tableName) {
+		// TODO Auto-generated method stub
+		return dao.deleteExtractedFieldsByEncounterUuid(encounterUuid, tableName);
+	}
 }

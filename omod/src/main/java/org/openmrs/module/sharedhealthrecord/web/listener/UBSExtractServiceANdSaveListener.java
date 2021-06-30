@@ -15,9 +15,12 @@ import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sharedhealthrecord.UBSDataExtract;
+import org.openmrs.module.sharedhealthrecord.api.SHRActionAuditInfoService;
 import org.openmrs.module.sharedhealthrecord.api.SharedHealthRecordService;
+import org.openmrs.module.sharedhealthrecord.domain.EventRecordsDTO;
 import org.openmrs.module.sharedhealthrecord.utils.HttpUtil;
 import org.openmrs.module.sharedhealthrecord.utils.ServerAddress;
 import org.openmrs.module.sharedhealthrecord.web.controller.rest.SharedHealthRecordManageRestController;
@@ -28,6 +31,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.jayway.jsonpath.JsonPath;
 
@@ -80,7 +84,7 @@ public class UBSExtractServiceANdSaveListener{
 				}
 				finally {
 					lock.unlock();
-					log.error("complete listener moneyreceipt failed at:" +new Date());
+					log.error("complete listener ubs extraction at:" +new Date());
 				}
 			}
 			
@@ -89,19 +93,27 @@ public class UBSExtractServiceANdSaveListener{
 	
 	@SuppressWarnings("unchecked")
 	public synchronized void extractAndSave() {
+		
+		
+		String last_entry = Context.getService(SHRActionAuditInfoService.class).getLastEntryByType("ExtractID");
+		List<EventRecordsDTO> records = Context.getService(SHRActionAuditInfoService.class).getEventRecords("Encounter",last_entry);
 		JSONParser jsonParser = new JSONParser();
 		try {   
-				String url = "openmrs/ws/rest/v1/bahmnicore/bahmniencounter/581753b1-065b-44da-b7c6-3f656f997044?includeAll=true";
-				String getEncounterUrl = centralServer + url;
+		
+			for (EventRecordsDTO eventRecordsDTO : records) {
+				
+				String encounterUUid = eventRecordsDTO.getObject().split("/|\\?")[7];
+				String getEncounterUrl = localServer +"openmrs/ws/rest/v1/bahmnicore/bahmniencounter/"+ encounterUUid +"?includeAll=false";
+				//String url = "/openmrs/ws/rest/v1/bahmnicore/bahmniencounter/581753b1-065b-44da-b7c6-3f656f997044?includeAll=true";
+				//String getEncounterUrl = centralServer + url;
 				String patientencounterResponse = HttpUtil.get(getEncounterUrl, "", "superman:Admin123");
 				JSONObject EncounterObj;
-
+	
 				EncounterObj = (JSONObject) jsonParser.parse(patientencounterResponse);
 				String patientUuid = (String)EncounterObj.get("patientUuid");
-				String encounterUUid = url.split("/|\\?")[7];
-
+	
 				JSONArray obs = (JSONArray) EncounterObj.get("observations");
-
+	
 				JSONArray IntialJsonDHISArray =  getUBSObservations(obs);
 				
 		        if(IntialJsonDHISArray.size() > 0) {
@@ -113,7 +125,6 @@ public class UBSExtractServiceANdSaveListener{
 					log.error("servicesInObservation" + servicesInObservation.toString());
 					Set<String> uniqueSetOfServices = new HashSet<>();
 					uniqueSetOfServices.addAll(servicesInObservation);
-					//System.out.println(uniqueSetOfServices.toString());
 					uniqueSetOfServices.forEach(uniqueSetOfService ->{
 						List<String> extractServiceJSON = JsonPath.read(document, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.isVoided == false)]");
 					    String jsonStr = JSONArray.toJSONString(extractServiceJSON);
@@ -121,30 +132,35 @@ public class UBSExtractServiceANdSaveListener{
 								JSONArray extractServiceArray = (JSONArray) jsonParser.parse(jsonStr);
 								String tableName = UBSTABLE_MAP.get(uniqueSetOfService);
 								if(!StringUtils.isBlank(tableName)) {
+									boolean status = Context.getService(SharedHealthRecordService.class).deleteExtractedFieldsByEncounterUuid(encounterUUid, tableName);
+									log.error("status in listner" + status);
 									extractServiceArray.forEach(service -> {
 										JSONObject serviceObject = (JSONObject) service;
 										serviceObject.put("patientUuid", patientUuid);
 										serviceObject.put("encounterUuid", encounterUUid);
 									});
 	
-									//System.out.println(extractServiceArray.toString());
 									 List<UBSDataExtract> data = gson.fromJson(extractServiceArray.toString(),
 										    new TypeToken<ArrayList<UBSDataExtract>>() {}.getType());
-									//System.out.println(data.size());
 									 log.error("data size" + data.size());
 									boolean flag = true;
 									for (UBSDataExtract obsData : data) {
 										flag = Context.getService(SharedHealthRecordService.class).ubsSaveExtractedFieldsToTable(obsData, tableName);
-										if(!flag) break;
+										if(!flag) {
+											throw new RuntimeException();
+										}
 									}
-									log.error("completed saving " + flag);
 								}
-							} catch (Exception e) {
+							} catch (ParseException e) {
 								e.printStackTrace();
+								throw new RuntimeException();
 							}
-						
 					});
+
+					String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
+						.updateAuditInfoByType(Integer.toString(eventRecordsDTO.getId()), "ExtractID");
 		        }
+			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -234,8 +250,20 @@ public class UBSExtractServiceANdSaveListener{
 	public static final Map<String, String> UBSTABLE_MAP = new HashMap<String, String>();
 	static {
 
-		UBSTABLE_MAP.put("Acute Health Condition", "acute_health_condition");
-		UBSTABLE_MAP.put("Sexual & Reproductive health (SRH)", "sexual_reproductive_health");
+		UBSTABLE_MAP.put("Acute Health Condition", "ubs_report_acute_health_condition");
+		UBSTABLE_MAP.put("Sexual & Reproductive health (SRH)", "ubs_report_sexual_reproductive_health");
+		UBSTABLE_MAP.put("Non Communicable and other Chronic Disease", "ubs_report_non_communicable_dieases");
+		UBSTABLE_MAP.put("Injuries", "ubs_report_injuries");
+		UBSTABLE_MAP.put("Nutrition", "ubs_report_nutrition");
+		UBSTABLE_MAP.put("Mental Health", "ubs_report_mental_health");
+		UBSTABLE_MAP.put("Communicable Disease", "ubs_report_communicable_disease");
+		UBSTABLE_MAP.put("Referrals", "ubs_report_referrals");
+		UBSTABLE_MAP.put("Admission", "ubs_report_ipd_admission");
+		UBSTABLE_MAP.put("Discharge", "ubs_report_ipd_discharge");
+		UBSTABLE_MAP.put("Mortality", "ubs_report_mortality");
+		UBSTABLE_MAP.put("Child Vaccination Form", "ubs_report_child_vaccination");
+		UBSTABLE_MAP.put("Delivery Service", "ubs_report_delivery_service");
+		
 	}
 
 }

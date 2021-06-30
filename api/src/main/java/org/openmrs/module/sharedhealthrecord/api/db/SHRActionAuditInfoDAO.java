@@ -16,6 +16,11 @@ public interface SHRActionAuditInfoDAO {
 	public String getLastEntryForEncounter();
 	public String getLastEntryForMoneyReceipt();
 	
+	public String getLastEntryByType(String type);
+	
+	public String updateAuditInfoByType(String last_id, String type);
+	
+	
 	public String updateAuditPatient(String last_id);
 	public String updateAuditEncounter(String last_id);
 	public String updateAuditMoneyReceipt(String last_timestamp);

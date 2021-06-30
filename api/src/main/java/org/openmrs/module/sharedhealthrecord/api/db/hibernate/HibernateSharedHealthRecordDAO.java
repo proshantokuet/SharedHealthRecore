@@ -64,4 +64,28 @@ public class HibernateSharedHealthRecordDAO implements SharedHealthRecordDAO {
 		}
 
 	}
+
+	@Override
+	public boolean deleteExtractedFieldsByEncounterUuid(String encounterUuid,
+			String tableName) {
+		// TODO Auto-generated method stub
+		String countSql = "	select Count(*) from openmrs."+tableName.trim()+" where encounter_uuid = '"+encounterUuid+"'";
+		log.error("countSql" + countSql);
+		String Deletesql = ""
+				+ " DELETE FROM openmrs." +tableName.trim()
+				+ " WHERE encounter_uuid = '"+encounterUuid+"' ";
+		log.error("Deletesql" + Deletesql);
+		
+		try{
+			String CountValue = sessionFactory.getCurrentSession().createSQLQuery(countSql).list().get(0).toString();
+			if(Integer.parseInt(CountValue) > 0) {
+				 int status = sessionFactory.getCurrentSession().
+						createSQLQuery(Deletesql).executeUpdate();
+			}
+			return true;
+			
+		}catch(Exception e){
+			return false;
+		}	
+	}
 }

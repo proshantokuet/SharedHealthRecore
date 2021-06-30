@@ -105,5 +105,17 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		return dao.getClinicCodeForClinic(patientUuid);
 	}
 
+	@Override
+	public String getLastEntryByType(String type) {
+		// TODO Auto-generated method stub
+		return dao.getLastEntryByType(type);
+	}
+
+	@Override
+	public String updateAuditInfoByType(String last_id, String type) {
+		// TODO Auto-generated method stub
+		return dao.updateAuditInfoByType(last_id, type);
+	}
+
 	
 }

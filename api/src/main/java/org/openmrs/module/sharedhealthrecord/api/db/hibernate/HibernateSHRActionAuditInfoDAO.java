@@ -272,6 +272,35 @@ protected final Log log = LogFactory.getLog(this.getClass());
 		}
 	}
 
+	@Override
+	public String getLastEntryByType(String type) {
+		// TODO Auto-generated method stub
+		String sql = ""
+				+ "SELECT  last_id "
+				+ "FROM openmrs.shr_action_audit_info "
+				+ "WHERE record_name = '"+type+"'";
+		
+		try{
+			return sessionFactory.getCurrentSession().createSQLQuery(sql).list().get(0).toString();
+		}catch(Exception e){
+			return "0";
+		}
+	}
+
+	@Override
+	public String updateAuditInfoByType(String last_id, String type) {
+		// TODO Auto-generated method stub
+		String sql = ""
+				+ "UPDATE openmrs.shr_action_audit_info "
+				+ "SET last_id = '"+last_id+"' "
+				+ "WHERE record_name = '"+type+"'";
+		try{
+			return Integer.toString(sessionFactory.getCurrentSession().createSQLQuery(sql).executeUpdate());
+		}catch(Exception e){
+			return "0";
+		}
+	}
+
 	
 
 	
