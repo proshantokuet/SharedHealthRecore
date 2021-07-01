@@ -18,6 +18,9 @@ import static org.junit.Assert.assertNotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.KeyStore;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -132,9 +135,26 @@ public class SharedHealthRecordServiceTest extends BaseModuleContextSensitiveTes
 		
 		//try (FileReader reader = new FileReader("../patient.json")) {
 		try {
-			String patientUrlCentralServer = "https://192.168.33.10/openmrs/ws/rest/v1/patient";
-			
-			String patientUrl = "https://192.168.19.145/openmrs/ws/rest/v1/patient/4d699f0f-65e9-46eb-a563-1e897d02a3d2?v=full";
+
+//			
+//			String visitSavingSql = ""
+//					+ "INSERT INTO visit "
+//					+ "(patient_id, visit_type_id, date_started, date_stopped,location_id, uuid,creator,date_created) "
+//					+ "VALUES("+ 12 +","+234 +", '"+ startDate +","+ endDate +", "+ 232 +",'"+ "7f2bf3fc-a9e2-44d2-95c3-003f739b7ea7" +"',0,'"+"2019-12-19 13:58:42"+"');";
+//			
+//			String originurl = "https://192.168.33.10/openmrs/ws/rest/v1/save-Patient/search/patientOriginByOriginName?originName=Server-Dhaka";
+//			String originresponse = get(originurl, "", AuthType.BASIC, "admin:test");
+//			JSONArray origin = (JSONArray) jsonParser.parse(originresponse);
+//			if (origin.size() < 1) {
+//				System.out.println("patientResponse>>>>" + origin);
+//			}
+//			else {
+//				System.out.println("patientResponse>>>>" + origin);
+//			}
+//
+//			String patientUrlCentralServer = "https://192.168.33.10/openmrs/ws/rest/v1/patient";
+//			
+			String patientUrl = "https://192.168.19.145/openmrs/ws/rest/v1/patient/3f2d988d-c0be-4a87-bf6f-306586e5e76d?v=full";
 			String patientResponse = get(patientUrl, "", AuthType.BASIC, "admin:test");
 			//Read JSON file
 			JSONObject obj = (JSONObject) jsonParser.parse(patientResponse);
@@ -151,13 +171,11 @@ public class SharedHealthRecordServiceTest extends BaseModuleContextSensitiveTes
 //				
 //				uuid = "/" + personUuid;
 //			}
-			System.out.println("uuid..............." + uuid);
-			System.out.println("personUuid..............." + personUuid);
-			System.out.println("obj..............." + obj);
+
 			String data = getPatientObject(obj, personUuid);
-			System.out.println(data);
+			//System.out.println(data);
 			String patientPostUrl = "https://192.168.19.147/openmrs/ws/rest/v1/bahmnicore/patientprofile";
-			
+			System.out.println(data);
 			// String result = post(patientPostUrl, "", AuthType.BASIC, "admin:Sohel@1234", data);
 			// System.out.println(result);
 			

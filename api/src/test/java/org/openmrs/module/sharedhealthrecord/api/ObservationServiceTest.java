@@ -15,6 +15,7 @@ package org.openmrs.module.sharedhealthrecord.api;
 
 import static org.junit.Assert.assertNotNull;
 
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.simple.JSONArray;
@@ -38,9 +40,12 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.sharedhealthrecord.utils.HttpUtil;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
+
 import ca.uhn.hl7v2.model.primitive.ID;
 
+
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.jayway.jsonpath.JsonPath;
 
 
@@ -241,10 +246,10 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void extractAndSave() {
 		JSONParser jsonParser = new JSONParser();
-		Boolean postResponseOfService = true ;
 		try {   
-				String url = "/openmrs/ws/rest/v1/bahmnicore/bahmniencounter/581753b1-065b-44da-b7c6-3f656f997044?includeAll=true";
+				String url = "/openmrs/ws/rest/v1/bahmnicore/bahmniencounter/be6c9cf4-3fc1-4f93-b27a-af71bda05bba?includeAll=true";
 				String getEncounterUrl = globalServerUrl + url;
+				
 				String patientencounterResponse = HttpUtil.get(getEncounterUrl, "", "superman:Admin123");
 				JSONObject EncounterObj;
 
@@ -268,6 +273,7 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 					uniqueSetOfServices.forEach(uniqueSetOfService ->{
 						List<String> extractServiceJSON = JsonPath.read(teString, "$.[?(@.service == '"+uniqueSetOfService+ "' && @.isVoided == false)]");
 					    String jsonStr = JSONArray.toJSONString(extractServiceJSON);
+						//String jsonStr = "shanto";
 							try {
 								JSONArray extractServiceArray = (JSONArray) jsonParser.parse(jsonStr);
 								String tableName = UBSTABLE_MAP.get(uniqueSetOfService);
@@ -277,31 +283,35 @@ public class ObservationServiceTest extends BaseModuleContextSensitiveTest {
 										serviceObject.put("patientUuid", patientUuid);
 										serviceObject.put("encounterUuid", encounterUUid);
 									});
+	
+									System.out.println(extractServiceArray.toString());
+									 List<dhisObsDataMap> data = gson.fromJson(extractServiceArray.toString(),
+										    new TypeToken<ArrayList<dhisObsDataMap>>() {}.getType());
+									System.out.println(data.size());
+									for (dhisObsDataMap obsData : data) {
+										//obsData = null;
+										if(obsData.getAnswer().equalsIgnoreCase("No")) {
+											throw new RuntimeException();
+										}
+										else {
+										System.out.println(obsData.getQuestion());
+										System.out.println(obsData.getAnswer());
+										System.out.println(obsData.getPatientUuid());
+										System.out.println(obsData.getEncounterUuid());
+										}
+									}
 								}
-								System.out.println(extractServiceArray.toString());
-								List<dhisObsDataMap> data = new ArrayList<dhisObsDataMap>();
-								extractServiceArray.forEach(initialjson -> {
-									String  jsonString = initialjson.toString();
-							        Gson gson = new Gson();  
-							        data.add(gson.fromJson(jsonString,dhisObsDataMap.class)); 
-								});
-								System.out.println(data.size());
-								for (dhisObsDataMap obsData : data) {
-									System.out.println(obsData.getQuestion());
-									System.out.println(obsData.getAnswer());
-									System.out.println(obsData.getPatientUuid());
-									System.out.println(obsData.getEncounterUuid());
-								}
-							} catch (Exception e) {
+							} catch (ParseException e) {
 								e.printStackTrace();
+								throw new RuntimeException();
 							}
 						
 					});
+					System.out.println("Success fully Completed");
 		        }
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			postResponseOfService = false;
 		}
 
 	}
