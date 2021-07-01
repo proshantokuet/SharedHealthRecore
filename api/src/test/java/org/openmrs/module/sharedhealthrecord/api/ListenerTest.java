@@ -37,11 +37,12 @@ public class ListenerTest extends BaseModuleContextSensitiveTest {
 	public void shouldSetupContext() {
 		assertNotNull(Context.getService(SharedHealthRecordService.class));
 	}
-	String localServer = "http://192.168.19.145/";
-	String centralServer="https://192.168.19.147/";
+	String localServer = "http://192.168.19.47/";
+	String centralServer="https://192.168.19.159/";
 	
-//   @Test
+  @Test
 	public void sendPatient() throws ParseException, JSONException{
+		patientFetchAndPost("4d93d1c5-1bbb-4e67-9c48-a8ac05ec7873");
 		JSONParser jsonParser = new JSONParser();
 //		String last_entry = Context.getService(SHRActionAuditInfoService.class)
 //				.getLastEntryForPatient();
@@ -91,7 +92,8 @@ public class ListenerTest extends BaseModuleContextSensitiveTest {
 		}
 	}
 	
-	private void patientFetchAndPost(String patientUUid,String id,Boolean failedPatient) throws ParseException, JSONException{
+	
+	private void patientFetchAndPost(String patientUUid) throws ParseException, JSONException{
 		
 		JSONParser jsonParser = new JSONParser();
 	
@@ -99,6 +101,7 @@ public class ListenerTest extends BaseModuleContextSensitiveTest {
 		String patientUrl = localServer+"openmrs/ws/rest/v1/patient/"+
 				patientUUid+"?v=full";
 		String patientResponse = HttpUtil.get(patientUrl, "", "admin:test");
+		System.out.println(patientResponse);
 		JSONObject getPatient = new JSONObject(patientResponse);
 		try{
 			
@@ -111,13 +114,13 @@ public class ListenerTest extends BaseModuleContextSensitiveTest {
 			
 			String postData = SharedHealthRecordServiceTest.
 					getPatientObject(getPatient_, personUuid);
-			
+			System.out.println(postData.toString());
 			//Post to Central Server
 			String patientPostUrl = centralServer+
 					"openmrs/ws/rest/v1/bahmnicore/patientprofile";
 			
-			String returnedResult = HttpUtil.post(patientPostUrl, "", postData);
-			System.out.println(returnedResult);
+			//String returnedResult = HttpUtil.post(patientPostUrl, "", postData);
+			//System.out.println(returnedResult);
 			
 			// Save last entry in Audit Table
 //			if(failedPatient == false){
@@ -398,7 +401,7 @@ public class ListenerTest extends BaseModuleContextSensitiveTest {
 		}
 	}
 
-	@Test
+	
 	public void encounterDeleteApiTesting(){
 		String encounterUuid = "8d0ad6ba-d27f-4242-ad15-0cff06b3ed64";
 		String deleteWithoutPurge = 

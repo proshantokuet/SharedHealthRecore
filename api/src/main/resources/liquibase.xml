@@ -374,7 +374,7 @@
 	 </changeSet>
 	 <changeSet author="jysan" id="shr_action_error_log-1.0.2">
 	 	<addColumn tableName="shr_action_error_log">
-			<column name="mid" type="varchar(255)" />			
+			<column name="post_json" type="mediumtext" />			
 		</addColumn>
 	 </changeSet>
 	 <changeSet author="jysan" id="shr_action_error_log-1.0.3">

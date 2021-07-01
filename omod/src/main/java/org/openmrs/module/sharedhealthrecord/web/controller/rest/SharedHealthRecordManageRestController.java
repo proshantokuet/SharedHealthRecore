@@ -172,11 +172,7 @@ public class SharedHealthRecordManageRestController {
 			personInfor.put("identifiers", getIdentifiers(_identifiers));
 			patient.put("patient", personInfor);
 			
-			String url = globalServerUrl + "/openmrs/ws/rest/v1/relationship";
-			String relationshipResponse = HttpUtil.get(url, "person=" + personUuid + "&v=full", "admin:test");
-			
-			JSONObject _relationshipAsObject = (JSONObject) jsonParser.parse(relationshipResponse);
-			JSONArray _relationshipArray = (JSONArray) _relationshipAsObject.get("results");
+			JSONArray _relationshipArray = new JSONArray();
 			
 			patient.put("relationships", getRelationships(_relationshipArray));
 			//patient.put("image", getImage(""));
@@ -369,8 +365,11 @@ public class SharedHealthRecordManageRestController {
 			JSONObject identifier = new JSONObject();
 			try {
 				identifier.put("identifier", _identifier.get("identifier"));
-				identifier.put("preferred", true);
-				identifier.put("identifierType", "Patient_Identifier");
+				identifier.put("preferred", _identifier.get("preferred"));
+				if(_identifier.containsKey("identifierType")) {
+				JSONObject identifierType = (JSONObject)_identifier.get("identifierType");
+				identifier.put("identifierType", identifierType.get("display"));
+				}
 				identifiers.add(identifier);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

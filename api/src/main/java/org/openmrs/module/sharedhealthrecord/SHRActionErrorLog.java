@@ -11,7 +11,7 @@ public class SHRActionErrorLog extends BaseOpenmrsObject implements
 	private String action_type;
 	private String error_message;
 	private String uuid;
-	private String mid;
+	private String postJson;
 	private int voided;
 	private int sent_status;
 	
@@ -19,7 +19,7 @@ public class SHRActionErrorLog extends BaseOpenmrsObject implements
 	public String toString() {
 		return "SHRActionErrorLog [eid=" + eid + ", action_type=" + action_type
 				+ ", error_message=" + error_message + ", uuid=" + uuid
-				+ ", mid=" + mid + ", voided=" + voided + ", sent_status="
+				+ ", postJson=" + postJson + ", voided=" + voided + ", sent_status="
 				+ sent_status + "]";
 	}
 
@@ -39,13 +39,7 @@ public class SHRActionErrorLog extends BaseOpenmrsObject implements
 		this.voided = voided;
 	}
 
-	public String getMid() {
-		return mid;
-	}
 
-	public void setMid(String mid) {
-		this.mid = mid;
-	}
 
 	public String getUuid() {
 		return uuid;
@@ -77,6 +71,14 @@ public class SHRActionErrorLog extends BaseOpenmrsObject implements
 
 	public void setError_message(String error_message) {
 		this.error_message = error_message;
+	}
+
+	public String getPostJson() {
+		return postJson;
+	}
+
+	public void setPostJson(String postJson) {
+		this.postJson = postJson;
 	}
 
 	@Override
