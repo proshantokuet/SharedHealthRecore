@@ -55,7 +55,7 @@ public class HibernateSharedHealthRecordDAO implements SharedHealthRecordDAO {
 					   .setString("enounterUuid", dto.getEncounterUuid())
 					   .setString("value", dto.getAnswer())
 					   .setString("patientUuid", dto.getPatientUuid())
-					   .setInteger("flag", 1).executeUpdate();
+					   .setInteger("flag", 0).executeUpdate();
 			if (Status == 1) return true;
 			else return false;
 		} catch (Exception e) {

@@ -32,18 +32,11 @@
 	<context:component-scan base-package="org.openmrs.module.sharedhealthrecord.web.controller" />
 	<context:annotation-config></context:annotation-config>
 	
-		<bean id="ubsExtractAndSave" class="org.openmrs.module.sharedhealthrecord.web.listener.UBSExtractServiceANdSaveListener"></bean>
-	
-<!-- 	<bean id="shrListener" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListener"></bean>
+	<bean id="ubsExtractAndSave" class="org.openmrs.module.sharedhealthrecord.web.listener.UBSExtractServiceANdSaveListener"></bean>
+ 	<bean id="shrListener" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListener"></bean>
 	<bean id="shrListenerFailedPatient" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListenerFailedPatient"></bean>
 	<bean id="shrListenerEncounter" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListenerEncounter"></bean>
-	<bean id="shrListenerFailedEncounter" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListenerFailedEncounter"></bean>
-	<bean id="shrListenerFailedMoneyReceipt" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListenerFailedMoneyReceipt"></bean>
-	<bean id="shrListenerMoneyReceipt" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListenerMoneyReceipt"></bean>
-	
-	<bean id="shrPatientFetchListener" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRPatientFetchListener"></bean>
-	
-	<bean id="shrFollowUpDataListener" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListenerFollowUpData"></bean> -->
+	<bean id="shrListenerFailedEncounter" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListenerFailedEncounter"></bean>	
 	
  	<task:scheduled-tasks scheduler="shr2Task">
 <!-- 		<task:scheduled ref="shrListener" method="sendAllData" cron="*/55 * * * * *" />
@@ -52,13 +45,8 @@
 		
 		<task:scheduled ref="shrListenerEncounter" method="sendAllData" cron="*/55 * * * * *" />
 		
-		<task:scheduled ref="shrListenerFailedEncounter" method="sendAllData" cron="*/55 * * * * *" />
-		<task:scheduled ref="shrListenerFailedMoneyReceipt" method="sendAllData" cron="*/55 * * * * *" />
-		<task:scheduled ref="shrListenerMoneyReceipt" method="sendAllData" cron="*/55 * * * * *" />
-		
-		<task:scheduled ref="shrPatientFetchListener" method="fetchAndUpdatePatient" cron="*/55 * * * * *"/>
-		<task:scheduled ref="shrFollowUpDataListener" method="sendAllData" cron="*/55 * * * * *"/> -->
-		
+		<task:scheduled ref="shrListenerFailedEncounter" method="sendAllData" cron="*/55 * * * * *" />	 -->	
+
 		<task:scheduled ref="ubsExtractAndSave" method="sendAllData" cron="*/55 * * * * *" />
 		
 	</task:scheduled-tasks>
