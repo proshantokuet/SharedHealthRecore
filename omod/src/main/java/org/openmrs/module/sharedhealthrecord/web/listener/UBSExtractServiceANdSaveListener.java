@@ -260,7 +260,7 @@ public class UBSExtractServiceANdSaveListener{
 		UBSTABLE_MAP.put("Referrals", "ubs_report_referrals");
 		UBSTABLE_MAP.put("Admission", "ubs_report_ipd_admission");
 		UBSTABLE_MAP.put("Discharge", "ubs_report_ipd_discharge");
-		UBSTABLE_MAP.put("Mortality", "ubs_report_mortality");
+		UBSTABLE_MAP.put("Death", "ubs_report_mortality");
 		UBSTABLE_MAP.put("Child Vaccination Form", "ubs_report_child_vaccination");
 		UBSTABLE_MAP.put("Delivery Service", "ubs_report_delivery_service");
 		

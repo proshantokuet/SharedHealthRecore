@@ -51,7 +51,7 @@ public class HibernateSharedHealthRecordDAO implements SharedHealthRecordDAO {
 					+ "VALUES(:issue,:enounterUuid,:value,:patientUuid,:flag);";
 			
 			SQLQuery saveDetails = sessionFactory.getCurrentSession().createSQLQuery(sql);
-			int Status = saveDetails.setString("issue", dto.getQuestion())
+			int Status = saveDetails.setString("issue", dto.getQuestion().trim())
 					   .setString("enounterUuid", dto.getEncounterUuid())
 					   .setString("value", dto.getAnswer())
 					   .setString("patientUuid", dto.getPatientUuid())
