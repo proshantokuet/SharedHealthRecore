@@ -21,6 +21,7 @@ import org.openmrs.module.sharedhealthrecord.SHRExternalPatient;
 import org.openmrs.module.sharedhealthrecord.api.SHRActionAuditInfoService;
 import org.openmrs.module.sharedhealthrecord.api.SHRActionErrorLogService;
 import org.openmrs.module.sharedhealthrecord.api.SHRExternalPatientService;
+import org.openmrs.module.sharedhealthrecord.api.SharedHealthRecordService;
 import org.openmrs.module.sharedhealthrecord.domain.Encounter;
 import org.openmrs.module.sharedhealthrecord.domain.EventRecordsDTO;
 import org.openmrs.module.sharedhealthrecord.domain.MoneyReceiptDTO;
@@ -277,7 +278,14 @@ public class SHRListenerFailedEncounter{
 					org.json.simple.JSONArray  providerArray = (org.json.simple.JSONArray) enc_response.get("providers");
 					for (int i = 0; i < providerArray.size(); i++) {
 						org.json.simple.JSONObject providerObject = (org.json.simple.JSONObject) providerArray.get(i);
-						String providerUuid = "c1c26908-3f10-11e4-adec-0800271c1b75";
+						String ProviderInJson = (String) providerObject.get("uuid");
+						boolean isProviderlabTechnician = Context.getService(SharedHealthRecordService.class).checkIsProviderIsLabTechnicin(ProviderInJson);
+						String providerUuid = ""; 
+						if(isProviderlabTechnician) {
+							providerUuid = "7d162c29-3f12-11e4-adec-0800271c1b75";
+						} else {
+							providerUuid = "c1c26908-3f10-11e4-adec-0800271c1b75";
+						}
 						providerObject.remove("uuid");
 						providerObject.put("uuid", providerUuid);
 					}

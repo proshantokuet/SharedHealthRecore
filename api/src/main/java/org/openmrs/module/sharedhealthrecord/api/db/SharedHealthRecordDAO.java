@@ -28,4 +28,6 @@ public interface SharedHealthRecordDAO {
 	public boolean ubsSaveExtractedFieldsToTable(UBSDataExtract dto, String tableName);
 	
 	public boolean deleteExtractedFieldsByEncounterUuid(String encounterUuid,String tableName);
+	
+	public boolean checkIsProviderIsLabTechnicin(String uuid);
 }

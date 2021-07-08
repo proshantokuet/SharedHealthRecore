@@ -56,4 +56,10 @@ public class SharedHealthRecordServiceImpl extends BaseOpenmrsService implements
 		// TODO Auto-generated method stub
 		return dao.deleteExtractedFieldsByEncounterUuid(encounterUuid, tableName);
 	}
+
+	@Override
+	public boolean checkIsProviderIsLabTechnicin(String uuid) {
+		// TODO Auto-generated method stub
+		return dao.checkIsProviderIsLabTechnicin(uuid);
+	}
 }

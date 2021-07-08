@@ -39,4 +39,6 @@ public interface SharedHealthRecordService extends OpenmrsService {
 	
 	public boolean deleteExtractedFieldsByEncounterUuid(String encounterUuid,String tableName);
 	
+	public boolean checkIsProviderIsLabTechnicin(String uuid);
+	
 }

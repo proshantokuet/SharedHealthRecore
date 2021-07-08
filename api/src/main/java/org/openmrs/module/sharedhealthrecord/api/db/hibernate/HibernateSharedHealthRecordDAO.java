@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.sharedhealthrecord.api.db.hibernate;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SQLQuery;
@@ -87,5 +89,36 @@ public class HibernateSharedHealthRecordDAO implements SharedHealthRecordDAO {
 		}catch(Exception e){
 			return false;
 		}	
+	}
+
+	@Override
+	public boolean checkIsProviderIsLabTechnicin(String uuid) {
+		// TODO Auto-generated method stub
+		String checkProvider = ""
+				+ "select "
+				+ "	ur.`role` "
+				+ "from "
+				+ "	provider p "
+				+ "join person pr on "
+				+ "	p.person_id = pr.person_id "
+				+ "join users u on "
+				+ "	u.person_id = pr.person_id "
+				+ "join user_role ur on "
+				+ "	ur.user_id = u.user_id "
+				+ "where "
+				+ "	p.uuid = :id "
+				+ "and ur.`role` = 'Lab Technician'";
+		
+		try{
+			SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(checkProvider);
+			List<String> data = query.setString("id", uuid).list();
+			if(data.size() > 0) {
+				 return true;
+			}
+			else return false;
+			
+		}catch(Exception e){
+			return false;
+		}
 	}
 }
