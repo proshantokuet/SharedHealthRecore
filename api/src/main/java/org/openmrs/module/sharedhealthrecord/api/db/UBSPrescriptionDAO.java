@@ -20,7 +20,4 @@ public interface UBSPrescriptionDAO {
 	
 	List<UBSMedicines> getMedicineListAll();
 
-
-
-
 }

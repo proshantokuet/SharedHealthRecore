@@ -67,14 +67,14 @@ public class UBSExtractServiceANdSaveListener{
 			JSONParser jsonParser = new JSONParser();
 			JSONObject getResponse = null;
 			boolean status = true;
-			try{
+/*			try{
 				String globalServerUrl = centralServer + "openmrs/ws/rest/v1/visittype";
 				String get_result = HttpUtil.get(globalServerUrl, "", "admin:test");
 				JSONObject patienResponseCheck = (JSONObject) jsonParser.parse(get_result);			
 			}catch(Exception e){
 				e.printStackTrace();
 				status = false;
-			}
+			}*/
 			
 			if(status){
 				try {
@@ -115,7 +115,7 @@ public class UBSExtractServiceANdSaveListener{
 				JSONArray obs = (JSONArray) EncounterObj.get("observations");
 	
 				JSONArray IntialJsonDHISArray =  getUBSObservations(obs);
-				
+				log.error("IntialJsonDHISArray size " + IntialJsonDHISArray.size());
 		        if(IntialJsonDHISArray.size() > 0) {
 					String serviceString = IntialJsonDHISArray.toString();
 					log.error("serviceString" + serviceString);
@@ -159,6 +159,10 @@ public class UBSExtractServiceANdSaveListener{
 
 					String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
 						.updateAuditInfoByType(Integer.toString(eventRecordsDTO.getId()), "ExtractID");
+		        }
+		        else {
+					String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
+							.updateAuditInfoByType(Integer.toString(eventRecordsDTO.getId()), "ExtractID");
 		        }
 			}
 		}
