@@ -1,18 +1,20 @@
 <spring:htmlEscape defaultHtmlEscape="true" />
-<ul id="menu">
-	<li class="first"><a
-		href="${pageContext.request.contextPath}/admin"><spring:message
-				code="admin.title.short" /></a></li>
 
-	<li
-		<c:if test='<%= request.getRequestURI().contains("/manage") %>'>class="active"</c:if>>
+<link rel="stylesheet" href="/openmrs/moduleResources/sharedhealthrecord/css/style.css">
+<link rel="stylesheet" href="/openmrs/moduleResources/sharedhealthrecord/css/bootstrap.min.css">
+<link rel="stylesheet" href="/openmrs/moduleResources/sharedhealthrecord/css/jquery.dataTables.css">
+ <link rel="stylesheet" href="/openmrs/moduleResources/sharedhealthrecord/css/select2.css"> 
+<script type="text/javascript" src="/openmrs/moduleResources/sharedhealthrecord/js/bootstrap.min.js"></script>
+<ul id="menu">
+	<li>
 		<a
-		href="${pageContext.request.contextPath}/module/sharedhealthrecord/manage.form"><spring:message
-				code="sharedhealthrecord.manage" /></a>
+		href="${pageContext.request.contextPath}/module/sharedhealthrecord/reports.form">Reports</a>
 	</li>
-	
+		<li>		
+		<a href="/bahmni/home/#/dashboard">Back to Main</a>
+	</li>
 	<!-- Add further links here -->
 </ul>
 <h2>
-	<spring:message code="sharedhealthrecord.title" />
+	<p>${pre }</p> <p>${report }</p>
 </h2>

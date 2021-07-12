@@ -18,7 +18,7 @@ public class UBSReportServiceImpl extends BaseOpenmrsService implements UBSRepor
 		this.dao = dao;
 	}
 	@Override
-	public List<Object> getSelectedReport(String startDate, String endDate,
+	public List<Object[]> getSelectedReport(String startDate, String endDate,
 			String reportName) {
 		// TODO Auto-generated method stub
 		return dao.getSelectedReport(startDate, endDate, reportName);

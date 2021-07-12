@@ -8,5 +8,5 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface UBSReportService extends OpenmrsService {
 
-	List<Object> getSelectedReport(String startDate,String endDate,String reportName);
+	List<Object[]> getSelectedReport(String startDate,String endDate,String reportName);
 }
