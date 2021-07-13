@@ -5,7 +5,7 @@
 
 
 <style>
-.dataTables_wrapper .dt-buttons {
+/* .dataTables_wrapper .dt-buttons {
   float:none;  
   text-align:right;
   position: static;
@@ -15,10 +15,10 @@
 .dataTables_wrapper .dataTables_filter {
     float: left;
     text-align: right;
-}
-table.dataTable tbody th, table.dataTable tbody td {
+} */
+/* table.dataTable tbody th, table.dataTable tbody td {
      padding: 0px 0px; 
-}
+} */
 
 #loader{
 	background-color:#fff;
@@ -48,6 +48,12 @@ table.dataTable tbody th, table.dataTable tbody td {
 	                  		<select name="reportName" id="reportName"  class="form-control selcls" required="true">
 	                  			<option value="SP_ubs_acute_health_condition">Acute Health Condition</option>
 	                  			<option value="SP_ubs_medical_and_other_distribute">Medical And Other Distributes</option>
+	                  			<option value="SP_ubs_sexual_reproductive_health">Sexual and Reproductive Health</option>
+	                  			<option value="SP_ubs_non_communicable_disease">Non-communicable diseases</option>
+	                  			<option value="SP_ubs_injuries">Injuries</option>
+	                  			<option value="SP_ubs_nutrition">Nutrition Services</option>
+	                  			<option value="SP_ubs_mental_health">Mental Health</option>
+	                  			<option value="SP_ubs_communicable_disease">Communicable Diseases</option>
 							</select>                			
 						</div>                  	
 	              	</div>
@@ -86,7 +92,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 					Reports : <span id="reportTitle"></span>
 						</div>
 					</div>
-	`			<div style="overflow:auto;">
+	<!-- <div id="thead_id" style="overflow:auto;">
 			<table id="table_id" class="table table-striped table-bordered">
 				<thead>
 					<tr>
@@ -124,17 +130,16 @@ table.dataTable tbody th, table.dataTable tbody td {
 				</thead>
 				
 			</table>
-			</div>
+			</div> -->
+			<div id="thead_id" style="overflow:auto;"></div>
 		</div>
 </div>
 </div>
+<script type="text/javascript" src="/openmrs/moduleResources/sharedhealthrecord/js/service.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/sharedhealthrecord/js/jquery.dataTables.js"></script>
-<script type="text/javascript" src="/openmrs/moduleResources/sharedhealthrecord/js/dataTables.buttons.min.js"></script>
+<!-- <script type="text/javascript" src="/openmrs/moduleResources/sharedhealthrecord/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/sharedhealthrecord/js/jszip.min.js"></script>
-<script type="text/javascript" src="/openmrs/moduleResources/sharedhealthrecord/js/buttons.html5.min.js"></script>
-<script defer type="text/javascript" src="/openmrs/moduleResources/sharedhealthrecord/js/pdfmake.min.js"></script>
-<script defer type="text/javascript" src="/openmrs/moduleResources/sharedhealthrecord/js/buttons.print.min.js"></script>
-<script defer type="text/javascript" src="/openmrs/moduleResources/sharedhealthrecord/js/vfs_fonts.js"></script>
+<script type="text/javascript" src="/openmrs/moduleResources/sharedhealthrecord/js/buttons.html5.min.js"></script>-->
 
 <script type="text/javascript">
 var $jq = jQuery.noConflict();
@@ -157,6 +162,87 @@ $jq("#startDate").on("change",function(){
 });
 
 $jq(document).ready( function () {
+	$jq('#reportTitle').html("Acute Health Conditions");
+	var tbaleData = window["SP_ubs_acute_health_condition"]();
+	$jq("#thead_id").html(tbaleData);
+	$jq('#table_id').DataTable({
+        bFilter: false,
+        serverSide: false,
+        processing: true,
+	    "searching": true,
+        bInfo: true,
+        destroy: true,
+        ajax: {
+            url: "/openmrs/ws/rest/v1/ubs-report/getSelectedReport",
+            timeout : 300000,
+            data: function(data){
+	
+					data.startDate = "",
+					data.endDate = "",
+					data.reportName = "SP_ubs_acute_health_condition"
+					
+            },
+            dataSrc: function(json){
+                if(json){
+                	
+                    return json;
+                }
+                else {
+                    return [];
+                }
+            },
+            complete: function() {
+            },
+            type: 'GET'
+        }
+	});
+} );
+
+
+var requisitionList;
+$jq("#patienterrorvisualize").on("submit",function(event){
+	    event.preventDefault();
+	    var theadData = window[$jq('#reportName').val()]();
+	    $jq("#thead_id").html(theadData);
+	    var title = $jq('#reportName').find('option:selected').text();
+	    $jq('#reportTitle').html(title);
+		var reportName = $jq('#reportName').val();
+		var startDate = $jq('#startDate').val();
+		var endDate = $jq('#endDate').val();
+ 		requisitionList = $jq('#table_id').DataTable({
+	        bFilter: false,
+	        serverSide: false,
+	        processing: true,
+		    "searching": true,
+	        bInfo: true,
+	        destroy: true,
+        ajax: {
+            url: "/openmrs/ws/rest/v1/ubs-report/getSelectedReport",
+            timeout : 300000,
+            data: function(data){
+	
+					data.startDate = startDate,
+					data.endDate = endDate,
+					data.reportName = reportName
+					
+            },
+            dataSrc: function(json){
+                if(json){
+                	
+                    return json;
+                }
+                else {
+                    return [];
+                }
+            },
+            complete: function() {
+            },
+            type: 'GET'
+        }
+    });  
+});
+
+/* $jq(document).ready( function () {
 	$jq('#reportTitle').html("Acute Health Conditions");
 	$jq('#table_id').DataTable({
         bFilter: false,
@@ -245,113 +331,5 @@ $jq(document).ready( function () {
 		         ]
 	});
 } );
-
-
-var requisitionList;
-$jq("#patienterrorvisualize").on("submit",function(event){
-	    event.preventDefault();
-	    
-	    $jq('#reportTitle').html($jq('#reportName').val());
-		var reportName = $jq('#reportName').val();
-		var startDate = $jq('#startDate').val();
-		var endDate = $jq('#endDate').val();
- 		requisitionList = $jq('#table_id').DataTable({
-	        bFilter: false,
-	        serverSide: false,
-	        processing: true,
-		    "searching": true,
-			dom: 'Bfrtip',
-	        bInfo: true,
-	        destroy: true,
-        ajax: {
-            url: "/openmrs/ws/rest/v1/ubs-report/getSelectedReport",
-            timeout : 300000,
-            data: function(data){
-	
-					data.startDate = startDate,
-					data.endDate = endDate,
-					data.reportName = reportName
-					
-            },
-            dataSrc: function(json){
-                if(json){
-                    return json		;
-                }
-                else {
-                    return [];
-                }
-            },
-            complete: function() {
-            },
-            type: 'GET'
-        },
-		buttons: [
-		             {
-		                 extend: 'excelHtml5',
-		                 title: "Acute Health Conditions",
-		                 text: 'Export as .xlxs'
-		             },
-		             {
-			         		extend: 'pdfHtml5',
-			                title: "Acute Health Conditions",
-			         		text: 'Export as .pdf',
-			         		orientation: 'landscape',
-			         		pageSize: 'LEGAL'
-				     }
-		         ]
-    });  
-});
-
-/* $jq("#patienterrorvisualize").on("submit",function(event){
-	event.preventDefault();
-	$jq("#loading_prov").show();
-	var action_type = $jq("#syncType").val();
-	if(action_type.val == "") {
-		return;
-	}
-	var url = "/openmrs/module/PSI/globalServerSyncInfoByFilter.form?action_type="+action_type;
-	
-	$jq.ajax({
-		type:"GET",
-		contentType : "application/json",
-	    url : url,	 
-	    dataType : 'html',
-	    timeout : 100000,
-	    beforeSend: function() {	    
-	    		
-	    },
-	    success:function(data){
-			   $jq("#patientsyncReport").html(data);
-			   //$jq('#table_id').DataTable();
-				$jq('#table_id').DataTable({
-					   bFilter: false,
-				       bInfo: false,
-				       "searching": true,
-					   dom: 'Bfrtip',
-					   destroy: true,
-					   buttons: [
-					             {
-					                 extend: 'excelHtml5',
-					                 title: action_type + " Data Sync Report",
-					                 text: 'Export as .xlxs'
-					             },
-					             {
-						         		extend: 'pdfHtml5',
-						         		title: action_type + " Data Sync Report",
-						         		text: 'Export as .pdf',
-						         		orientation: 'landscape',
-						         		pageSize: 'LEGAL'
-							     }
-					         ]
-				});
-			   
-			   $jq("#loading_prov").hide();
-	    },
-	    error:function(data){
-	    	$jq("#loading_prov").hide();
-	    }
-	    
-	});
-}); */
-
+ */
 </script>

@@ -1,87 +1,346 @@
-var $JQuery = jQuery.noConflict();
-$JQuery("#serviceForm").submit(function(event) { 
-	$JQuery("#loading").show();
-			var url = "/openmrs/ws/rest/v1/service-management/save";			
-			var token = $JQuery("meta[name='_csrf']").attr("content");
-			var header = $JQuery("meta[name='_csrf_header']").attr("content");			
-			
-			var e = document.getElementById("category");
-			var category = e.options[e.selectedIndex].value;
-			var e1 = document.getElementById("provider");
-			var provider = e1.options[e1.selectedIndex].value;
-			//var clinic = document.getElementById("psiClinicManagement");
-			var clinicValue = $JQuery('input[name=psiClinicManagement]').val();
-			var yearTo = $JQuery('input[name=yearTo]').val();
-			var monthTo = $JQuery('input[name=monthTo]').val();
-			var daysTo = $JQuery('input[name=daysTo]').val();
-			var yearFrom = $JQuery('input[name=yearFrom]').val();
-			var monthFrom = $JQuery('input[name=monthFrom]').val();
-			var daysFrom = $JQuery('input[name=daysFrom]').val();
-			var voided = null;
-			var disableConfirmation = $JQuery('input[name=disableService]:checked').val();
-			var enableConfirmation = $JQuery('input[name=enableService]:checked').val();
-			if (disableConfirmation == "yes") {
-				voided = true;
-			}
-			if (disableConfirmation == "no") {
-				voided = false;
-			}
-			if (enableConfirmation == "yes") {
-				voided = false;
-			}
-			
-			var gender = document.getElementById("gender");
-			var genderValue = gender.options[gender.selectedIndex].value;
-			var formData;			
-				formData = {
-			            'name': $JQuery('input[name=name]').val(),			           
-			            'code': $JQuery('input[name=code]').val(),
-			            'category': category,
-			            'provider': provider,
-			            'sid':  $JQuery('input[name=sid]').val(),
-			            'unitCost': $JQuery('input[name=unitCost]').val(),
-			            'psiClinicManagement': clinicValue,
-			            'yearTo': yearTo,
-			            'monthTo': monthTo,
-			            'daysTo': daysTo,
-			            'yearFrom': yearFrom,
-			            'monthFrom': monthFrom,
-			            'gender': genderValue,
-			            'daysFrom': daysFrom,
-			            'voided': voided,
-			            'purchasePrice': 0,
-			            'type': 'SERVICE',
-			            'discountPop': $JQuery('input[name=discountPop]').val(),
-			            'discountPoor': $JQuery('input[name=discountPoor]').val(),
-			            'discountAblePay': $JQuery('input[name=discountAblePay]').val()
-			        };			 
-			
-			event.preventDefault();			
-			$JQuery.ajax({
-				contentType : "application/json",
-				type: "POST",
-		        url: url,
-		        data: JSON.stringify(formData), 
-		        dataType : 'json',
-		        
-				timeout : 100000,
-				beforeSend: function(xhr) {				    
-					 xhr.setRequestHeader(header, token);
-				},
-				success : function(data) {
-					$JQuery("#usernameUniqueErrorMessage").html(data);
-					$JQuery("#loading").hide();
-				   if(data == ""){					   
-					   window.location.replace("/openmrs/module/PSI/PSIClinicServiceList.form?id="+clinicValue);
-					   
-				   }
-				   
-				},
-				error : function(e) {
-				   
-				},
-				done : function(e) {				    
-				    console.log("DONE");				    
-				}
-			}); 
-		});
+
+function SP_ubs_acute_health_condition(){
+	var destinedThead = ""
+		+ "<div id=\"thead_id\" style=\"overflow:auto;\"> "
+		+ "			<table id=\"table_id\" class=\"table table-striped table-bordered\"> "
+		+ "				<thead> "
+		+ "					<tr> "
+		+ "						<th rowspan=\"2\">Acute Health Condition</th> "
+		+ "						<th colspan=\"2\">Under-5(M)</th> "
+		+ "						<th colspan=\"2\">Under-5(F)</th> "
+		+ "						<th colspan=\"2\">6-17(M)</th> "
+		+ "                        <th colspan=\"2\">6-17(F)</th> "
+		+ "                        <th colspan=\"2\">18-49(M)</th> "
+		+ "                        <th colspan=\"2\">18-49(F)</th> "
+		+ "                        <th colspan=\"2\">50 and above(M)</th> "
+		+ "                        <th colspan=\"2\">50 and above(F)</th> "
+		+ "					</tr> "
+		+ "					<tr> "
+		+ "					 	<th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "					</tr> "
+		+ "				</thead> "
+		+ "				 "
+		+ "			</table> "
+		+ "			</div>";
+	
+	return destinedThead;
+}
+
+
+function SP_ubs_medical_and_other_distribute(){
+	var destinedThead = ""
+		+ "<div id=\"thead_id\" style=\"overflow:auto;\"> "
+		+ "			<table id=\"table_id\" class=\"table table-striped table-bordered\"> "
+		+ "				<thead> "
+		+ "					<tr> "
+		+ "						<th rowspan=\"2\">Acute Health Condition</th> "
+		+ "						<th colspan=\"2\">Under-5(M)</th> "
+		+ "						<th colspan=\"2\">Under-5(F)</th> "
+		+ "						<th colspan=\"2\">6-17(M)</th> "
+		+ "                        <th colspan=\"2\">6-17(F)</th> "
+		+ "                        <th colspan=\"2\">18-49(M)</th> "
+		+ "                        <th colspan=\"2\">18-49(F)</th> "
+		+ "                        <th colspan=\"2\">50 and above(M)</th> "
+		+ "                        <th colspan=\"2\">50 and above(F)</th> "
+		+ "					</tr> "
+		+ "					<tr> "
+		+ "					 	<th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "					</tr> "
+		+ "				</thead> "
+		+ "				 "
+		+ "			</table> "
+		+ "			</div>";
+	
+	return destinedThead;
+	
+}
+
+function SP_ubs_sexual_reproductive_health(){
+	var destinedThead = ""
+		+ "<div id=\"thead_id\" style=\"overflow:auto;\"> "
+		+ "			<table id=\"table_id\" class=\"table table-striped table-bordered\"> "
+		+ "				<thead> "
+		+ "					<tr> "
+		+ "						<th rowspan=\"2\">Sexual Reproductive Healt(SRH)</th> "
+		+ "						<th colspan=\"2\">Adolescent(10-17)</th> "
+		+ "						<th colspan=\"2\">Adult(18 and above)</th> "
+		+ "		 "
+		+ "					</tr> "
+		+ "					<tr> "
+		+ "					 	<th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                         "
+		+ "					</tr> "
+		+ "				</thead> "
+		+ "				 "
+		+ "			</table> "
+		+ "			</div>";
+	
+	return destinedThead;
+	
+}
+
+function SP_ubs_non_communicable_disease(){
+	var destinedThead = ""
+		+ "<div id=\"thead_id\" style=\"overflow:auto;\"> "
+		+ "			<table id=\"table_id\" class=\"table table-striped table-bordered\"> "
+		+ "				<thead> "
+		+ "					<tr> "
+		+ "						<th rowspan=\"2\">Non-communicable diseases</th> "
+		+ "						<th colspan=\"2\">Under-5(M)</th> "
+		+ "						<th colspan=\"2\">Under-5(F)</th> "
+		+ "						<th colspan=\"2\">6-17(M)</th> "
+		+ "                        <th colspan=\"2\">6-17(F)</th> "
+		+ "                        <th colspan=\"2\">18-49(M)</th> "
+		+ "                        <th colspan=\"2\">18-49(F)</th> "
+		+ "                        <th colspan=\"2\">50 and above(M)</th> "
+		+ "                        <th colspan=\"2\">50 and above(F)</th> "
+		+ "					</tr> "
+		+ "					<tr> "
+		+ "					 	<th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "					</tr> "
+		+ "				</thead> "
+		+ "				 "
+		+ "			</table> "
+		+ "			</div>";
+	
+	return destinedThead;
+}
+
+function SP_ubs_injuries(){
+	var destinedThead = ""
+		+ "<div id=\"thead_id\" style=\"overflow:auto;\"> "
+		+ "			<table id=\"table_id\" class=\"table table-striped table-bordered\"> "
+		+ "				<thead> "
+		+ "					<tr> "
+		+ "						<th rowspan=\"2\">Injuries</th> "
+		+ "						<th colspan=\"2\">Under-5(M)</th> "
+		+ "						<th colspan=\"2\">Under-5(F)</th> "
+		+ "						<th colspan=\"2\">6-17(M)</th> "
+		+ "                        <th colspan=\"2\">6-17(F)</th> "
+		+ "                        <th colspan=\"2\">18-49(M)</th> "
+		+ "                        <th colspan=\"2\">18-49(F)</th> "
+		+ "                        <th colspan=\"2\">50 and above(M)</th> "
+		+ "                        <th colspan=\"2\">50 and above(F)</th> "
+		+ "					</tr> "
+		+ "					<tr> "
+		+ "					 	<th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "					</tr> "
+		+ "				</thead> "
+		+ "				 "
+		+ "			</table> "
+		+ "			</div>";
+	
+	return destinedThead;
+}
+
+function SP_ubs_nutrition(){
+	var destinedThead = ""
+		+ "<div id=\"thead_id\" style=\"overflow:auto;\"> "
+		+ "			<table id=\"table_id\" class=\"table table-striped table-bordered\"> "
+		+ "				<thead> "
+		+ "					<tr> "
+		+ "						<th rowspan=\"2\">Nutrition Services</th> "
+		+ "						<th colspan=\"2\">Under-5(M)</th> "
+		+ "						<th colspan=\"2\">Under-5(F)</th> "
+		+ "						<th colspan=\"2\">6-17(M)</th> "
+		+ "                        <th colspan=\"2\">6-17(F)</th> "
+		+ "                        <th colspan=\"2\">18-49(M)</th> "
+		+ "                        <th colspan=\"2\">18-49(F)</th> "
+		+ "                        <th colspan=\"2\">50 and above(M)</th> "
+		+ "                        <th colspan=\"2\">50 and above(F)</th> "
+		+ "					</tr> "
+		+ "					<tr> "
+		+ "					 	<th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "					</tr> "
+		+ "				</thead> "
+		+ "				 "
+		+ "			</table> "
+		+ "			</div>";
+	
+	return destinedThead;
+}
+
+
+function SP_ubs_mental_health(){
+	var destinedThead = ""
+		+ "<div id=\"thead_id\" style=\"overflow:auto;\"> "
+		+ "			<table id=\"table_id\" class=\"table table-striped table-bordered\"> "
+		+ "				<thead> "
+		+ "					<tr> "
+		+ "						<th rowspan=\"2\">Mental Health</th> "
+		+ "						<th colspan=\"2\">Under-5(M)</th> "
+		+ "						<th colspan=\"2\">Under-5(F)</th> "
+		+ "						<th colspan=\"2\">6-17(M)</th> "
+		+ "                        <th colspan=\"2\">6-17(F)</th> "
+		+ "                        <th colspan=\"2\">18-49(M)</th> "
+		+ "                        <th colspan=\"2\">18-49(F)</th> "
+		+ "                        <th colspan=\"2\">50 and above(M)</th> "
+		+ "                        <th colspan=\"2\">50 and above(F)</th> "
+		+ "					</tr> "
+		+ "					<tr> "
+		+ "					 	<th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "					</tr> "
+		+ "				</thead> "
+		+ "				 "
+		+ "			</table> "
+		+ "			</div>";
+	
+	return destinedThead;
+}
+
+function SP_ubs_communicable_disease(){
+	var destinedThead = ""
+		+ "<div id=\"thead_id\" style=\"overflow:auto;\"> "
+		+ "			<table id=\"table_id\" class=\"table table-striped table-bordered\"> "
+		+ "				<thead> "
+		+ "					<tr> "
+		+ "						<th rowspan=\"2\">Communicable Diseases</th> "
+		+ "						<th colspan=\"2\">Under-5(M)</th> "
+		+ "						<th colspan=\"2\">Under-5(F)</th> "
+		+ "						<th colspan=\"2\">6-17(M)</th> "
+		+ "                        <th colspan=\"2\">6-17(F)</th> "
+		+ "                        <th colspan=\"2\">18-49(M)</th> "
+		+ "                        <th colspan=\"2\">18-49(F)</th> "
+		+ "                        <th colspan=\"2\">50 and above(M)</th> "
+		+ "                        <th colspan=\"2\">50 and above(F)</th> "
+		+ "					</tr> "
+		+ "					<tr> "
+		+ "					 	<th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                         "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "                        <th>FDMN</th> "
+		+ "					 	<th>HOST</th> "
+		+ "					</tr> "
+		+ "				</thead> "
+		+ "				 "
+		+ "			</table> "
+		+ "			</div>";
+	
+	return destinedThead;
+}
