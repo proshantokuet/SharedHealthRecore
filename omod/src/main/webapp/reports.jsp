@@ -47,13 +47,19 @@
 	                  		<label for="reportName">Report Name</label> <br />
 	                  		<select name="reportName" id="reportName"  class="form-control selcls" required="true">
 	                  			<option value="SP_ubs_acute_health_condition">Acute Health Condition</option>
-	                  			<option value="SP_ubs_medical_and_other_distribute">Medical And Other Distributes</option>
-	                  			<option value="SP_ubs_sexual_reproductive_health">Sexual and Reproductive Health</option>
-	                  			<option value="SP_ubs_non_communicable_disease">Non-communicable diseases</option>
-	                  			<option value="SP_ubs_injuries">Injuries</option>
-	                  			<option value="SP_ubs_nutrition">Nutrition Services</option>
-	                  			<option value="SP_ubs_mental_health">Mental Health</option>
 	                  			<option value="SP_ubs_communicable_disease">Communicable Diseases</option>
+	                  			<option value="SP_ubs_child_vaccination">EPI and Vaccination</option>
+	                  			<option value="SP_ubs_injuries">Injuries</option>
+	                  			<option value="SP_ubs_inPatient_service">In Patient Services</option>
+	                  			<option value="SP_ubs_medical_and_other_distribute">Medical And Other Distributes</option>
+	                  			<option value="SP_ubs_medical_investigation">Medical Investigation</option>
+	                  			<option value="SP_ubs_mental_health">Mental Health</option>
+	                  			<option value="SP_ubs_mortality">Mortality</option>
+	                  			<option value="SP_ubs_non_communicable_disease">Non-communicable diseases</option>
+	                  			<option value="SP_ubs_nutrition">Nutrition Services</option>
+	                  			<option value="SP_outpatient_medical_consultation">Outpatient Medical Consultation</option>
+	                  			<option value="SP_ubs_referrals">Referrals</option>
+	                  			<option value="SP_ubs_sexual_reproductive_health">Sexual and Reproductive Health</option>
 							</select>                			
 						</div>                  	
 	              	</div>
@@ -92,45 +98,6 @@
 					Reports : <span id="reportTitle"></span>
 						</div>
 					</div>
-	<!-- <div id="thead_id" style="overflow:auto;">
-			<table id="table_id" class="table table-striped table-bordered">
-				<thead>
-					<tr>
-						<th rowspan="2">Acute Health Condition</th>
-						<th colspan="2">Under-5(M)</th>
-						<th colspan="2">Under-5(F)</th>
-						<th colspan="2">6-17(M)</th>
-                        <th colspan="2">6-17(F)</th>
-                        <th colspan="2">18-49(M)</th>
-                        <th colspan="2">18-49(F)</th>
-                        <th colspan="2">50 and above(M)</th>
-                        <th colspan="2">50 and above(F)</th>
-					</tr>
-					<tr>
-					 	<th>FDMN</th>
-					 	<th>HOST</th>
-                        <th>FDMN</th>
-					 	<th>HOST</th>
-                        
-                        <th>FDMN</th>
-					 	<th>HOST</th>
-                        <th>FDMN</th>
-					 	<th>HOST</th>
-                        
-                        <th>FDMN</th>
-					 	<th>HOST</th>
-                        <th>FDMN</th>
-					 	<th>HOST</th>
-                        
-                        <th>FDMN</th>
-					 	<th>HOST</th>
-                        <th>FDMN</th>
-					 	<th>HOST</th>
-					</tr>
-				</thead>
-				
-			</table>
-			</div> -->
 			<div id="thead_id" style="overflow:auto;"></div>
 		</div>
 </div>
@@ -140,196 +107,3 @@
 <!-- <script type="text/javascript" src="/openmrs/moduleResources/sharedhealthrecord/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/sharedhealthrecord/js/jszip.min.js"></script>
 <script type="text/javascript" src="/openmrs/moduleResources/sharedhealthrecord/js/buttons.html5.min.js"></script>-->
-
-<script type="text/javascript">
-var $jq = jQuery.noConflict();
-$jq(window).load(function() {
-	   $jq("#loader").hide();
-	    $jq("#tabs").show(); 
-});
-$jq( function() {
-	$jq("#startDate").datepicker({ dateFormat: 'yy-mm-dd', maxDate: new Date });
-	$jq("#endDate").datepicker({ dateFormat: 'yy-mm-dd', minDate: new Date});
-  } );
-  
-$jq("#startDate").on("change",function(){
-	/* console.log("change"); */
-	$jq("#endDate").datepicker(
-			'option',
-			{ minDate: new Date($jq("#startDate").val()),
-			  maxDate: new Date()
-			});
-});
-
-$jq(document).ready( function () {
-	$jq('#reportTitle').html("Acute Health Conditions");
-	var tbaleData = window["SP_ubs_acute_health_condition"]();
-	$jq("#thead_id").html(tbaleData);
-	$jq('#table_id').DataTable({
-        bFilter: false,
-        serverSide: false,
-        processing: true,
-	    "searching": true,
-        bInfo: true,
-        destroy: true,
-        ajax: {
-            url: "/openmrs/ws/rest/v1/ubs-report/getSelectedReport",
-            timeout : 300000,
-            data: function(data){
-	
-					data.startDate = "",
-					data.endDate = "",
-					data.reportName = "SP_ubs_acute_health_condition"
-					
-            },
-            dataSrc: function(json){
-                if(json){
-                	
-                    return json;
-                }
-                else {
-                    return [];
-                }
-            },
-            complete: function() {
-            },
-            type: 'GET'
-        }
-	});
-} );
-
-
-var requisitionList;
-$jq("#patienterrorvisualize").on("submit",function(event){
-	    event.preventDefault();
-	    var theadData = window[$jq('#reportName').val()]();
-	    $jq("#thead_id").html(theadData);
-	    var title = $jq('#reportName').find('option:selected').text();
-	    $jq('#reportTitle').html(title);
-		var reportName = $jq('#reportName').val();
-		var startDate = $jq('#startDate').val();
-		var endDate = $jq('#endDate').val();
- 		requisitionList = $jq('#table_id').DataTable({
-	        bFilter: false,
-	        serverSide: false,
-	        processing: true,
-		    "searching": true,
-	        bInfo: true,
-	        destroy: true,
-        ajax: {
-            url: "/openmrs/ws/rest/v1/ubs-report/getSelectedReport",
-            timeout : 300000,
-            data: function(data){
-	
-					data.startDate = startDate,
-					data.endDate = endDate,
-					data.reportName = reportName
-					
-            },
-            dataSrc: function(json){
-                if(json){
-                	
-                    return json;
-                }
-                else {
-                    return [];
-                }
-            },
-            complete: function() {
-            },
-            type: 'GET'
-        }
-    });  
-});
-
-/* $jq(document).ready( function () {
-	$jq('#reportTitle').html("Acute Health Conditions");
-	$jq('#table_id').DataTable({
-        bFilter: false,
-        serverSide: false,
-        processing: true,
-	    "searching": true,
-		dom: 'Bfrtip',
-        bInfo: true,
-        destroy: true,
-        ajax: {
-            url: "/openmrs/ws/rest/v1/ubs-report/getSelectedReport",
-            timeout : 300000,
-            data: function(data){
-	
-					data.startDate = "",
-					data.endDate = "",
-					data.reportName = "SP_ubs_acute_health_condition"
-					
-            },
-            dataSrc: function(json){
-                if(json){
-                    return json		;
-                }
-                else {
-                    return [];
-                }
-            },
-            complete: function() {
-            },
-            type: 'GET'
-        },
-		buttons: [
-		             {
-		                 extend: 'excelHtml5',
-		                 title: "Acute Health Conditions",
-		                 text: 'Export as .xlxs',
-		                 customize:function(win){
-		                	 var sheet = win.xl.worksheets['sheet1.xml'];
-		                	 console.log(sheet);
-		                	 $jq('c[r=B2 ] t', sheet).text( 'FDMN Under-5(M)' );
-		                	 $jq('c[r=C2 ] t', sheet).text( 'HOST Under-5(M)' );
-		                	 $jq('c[r=D2 ] t', sheet).text( 'FDMN Under-5(F)' );
-		                	 $jq('c[r=E2 ] t', sheet).text( 'HOST Under-5(F)' );
-		                	 $jq('c[r=F2 ] t', sheet).text( 'FDMN 6-17(M)' );
-		                	 $jq('c[r=G2 ] t', sheet).text( 'HOST 6-17(M)' );
-		                	 $jq('c[r=H2 ] t', sheet).text( 'FDMN 6-17(F)' );
-		                	 $jq('c[r=I2 ] t', sheet).text( 'HOST 6-17(F)' );
-		                	 $jq('c[r=J2 ] t', sheet).text( 'FDMN 18-49(M)' );
-		                	 $jq('c[r=K2 ] t', sheet).text( 'HOST 18-49(M)' );
-		                	 $jq('c[r=L2 ] t', sheet).text( 'FDMN 18-49(F)' );
-		                	 $jq('c[r=M2 ] t', sheet).text( 'HOST 18-49(F)');
-		                	 $jq('c[r=N2 ] t', sheet).text( 'FDMN 50 and above(M)' );
-		                	 $jq('c[r=O2 ] t', sheet).text( 'HOST 50 and above(M)' );
-		                	 $jq('c[r=P2 ] t', sheet).text( 'FDMN 50 and above(F)' );
-		                	 $jq('c[r=Q2 ] t', sheet).text( 'HOST 50 and above(F)' );
-		                	
-		                	  }
-		             },
-		             {
-			         		extend: 'pdfHtml5',
-			                title: "Acute Health Conditions",
-			         		text: 'Export as .pdf',
-			         		orientation: 'landscape',
-			         		pageSize: 'LEGAL',
-			         		customize:function(pdfDocument){
-			         			pdfDocument.content[1].table.headerRows = 2;
-			                    var firstHeaderRow = [];
-			                    $jq('#table_id').find("thead>tr:first-child>th").each(
-			                            function(index, element) {
-			                              var colSpan = element.getAttribute("colSpan");
-			                              firstHeaderRow.push({
-			                                text: element.innerHTML,
-			                                style: "tableHeader",
-			                                colSpan: colSpan
-			                              });
-			                              for (var i = 0; i < colSpan - 1; i++) {
-			                                firstHeaderRow.push({});
-			                              }
-	                            });
-			                    pdfDocument.content[1].table.body.unshift(firstHeaderRow);
-			                    pdfDocument.content[1].table.body[1][0].text = "";
-			                    pdfDocument.content[1].layout = "";
-			                    
-			         		}
-				     }
-		         ]
-	});
-} );
- */
-</script>
