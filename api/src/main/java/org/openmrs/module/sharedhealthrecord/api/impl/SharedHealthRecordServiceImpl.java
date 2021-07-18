@@ -13,12 +13,15 @@
  */
 package org.openmrs.module.sharedhealthrecord.api.impl;
 
+import java.util.List;
+
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.sharedhealthrecord.UBSDataExtract;
 import org.openmrs.module.sharedhealthrecord.api.SharedHealthRecordService;
 import org.openmrs.module.sharedhealthrecord.api.db.SharedHealthRecordDAO;
+import org.openmrs.module.sharedhealthrecord.dto.UBSCommonDTO;
 
 /**
  * It is a default implementation of {@link SharedHealthRecordService}.
@@ -61,5 +64,17 @@ public class SharedHealthRecordServiceImpl extends BaseOpenmrsService implements
 	public boolean checkIsProviderIsLabTechnicin(String uuid) {
 		// TODO Auto-generated method stub
 		return dao.checkIsProviderIsLabTechnicin(uuid);
+	}
+
+	@Override
+	public List<UBSCommonDTO> getChildInfo(String encounter_uuid) {
+		// TODO Auto-generated method stub
+		return dao.getChildInfo(encounter_uuid);
+	}
+
+	@Override
+	public int insertIntoChildInfoTable(UBSCommonDTO dto) {
+		// TODO Auto-generated method stub
+		return dao.insertIntoChildInfoTable(dto);
 	}
 }

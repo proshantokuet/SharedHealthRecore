@@ -13,8 +13,11 @@
  */
 package org.openmrs.module.sharedhealthrecord.api.db;
 
+import java.util.List;
+
 import org.openmrs.module.sharedhealthrecord.UBSDataExtract;
 import org.openmrs.module.sharedhealthrecord.api.SharedHealthRecordService;
+import org.openmrs.module.sharedhealthrecord.dto.UBSCommonDTO;
 
 /**
  *  Database methods for {@link SharedHealthRecordService}.
@@ -30,4 +33,9 @@ public interface SharedHealthRecordDAO {
 	public boolean deleteExtractedFieldsByEncounterUuid(String encounterUuid,String tableName);
 	
 	public boolean checkIsProviderIsLabTechnicin(String uuid);
+	
+	public List<UBSCommonDTO>getChildInfo(String encounter_uuid);
+	
+	public int insertIntoChildInfoTable(UBSCommonDTO dto);
+
 }

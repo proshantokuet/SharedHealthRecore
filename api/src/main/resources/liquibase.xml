@@ -392,4 +392,20 @@
 			ALTER TABLE shr_action_error_log CHANGE error_message error_message mediumtext; 
 		</sql>
 	</changeSet>
+	    <changeSet id="ubs_report_child_information-1.0.0" author="tanvir">
+    	<createTable tableName="ubs_report_child_information">
+    		<column name="id" type="int(11)" autoIncrement="true">
+    			<constraints primaryKey="true" nullable="false" />
+    		</column>
+    		<column name="birth_weight" type="varchar(255)"/>
+    		<column name="neonatal_sepsis" type="varchar(255)"/>
+    		<column name="birth_asphyxia" type="varchar(255)"/>
+    		<column name="gender" type="varchar(255)" />
+			<column name="encounter_uuid" type="varchar(255)" />
+			<column name="patient_uuid" type="varchar(255)" />
+			<column name="voided" type="tinyint(1)">
+				<constraints nullable="false" />
+			</column>
+    	</createTable>
+    </changeSet>
 </databaseChangeLog>

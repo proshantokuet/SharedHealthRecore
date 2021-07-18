@@ -653,6 +653,30 @@ SP_ubs_medical_and_other_distribute = () =>{
 		return destinedThead;
 	}
  
+ SP_ubs_newborn_child_health = ()=>{
+		var destinedThead = ""
+			+ "<div id=\"thead_id\" style=\"overflow:auto;\"> "
+			+ "<table id=\"table_id\" class=\"table table-striped table-bordered\"> "
+			+ "				<thead> "
+			+ "					<tr> "
+			+ "						<th rowspan=\"2\">Newborn and Child Health</th> "
+			+ "						<th colspan=\"2\">Male</th> "
+			+ "						<th colspan=\"2\">Female</th> "
+			+ "					</tr> "
+			+ "					<tr> "
+			+ "					 	<th>FDMN</th> "
+			+ "					 	<th>HOST</th> "
+			+ "                        <th>FDMN</th> "
+			+ "					 	<th>HOST</th> "
+			+ "					</tr> "
+			+ "				</thead> "
+			+ "				  "
+			+ "			</table>"
+			+ "			</div>";
+		
+		return destinedThead;
+	}
+ 
  SP_outpatient_medical_consultation = ()=>{
 		var destinedThead = ""
 			+ "<div id=\"thead_id\" style=\"overflow:auto;\"> "

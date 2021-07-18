@@ -3,10 +3,13 @@ package org.openmrs.module.sharedhealthrecord.web.listener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
@@ -21,6 +24,7 @@ import org.openmrs.module.sharedhealthrecord.UBSDataExtract;
 import org.openmrs.module.sharedhealthrecord.api.SHRActionAuditInfoService;
 import org.openmrs.module.sharedhealthrecord.api.SharedHealthRecordService;
 import org.openmrs.module.sharedhealthrecord.domain.EventRecordsDTO;
+import org.openmrs.module.sharedhealthrecord.dto.UBSCommonDTO;
 import org.openmrs.module.sharedhealthrecord.utils.HttpUtil;
 import org.openmrs.module.sharedhealthrecord.utils.ServerAddress;
 import org.openmrs.module.sharedhealthrecord.web.controller.rest.SharedHealthRecordManageRestController;
@@ -56,7 +60,7 @@ public class UBSExtractServiceANdSaveListener{
 //	@Scheduled(fixedRate=10000)
 	private static final Logger log = LoggerFactory.getLogger(UBSExtractServiceANdSaveListener.class);
 	public void sendAllData() throws Exception {
-		log.error("Entered in followup listener" + new Date());
+		log.error("Entered in ubs extract listener" + new Date());
 		if (!lock.tryLock()) {
 			log.error("It is already in progress.");
 	        return;
@@ -67,18 +71,10 @@ public class UBSExtractServiceANdSaveListener{
 			JSONParser jsonParser = new JSONParser();
 			JSONObject getResponse = null;
 			boolean status = true;
-/*			try{
-				String globalServerUrl = centralServer + "openmrs/ws/rest/v1/visittype";
-				String get_result = HttpUtil.get(globalServerUrl, "", "admin:test");
-				JSONObject patienResponseCheck = (JSONObject) jsonParser.parse(get_result);			
-			}catch(Exception e){
-				e.printStackTrace();
-				status = false;
-			}*/
-			
 			if(status){
 				try {
 					extractAndSave();
+					extactChildinfo();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -164,6 +160,84 @@ public class UBSExtractServiceANdSaveListener{
 					String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
 							.updateAuditInfoByType(Integer.toString(eventRecordsDTO.getId()), "ExtractID");
 		        }
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public synchronized void extactChildinfo() {
+		
+		
+		String last_entry = Context.getService(SHRActionAuditInfoService.class).getLastEntryByType("ExtractChildID");
+		List<EventRecordsDTO> records = Context.getService(SHRActionAuditInfoService.class).getEventRecords("Encounter",last_entry);
+		try {   
+		    log.error("extactChildinfo event records size "  + records.size());
+			for (EventRecordsDTO eventRecordsDTO : records) {
+				
+				String encounterUUid = eventRecordsDTO.getObject().split("/|\\?")[7];
+			    log.error("extactChildinfo encounterUUid "  + encounterUUid);
+				List<UBSCommonDTO> getChildInfo = Context.getService(SharedHealthRecordService.class).getChildInfo(encounterUUid);
+				log.error("extactChildinfo getChildInfo size "  + getChildInfo.size());
+				if(getChildInfo.size() > 0) {
+					UBSCommonDTO newUbsCommonDTO = new UBSCommonDTO();
+					List<UBSCommonDTO> commonDTOs = new ArrayList<UBSCommonDTO>();
+					int cnt=0;
+					for (UBSCommonDTO ubsCommonDTO : getChildInfo) {
+						cnt++;
+						if(cnt%4 == 0) {
+							if(ubsCommonDTO.getQuestion().equalsIgnoreCase("Birth Asphyxia")) {
+								newUbsCommonDTO.setBirth_Ashphyxia(ubsCommonDTO.getAnswer());
+							}
+							else if(ubsCommonDTO.getQuestion().equalsIgnoreCase("Neonatal Sepsis")) {
+								newUbsCommonDTO.setNeonatal_sepsis(ubsCommonDTO.getAnswer());
+							}
+							else if(ubsCommonDTO.getQuestion().equalsIgnoreCase("Newborn's birth weight(kg)")) {
+								newUbsCommonDTO.setNewborn_weight(ubsCommonDTO.getAnswer());
+							}
+							else if(ubsCommonDTO.getQuestion().equalsIgnoreCase("Newborn's Gender")) {
+								newUbsCommonDTO.setGender(ubsCommonDTO.getAnswer());
+							}
+							newUbsCommonDTO.setPatient_uuid(ubsCommonDTO.getPatient_uuid());
+							newUbsCommonDTO.setEncounter_uuid(encounterUUid);
+							commonDTOs.add(newUbsCommonDTO);
+							newUbsCommonDTO = new UBSCommonDTO();
+							
+						}
+						else {
+							if(ubsCommonDTO.getQuestion().equalsIgnoreCase("Birth Asphyxia")) {
+								newUbsCommonDTO.setBirth_Ashphyxia(ubsCommonDTO.getAnswer());
+							}
+							else if(ubsCommonDTO.getQuestion().equalsIgnoreCase("Neonatal Sepsis")) {
+								newUbsCommonDTO.setNeonatal_sepsis(ubsCommonDTO.getAnswer());
+							}
+							else if(ubsCommonDTO.getQuestion().equalsIgnoreCase("Newborn's birth weight(kg)")) {
+								newUbsCommonDTO.setNewborn_weight(ubsCommonDTO.getAnswer());
+							}
+							else if(ubsCommonDTO.getQuestion().equalsIgnoreCase("Newborn's Gender")) {
+								newUbsCommonDTO.setGender(ubsCommonDTO.getAnswer());
+							}
+						}
+					}
+					log.error("extactChildinfo commonDTOs size "  + commonDTOs.size());
+
+					for (UBSCommonDTO ubsOuterDto : commonDTOs) {
+						Context.getService(SharedHealthRecordService.class).deleteExtractedFieldsByEncounterUuid(encounterUUid, "ubs_report_child_information");
+						int status = Context.getService(SharedHealthRecordService.class).insertIntoChildInfoTable(ubsOuterDto);
+					}
+					String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
+							.updateAuditInfoByType(Integer.toString(eventRecordsDTO.getId()), "ExtractChildID");
+				}
+				else {
+					String audit_info_save = Context.getService(SHRActionAuditInfoService.class)
+							.updateAuditInfoByType(Integer.toString(eventRecordsDTO.getId()), "ExtractChildID");
+				}
+
+
 			}
 		}
 		catch (Exception e) {

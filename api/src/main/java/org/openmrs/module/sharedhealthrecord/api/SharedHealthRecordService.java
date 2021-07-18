@@ -13,8 +13,11 @@
  */
 package org.openmrs.module.sharedhealthrecord.api;
 
+import java.util.List;
+
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.sharedhealthrecord.UBSDataExtract;
+import org.openmrs.module.sharedhealthrecord.dto.UBSCommonDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -40,5 +43,9 @@ public interface SharedHealthRecordService extends OpenmrsService {
 	public boolean deleteExtractedFieldsByEncounterUuid(String encounterUuid,String tableName);
 	
 	public boolean checkIsProviderIsLabTechnicin(String uuid);
+	
+	public List<UBSCommonDTO>getChildInfo(String encounter_uuid);
+	
+	public int insertIntoChildInfoTable(UBSCommonDTO dto);
 	
 }

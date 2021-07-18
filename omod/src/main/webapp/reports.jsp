@@ -55,6 +55,7 @@
 	                  			<option value="SP_ubs_medical_investigation">Medical Investigation</option>
 	                  			<option value="SP_ubs_mental_health">Mental Health</option>
 	                  			<option value="SP_ubs_mortality">Mortality</option>
+	                  			<option value="SP_ubs_newborn_child_health">Newborn and Child Health</option>
 	                  			<option value="SP_ubs_non_communicable_disease">Non-communicable diseases</option>
 	                  			<option value="SP_ubs_nutrition">Nutrition Services</option>
 	                  			<option value="SP_outpatient_medical_consultation">Outpatient Medical Consultation</option>

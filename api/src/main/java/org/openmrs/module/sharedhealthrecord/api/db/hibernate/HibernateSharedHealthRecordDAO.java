@@ -13,14 +13,18 @@
  */
 package org.openmrs.module.sharedhealthrecord.api.db.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.AliasToBeanResultTransformer;
+import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.module.sharedhealthrecord.UBSDataExtract;
 import org.openmrs.module.sharedhealthrecord.api.db.SharedHealthRecordDAO;
+import org.openmrs.module.sharedhealthrecord.dto.UBSCommonDTO;
 
 /**
  * It is a default implementation of  {@link SharedHealthRecordDAO}.
@@ -120,5 +124,53 @@ public class HibernateSharedHealthRecordDAO implements SharedHealthRecordDAO {
 		}catch(Exception e){
 			return false;
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<UBSCommonDTO> getChildInfo(String encounter_uuid) {
+		// TODO Auto-generated method stub
+		String birthQuery = "Call sp_extract_child_info('"+encounter_uuid+"')";
+				
+		
+		List<UBSCommonDTO> report = new ArrayList<UBSCommonDTO>();
+		try{
+			report = sessionFactory.getCurrentSession().createSQLQuery(birthQuery).
+					addScalar("question",StandardBasicTypes.STRING).
+					addScalar("answer",StandardBasicTypes.STRING).
+					addScalar("patient_uuid",StandardBasicTypes.STRING).
+					setResultTransformer(new AliasToBeanResultTransformer(UBSCommonDTO.class)).
+					list();
+			return report;
+		}catch(Exception e){
+			return report;
+		}
+	}
+
+	@Override
+	public int insertIntoChildInfoTable(UBSCommonDTO dto) {
+		// TODO Auto-generated method stub
+		try {
+			String sql = ""
+					+ "INSERT INTO openmrs.ubs_report_child_information"
+					+ "(birth_weight, neonatal_sepsis, birth_asphyxia, gender, encounter_uuid, patient_uuid,voided) "
+					+ "VALUES(:weight,:neonatalsepsis,:asphyxia,:gender,:encounter,:patientid,:flag);";
+			log.error("sql" + sql);
+			SQLQuery saveDetails = sessionFactory.getCurrentSession().createSQLQuery(sql);
+			int Status = saveDetails
+						.setString("weight", dto.getNewborn_weight())
+					   .setString("neonatalsepsis", dto.getNeonatal_sepsis())
+					   .setString("asphyxia", dto.getBirth_Ashphyxia())
+					   .setString("gender", dto.getGender())
+					   .setString("encounter", dto.getEncounter_uuid())
+					   .setString("patientid", dto.getPatient_uuid())
+					   .setInteger("flag", 0).executeUpdate();
+			return Status;
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			return 0;
+		}
+
 	}
 }
