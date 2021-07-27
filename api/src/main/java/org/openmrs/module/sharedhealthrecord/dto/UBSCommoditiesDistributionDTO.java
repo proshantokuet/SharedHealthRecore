@@ -21,6 +21,8 @@ public class UBSCommoditiesDistributionDTO {
 	
 	private Date distributeDate;
 	
+	private String uuid;
+	
 	private Set<UBSCommoditiesDistributeDetailsDTO> ubsCommoditiesDistributeDetailsDto;
 
 	public int getDistributeId() {
@@ -94,6 +96,14 @@ public class UBSCommoditiesDistributionDTO {
 	public void setUbsCommoditiesDistributeDetailsDto(
 			Set<UBSCommoditiesDistributeDetailsDTO> ubsCommoditiesDistributeDetailsDto) {
 		this.ubsCommoditiesDistributeDetailsDto = ubsCommoditiesDistributeDetailsDto;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	

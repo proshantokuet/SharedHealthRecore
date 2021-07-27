@@ -23,4 +23,9 @@ public interface UBSCommoditiesService extends OpenmrsService {
 	UBSCommoditiesDistributeDetails findByDistributeDetailsId(int distributeDetailsId);
 	
 	List<UBSCommoditiesReportDTO> findAllByPatientUuid(String patientUuid);
+	
+	List<UBSCommoditiesDistribution> getAllDistributionList(int id);
+	
+	UBSCommoditiesDistribution findByDistributeUuid(String uuid);
+	
 }

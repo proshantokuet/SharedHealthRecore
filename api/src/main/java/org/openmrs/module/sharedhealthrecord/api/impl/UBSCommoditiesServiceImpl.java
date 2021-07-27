@@ -62,4 +62,16 @@ public class UBSCommoditiesServiceImpl extends BaseOpenmrsService implements UBS
 		return dao.findAllByPatientUuid(patientUuid);
 	}
 
+	@Override
+	public List<UBSCommoditiesDistribution> getAllDistributionList(int id) {
+		// TODO Auto-generated method stub
+		return dao.getAllDistributionList(id);
+	}
+
+	@Override
+	public UBSCommoditiesDistribution findByDistributeUuid(String uuid) {
+		// TODO Auto-generated method stub
+		return dao.findByDistributeUuid(uuid);
+	}
+
 }

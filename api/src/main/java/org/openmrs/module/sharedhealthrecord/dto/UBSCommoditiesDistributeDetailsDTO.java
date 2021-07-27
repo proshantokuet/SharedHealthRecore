@@ -11,6 +11,8 @@ public class UBSCommoditiesDistributeDetailsDTO {
 	private int quantity;
 	
 	private UBSCommoditiesDistributionDTO ubsCommoditiesDistributionDto;
+	
+	private String uuid;
 
 	public int getDistributeDetailsId() {
 		return distributeDetailsId;
@@ -51,5 +53,13 @@ public class UBSCommoditiesDistributeDetailsDTO {
 	public void setUbsCommoditiesDistributionDto(
 			UBSCommoditiesDistributionDTO ubsCommoditiesDistributionDto) {
 		this.ubsCommoditiesDistributionDto = ubsCommoditiesDistributionDto;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 }

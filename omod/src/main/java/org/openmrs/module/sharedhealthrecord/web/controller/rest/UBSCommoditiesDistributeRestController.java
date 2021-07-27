@@ -195,4 +195,82 @@ public class UBSCommoditiesDistributeRestController {
 		}
 	}
 	
+	
+	@RequestMapping(value = "/save-update-in-global", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	public ResponseEntity<String> saveCommoditiesForGlobal(@RequestBody UBSCommoditiesDistributionDTO dto) throws Exception {
+		
+		JSONObject response = new JSONObject();
+		log.error("DTO" + dto);
+		try {
+			UBSCommoditiesDistribution getPreviousData = Context.getService(UBSCommoditiesService.class).findByDistributeUuid(dto.getUuid());
+			if(getPreviousData == null) {
+			Set<UBSCommoditiesDistributeDetailsDTO> ubsCommoditiesDistributeDetailsDTOs = dto.getUbsCommoditiesDistributeDetailsDto();
+			UBSCommoditiesDistribution ubsCommoditiesDistribution = Context.getService(UBSCommoditiesService.class).findByDistributeId(dto.getDistributeId());
+			if (ubsCommoditiesDistribution == null) {
+				ubsCommoditiesDistribution = new UBSCommoditiesDistribution();
+				ubsCommoditiesDistribution.setUuid(dto.getUuid());
+				ubsCommoditiesDistribution.setDateCreated(new Date());
+				ubsCommoditiesDistribution.setCreator(Context.getAuthenticatedUser());
+			}
+			else {
+				ubsCommoditiesDistribution.setChangedBy(Context.getAuthenticatedUser());
+				ubsCommoditiesDistribution.setDateChanged(new Date());
+			}
+			
+			ubsCommoditiesDistribution.setPatientName(dto.getPatientName());
+			ubsCommoditiesDistribution.setPatientUuid(dto.getPatientUuid());
+			ubsCommoditiesDistribution.setGender(dto.getGender());
+
+			ubsCommoditiesDistribution.setPatientAge(dto.getPatientAge());
+			ubsCommoditiesDistribution.setProviderName(dto.getProviderName());
+			ubsCommoditiesDistribution.setSlipNo(dto.getSlipNo());
+			ubsCommoditiesDistribution.setDistributeDate(dto.getDistributeDate());
+	
+				
+			log.error("ubs distribute Object Creating Seuccess " + dto.getPatientName());
+			Set<UBSCommoditiesDistributeDetails> ubsCommoditiesDistributeDetails = new HashSet<UBSCommoditiesDistributeDetails>();;
+			for (UBSCommoditiesDistributeDetailsDTO ubsDetailsDTO : ubsCommoditiesDistributeDetailsDTOs) {
+				
+				UBSCommoditiesDistributeDetails ubsDistributeDetails = Context.getService(UBSCommoditiesService.class).findByDistributeDetailsId(ubsDetailsDTO.getDistributeDetailsId());
+				
+				if(ubsDistributeDetails == null) {
+					ubsDistributeDetails = new UBSCommoditiesDistributeDetails();
+					ubsDistributeDetails.setUuid(ubsDetailsDTO.getUuid());
+					ubsDistributeDetails.setDateCreated(new Date());
+					ubsDistributeDetails.setCreator(Context.getAuthenticatedUser());
+				}
+				else {
+					ubsDistributeDetails.setChangedBy(Context.getAuthenticatedUser());
+					ubsDistributeDetails.setDateChanged(new Date());
+				}
+				
+				ubsDistributeDetails.setCommoditiesName(ubsDetailsDTO.getCommoditiesName());
+				ubsDistributeDetails.setCommoditiesId(ubsDetailsDTO.getCommoditiesId());
+				ubsDistributeDetails.setQuantity(ubsDetailsDTO.getQuantity());
+
+				ubsCommoditiesDistributeDetails.add(ubsDistributeDetails);
+			}
+
+			ubsCommoditiesDistribution.setUbsCommoditiesDistributeDetails(ubsCommoditiesDistributeDetails);
+			log.error("ubsprescrion Object Creating Seuccess full " + ubsCommoditiesDistribution.getUbsCommoditiesDistributeDetails().size());
+			Context.getService(UBSCommoditiesService.class).saveOrUpdate(ubsCommoditiesDistribution);
+			response.put("message", "Successfully Saved");
+			response.put("status", "SUCCESS");
+			}
+			else {
+				response.put("message", "Already Exist");
+				response.put("status", "SUCCESS");
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			response.put("message", e.getMessage());
+			response.put("status", "FAILED");
+			return new ResponseEntity<>(response.toString(), HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<>(response.toString(), HttpStatus.OK);
+		
+	}
+	
 }

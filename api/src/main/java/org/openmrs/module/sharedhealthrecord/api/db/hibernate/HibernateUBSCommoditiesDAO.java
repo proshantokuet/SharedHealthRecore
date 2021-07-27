@@ -14,6 +14,7 @@ import org.openmrs.module.sharedhealthrecord.UBSUniqueIdGenerator;
 import org.openmrs.module.sharedhealthrecord.api.db.UBSCommoditiesDAO;
 import org.openmrs.module.sharedhealthrecord.domain.MoneyReceiptDTO;
 import org.openmrs.module.sharedhealthrecord.dto.UBSCommoditiesReportDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 public class HibernateUBSCommoditiesDAO implements UBSCommoditiesDAO {
 	
@@ -124,6 +125,31 @@ public class HibernateUBSCommoditiesDAO implements UBSCommoditiesDAO {
 		
 		return ubsCommoditiesReportDTOs;
 
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<UBSCommoditiesDistribution> getAllDistributionList(int id) {
+		// TODO Auto-generated method stub
+		List<UBSCommoditiesDistribution> ubsCommoditiesDistributions = sessionFactory
+				.getCurrentSession()
+				.createQuery(
+						"from UBSCommoditiesDistribution where distributeId > :id").setInteger("id", id).setMaxResults(100).list();
+			return ubsCommoditiesDistributions;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public UBSCommoditiesDistribution findByDistributeUuid(String uuid) {
+		// TODO Auto-generated method stub
+		List<UBSCommoditiesDistribution> ubsCommoditiesDistributions = sessionFactory
+				.getCurrentSession()
+				.createQuery(
+						"from UBSCommoditiesDistribution where uuid = :id").setString("id", uuid).list();
+		if(ubsCommoditiesDistributions.size() > 0) {
+			return ubsCommoditiesDistributions.get(0);
+		}
+		else return null;
 	}
 
 }
