@@ -34,6 +34,14 @@ public class EncounterDataConverter {
 			JSONArray groupMembers = (JSONArray) ob.get("groupMembers");
 			System.out.println("Coded..........:" + groupMembers.size() + " type:" + type);
 			try {
+				String conceptName = "";
+				if(ob.containsKey("conceptNameToDisplay")) {
+					 conceptName = (String) ob.get("conceptNameToDisplay");
+				}
+				if(conceptName.equalsIgnoreCase("Vitals") || conceptName.equalsIgnoreCase("History and Examination")) {
+					
+				}
+				else {
 				if (!StringUtils.isBlank(type) && type.equalsIgnoreCase("Coded")) {
 					
 					JSONObject obs = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(ob.toString(),
@@ -72,6 +80,8 @@ public class EncounterDataConverter {
 					JSONObject obs = (JSONObject) jsonParser.parse(new Gson().toJson(new Gson().fromJson(ob.toString(),
 					    Observation.class)));
 					observations.add(obs);
+				}
+				
 				}
 				
 			}
