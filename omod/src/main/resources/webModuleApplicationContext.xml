@@ -36,18 +36,22 @@
  	<bean id="shrListener" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListener"></bean>
 	<bean id="shrListenerFailedPatient" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListenerFailedPatient"></bean>
 	<bean id="shrListenerEncounter" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListenerEncounter"></bean>
-	<bean id="shrListenerFailedEncounter" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListenerFailedEncounter"></bean>	
+	<bean id="shrListenerFailedEncounter" class="org.openmrs.module.sharedhealthrecord.web.listener.SHRListenerFailedEncounter"></bean>
+	<bean id="ubsCommoditiesListener" class="org.openmrs.module.sharedhealthrecord.web.listener.UBSCommoditiesListener"></bean>	
 	
  	<task:scheduled-tasks scheduler="shr2Task">
-<!-- 		<task:scheduled ref="shrListener" method="sendAllData" cron="*/55 * * * * *" />
+ 	
+   		<task:scheduled ref="shrListener" method="sendAllData" cron="*/55 * * * * *" />
 		
 		<task:scheduled ref="shrListenerFailedPatient" method="sendAllData" cron="*/55 * * * * *" />
 		
 		<task:scheduled ref="shrListenerEncounter" method="sendAllData" cron="*/55 * * * * *" />
 		
-		<task:scheduled ref="shrListenerFailedEncounter" method="sendAllData" cron="*/55 * * * * *" />	 -->	
+		<task:scheduled ref="shrListenerFailedEncounter" method="sendAllData" cron="*/55 * * * * *" /> 
 
 		<task:scheduled ref="ubsExtractAndSave" method="sendAllData" cron="*/55 * * * * *" />
+		
+ 		<task:scheduled ref="ubsCommoditiesListener" method="sendAllData" cron="*/55 * * * * *" /> 
 		
 	</task:scheduled-tasks>
 	
